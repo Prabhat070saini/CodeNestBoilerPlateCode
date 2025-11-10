@@ -8,6 +8,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { ESendOtpPurpose } from 'src/common/constants/app.enum';
+import { IsUlid } from 'src/common/decorators/validate-ulid.decorator';
 
 export class SignUpDto {
   @IsNotEmpty()
@@ -56,7 +57,7 @@ export class SendOtpDto {
 
 export class VerifyOtpDto {
   @IsNotEmpty()
-  @IsString()
+  @IsUlid()
   identifier: string;
 
   @IsNotEmpty()

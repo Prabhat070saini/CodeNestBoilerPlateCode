@@ -1,16 +1,19 @@
 import { Injectable, Logger, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { v4 as uuidv4 } from 'uuid';
 import { tracingNamespace, TracingService } from './tracing.service';
+import { UtilsService } from 'src/common/utils/utils.service';
 
 @Injectable()
 export class TracingMiddleware implements NestMiddleware {
   private readonly logger = new Logger(TracingMiddleware.name);
-  constructor(private readonly tracingService: TracingService) {}
+  constructor(
+    private readonly tracingService: TracingService,
+    private readonly utilsService: UtilsService,
+  ) {}
 
   use(req: Request, res: Response, next: NextFunction): void {
     // Ensure tracingId is always treated as a string
-    const tracingId = (req.headers['tracing_id'] || uuidv4()) as string;
+    const tracingId = (req.headers['tracing_id'] || this.utilsService.generateUlId()) as string;
 
     tracingNamespace.run(() => {
       // Set the tracing ID in the tracing service
