@@ -1,11 +1,10 @@
-import { ETokenType } from "./app.enum";
+import { ETokenType } from './app.enum';
 
-export type JwtExpires = `${number}${"s" | "m" | "h" | "d"}` | number;
-
+export type JwtExpires = `${number}${'s' | 'm' | 'h' | 'd'}` | number;
 
 export interface JwtConfig {
   secret: string;
-  expiresIn:JwtExpires; // e.g., '1h', '7d', etc.
+  expiresIn: JwtExpires; // e.g., '1h', '7d', etc.
   type: ETokenType;
 }
 
@@ -16,24 +15,24 @@ export interface TokenPayload {
   type: ETokenType;
 }
 export interface IException {
-    code: number;
-    message: string;
-    httpStatusCode?: number;
+  code: number;
+  message: string;
+  httpStatusCode?: number;
 }
 
 export interface ISuccess<T> {
-    code: number;
-    message: string;
-    httpStatusCode: number;
-    data?: T
+  code: number;
+  message: string;
+  httpStatusCode: number;
+  data?: T;
 }
 
 export interface IServiceOutput<T> {
-    success?:ISuccess<T>
-    exception?: IException;
+  success?: ISuccess<T>;
+  exception?: IException;
 }
 
 export interface IFunctionOutput<T> {
-    data?: T;
-    exception?: IException;
+  data?: T;
+  exception?: IException;
 }

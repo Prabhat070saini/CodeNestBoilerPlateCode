@@ -1,7 +1,7 @@
 // src/common/jwt/token.provider.ts
-import { Injectable, Logger } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
-import { JwtConfig, TokenPayload } from "src/common/constants/app.interface";
+import { Injectable, Logger } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { JwtConfig, TokenPayload } from 'src/common/constants/app.interface';
 
 @Injectable()
 export class TokenProvider {
@@ -20,7 +20,7 @@ export class TokenProvider {
       return this.jwtService.verify(token, { secret: config.secret });
     } catch (error) {
       this.logger.error(`Invalid or expired token: ${error.message}`);
-      throw new Error("Invalid or expired token");
+      throw new Error('Invalid or expired token');
     }
   }
 }

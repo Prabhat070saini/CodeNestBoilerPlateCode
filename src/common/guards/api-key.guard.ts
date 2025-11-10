@@ -4,10 +4,10 @@ import {
   Injectable,
   Logger,
   UnauthorizedException,
-} from "@nestjs/common";
-import { config } from "src/config/config";
-import { exception } from "src/common/constants/exception";
-import { Reflector } from "@nestjs/core";
+} from '@nestjs/common';
+import { config } from 'src/config/config';
+import { exception } from 'src/common/constants/exception';
+import { Reflector } from '@nestjs/core';
 
 @Injectable()
 export class ValidateApiKeyGuard implements CanActivate {
@@ -18,10 +18,10 @@ export class ValidateApiKeyGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     this.logger.log(`[ValidateApiKeyGuard] Incoming request`);
     const request = context.switchToHttp().getRequest();
-    const xApiKey = request.headers["x-api-key"];
+    const xApiKey = request.headers['x-api-key'];
     const isPublic =
-      this.reflector.get<boolean>("isPublic", context.getHandler()) || false;
-      console.log(xApiKey,config.api_key.x_api_key)
+      this.reflector.get<boolean>('isPublic', context.getHandler()) || false;
+    console.log(xApiKey, config.api_key.x_api_key);
     if (isPublic) {
       return true;
     }

@@ -1,7 +1,7 @@
 import { Injectable, LoggerService } from '@nestjs/common';
 import * as winston from 'winston';
 import { TracingService } from '../tracing.middleware.ts/tracing.service';
- type LogLevel = "debug" | "info" | "warn" | "error";
+type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
 @Injectable()
 export class CustomLoggerService implements LoggerService {
@@ -14,14 +14,13 @@ export class CustomLoggerService implements LoggerService {
     error: 0,
   };
 
-
   constructor(
     private readonly tracingService: TracingService,
     level: LogLevel,
   ) {
     // Add colors for custom levels
 
-    this.level = level; 
+    this.level = level;
     winston.addColors({
       debug: 'magenta',
       info: 'green',
@@ -51,25 +50,29 @@ export class CustomLoggerService implements LoggerService {
     return this.levelPriority[msgLevel] <= this.levelPriority[this.level];
   }
 
-
   log(message: any, context?: string, trace?: string) {
-    if (this.shouldLog('info')) this.logger.info(this.formatMessage(message, context, trace));
+    if (this.shouldLog('info'))
+      this.logger.info(this.formatMessage(message, context, trace));
   }
 
   info(message: any, context?: string, trace?: string) {
-    if (this.shouldLog('info')) this.logger.info(this.formatMessage(message, context, trace));
+    if (this.shouldLog('info'))
+      this.logger.info(this.formatMessage(message, context, trace));
   }
 
   warn(message: any, context?: string, trace?: string) {
-    if (this.shouldLog('warn')) this.logger.warn(this.formatMessage(message, context, trace));
+    if (this.shouldLog('warn'))
+      this.logger.warn(this.formatMessage(message, context, trace));
   }
 
   error(message: any, context?: string, trace?: string) {
-    if (this.shouldLog('error')) this.logger.error(this.formatMessage(message, context, trace));
+    if (this.shouldLog('error'))
+      this.logger.error(this.formatMessage(message, context, trace));
   }
 
   debug(message: any, context?: string, trace?: string) {
-    if (this.shouldLog('debug')) this.logger.debug(this.formatMessage(message, context, trace));
+    if (this.shouldLog('debug'))
+      this.logger.debug(this.formatMessage(message, context, trace));
   }
 
   private formatMessage(message: any, context?: string, trace?: string) {
