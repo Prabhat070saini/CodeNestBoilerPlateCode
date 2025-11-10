@@ -7,7 +7,7 @@ export class UtilsService {
   defaultMessage = 'ERROR';
   sendRestResponse(res: Response, output: IServiceOutput<any>): any {
     if (output?.exception) {
-      const { code, message, httpStatusCode } = output?.exception;
+      const { code, message, httpStatusCode } = output.exception;
       return res
         .status(httpStatusCode || 500)
         .json({ code, message: message || this.defaultMessage });

@@ -1,8 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { UserRepository } from './repository/user.repository';
 import { IServiceOutput } from 'src/common/constants/app.interface';
 import { EFindUser } from 'src/common/constants/app.enum';
-import { Logger } from '@nestjs/common';
 import { exception } from 'src/common/constants/exception';
 @Injectable()
 export class UserService {

@@ -3,11 +3,10 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { TYPEORM_DATABASE_PROVIDER } from '../../../common/constants/app.constant';
 import { TransactionBaseRepository } from '../../../common/repository/transaction.repository';
 import { User } from '../entities/user.entity';
-import { IFindUser } from '../user.interface';
 import { EFindUser } from 'src/common/constants/app.enum';
 import { IFunctionOutput } from 'src/common/constants/app.interface';
 import { exception } from 'src/common/constants/exception';
-import { IUserCreate } from '../user.interface';
+import { IUserCreate, IFindUser } from '../user.interface';
 import { ulid } from 'ulid';
 @Injectable()
 export class UserRepository extends TransactionBaseRepository<User> {

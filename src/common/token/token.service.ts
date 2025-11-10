@@ -1,10 +1,9 @@
 // src/common/jwt/token.service.ts
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ETokenType } from '../constants/app.enum';
 import { JwtConfig, TokenPayload } from '../constants/app.interface';
 import { config } from 'src/config/config';
 import { TokenProvider } from './token.provider';
-import { Logger } from '@nestjs/common';
 
 @Injectable()
 export class TokenService {
@@ -27,7 +26,6 @@ export class TokenService {
   generate(payload: TokenPayload): string {
     try {
       const cfg = this.tokenConfigs[payload.type];
-      console.log(cfg, 'cfg');
       return this.provider.generateToken(cfg, payload);
     } catch (error) {
       this.logger.error(`[generate] ${error}`, payload.type);
@@ -40,7 +38,7 @@ export class TokenService {
       const cfg = this.tokenConfigs[type];
       return this.provider.validateToken(cfg, token);
     } catch (error) {
-      this.logger.error(`[validate] ${JSON.stringify(error)}`);
+      this.logger.error(`[validate] error`, error);
       return null;
     }
   }

@@ -93,8 +93,8 @@ export const config = {
   },
   token: {
     access_token_secret: env.ACCESS_TOKEN_SECRET,
-    access_token_exp_in_min: parseInt(env.ACCESS_TOKEN_EXP_IN_MIN, 10) * 60, // Convert minutes to seconds
-    refresh_token_exp_in_min: parseInt(env.REFRESH_TOKEN_EXP_IN_MIN, 10) * 60, // Convert minutes to seconds
+    access_token_exp_in_min: Number.parseInt(env.ACCESS_TOKEN_EXP_IN_MIN, 10) * 60, // Convert minutes to seconds
+    refresh_token_exp_in_min: Number.parseInt(env.REFRESH_TOKEN_EXP_IN_MIN, 10) * 60, // Convert minutes to seconds
     refresh_token_secret: env.REFRESH_TOKEN_SECRET,
   },
   aws: {

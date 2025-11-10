@@ -19,7 +19,6 @@ export class TracingMiddleware implements NestMiddleware {
       const fullUrl = `${baseUrl}${req.originalUrl}`;
       // Capture request start time
       const startTime = process.hrtime();
-      //  this.logger.info(`Incoming request: ${req.method} `, "Request");
       this.logger.log({
         log: 'Incoming request',
         method: req.method,

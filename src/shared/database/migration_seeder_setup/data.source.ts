@@ -3,7 +3,6 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { SeederOptions } from 'typeorm-extension';
 import InitSeeder from './seeds/init.seeder';
 import { config } from '../../../config/config';
-// import config from "../../src/config/config";
 
 export const dataSourceOptions: DataSourceOptions & SeederOptions = {
   type: config.db.dialect,

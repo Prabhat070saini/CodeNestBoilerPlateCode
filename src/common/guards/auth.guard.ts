@@ -10,8 +10,7 @@ import {
 import { config } from 'src/config/config';
 import { ETokenType } from '../constants/app.enum';
 import { TokenService } from '../token/token.service';
-import { CacheBase } from 'src/shared/cache/cache.interface';
-import { CACHE_BASE } from 'src/shared/cache/cache.interface';
+import { CACHE_BASE, CacheBase } from 'src/shared/cache/cache.interface';
 import { AuthKeys } from 'src/shared/cache/keys';
 
 @Injectable()
@@ -19,7 +18,7 @@ export class AuthnGuard implements CanActivate {
   private readonly logger = new Logger(AuthnGuard.name);
   constructor(
     private readonly tokenService: TokenService,
-    @Inject(CACHE_BASE) private cacheService: CacheBase,
+    @Inject(CACHE_BASE) private readonly cacheService: CacheBase,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {

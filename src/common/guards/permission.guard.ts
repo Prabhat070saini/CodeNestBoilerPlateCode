@@ -2,7 +2,6 @@ import {
   CanActivate,
   ExecutionContext,
   ForbiddenException,
-  Inject,
   Injectable,
   Logger,
 } from '@nestjs/common';
@@ -25,7 +24,6 @@ export class PermissionGuard implements CanActivate {
       [context.getHandler(), context.getClass()],
     );
 
-    this.logger.debug(requiredRoles, 'Required Roles');
 
     // 2️⃣ If no specific roles required, allow access
     if (!requiredRoles || requiredRoles.length === 0) {
@@ -42,7 +40,6 @@ export class PermissionGuard implements CanActivate {
 
     const userRoles = user.roles || [];
 
-    this.logger.debug(userRoles, 'User Roles');
 
     // 4️⃣ Check if user has at least one required role
     const hasPermission = requiredRoles.some((role) =>

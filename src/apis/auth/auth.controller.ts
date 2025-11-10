@@ -23,20 +23,18 @@ export class AuthController {
   @Post('sign-up')
   async signUp(@Body() signUpDto: SignUpDto, @Response() res): Promise<void> {
     const output = await this.authService.signUp(signUpDto);
-    console.log(output, 'output');
     return this.utilsService.sendRestResponse(res, output);
   }
   @Post('sign-in')
   async signIn(@Body() signInDto: SignInDto, @Response() res): Promise<void> {
     const output = await this.authService.signIn(signInDto);
-    console.log(output, 'output');
     this.utilsService.sendRestResponse(res, output);
   }
   // Step 1: Redirect user to Google
   @IsPublic()
   @Get('google')
   @UseGuards(AuthGuard('google'))
-  async googleAuth() {}
+  async googleAuth() { /* TODOdocument why this async method 'googleAuth' is empty */ }
 
   // Step 2: Google redirects back here
   @IsPublic()

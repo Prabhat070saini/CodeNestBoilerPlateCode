@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Inject } from '@nestjs/common';
 import { UserRepository } from '../user/repository/user.repository';
 import { SignInDto, SignUpDto } from './dto/auth.dto';
 import { EFindUser, ETokenType } from 'src/common/constants/app.enum';
@@ -14,9 +14,7 @@ import { IGoogleOauthResponse, ISignInResponse } from './auth.interface';
 import { UtilsService } from 'src/common/utils/utils.service';
 import { AuthKeys } from 'src/shared/cache/keys';
 import { CACHE_BASE, CacheBase } from 'src/shared/cache/cache.interface';
-import { Inject } from '@nestjs/common';
 import { config } from '../../config/config';
-import { request } from 'http';
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
@@ -25,7 +23,7 @@ export class AuthService {
     private readonly hashingService: HashingService,
     private readonly tokenService: TokenService,
     private readonly utilsService: UtilsService,
-    @Inject(CACHE_BASE) private cacheService: CacheBase,
+    @Inject(CACHE_BASE) private readonly cacheService: CacheBase,
   ) {}
 
   async signUp(signUpDto: SignUpDto): Promise<IServiceOutput<null>> {

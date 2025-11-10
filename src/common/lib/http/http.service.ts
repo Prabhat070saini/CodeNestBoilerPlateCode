@@ -21,7 +21,7 @@ export class HttpService {
             (config.headers as any).set('tracing_id', tracingId);
           } else {
             config.headers = AxiosHeaders.from({
-              ...(config.headers || {}),
+              ...(config.headers ),
               tracing_id: tracingId,
             });
           }

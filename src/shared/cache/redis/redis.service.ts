@@ -1,17 +1,17 @@
-import { Injectable, Logger, OnApplicationShutdown } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { RedisClient } from './redis-client';
 import { CacheBase } from '../cache.interface';
 import { config } from '../../../config/config';
 
 @Injectable()
-export class RedisCacheService implements CacheBase, OnApplicationShutdown {
+export class RedisCacheService implements CacheBase {
   private readonly logger = new Logger(RedisCacheService.name);
-  private client;
+  private readonly client;
   private readonly enabled = config.redis.use_redis;
 
   constructor(private readonly redisClient: RedisClient) {
     if (this.enabled) {
-      this.client = redisClient.getClient();
+      this.client = this.redisClient.getClient();
       this.logger.log('🧠 Redis cache is ENABLED');
     } else {
       this.logger.warn('🚫 Redis cache is DISABLED via environment config');
@@ -23,7 +23,7 @@ export class RedisCacheService implements CacheBase, OnApplicationShutdown {
     const match = /^(\d+)([smhd])$/.exec(exp.trim());
     if (!match) throw new Error(`Invalid expiry format: "${exp}"`);
 
-    const value = parseInt(match[1], 10);
+    const value = Number.parseInt(match[1], 10);
     const unit = match[2];
 
     switch (unit) {
@@ -40,12 +40,7 @@ export class RedisCacheService implements CacheBase, OnApplicationShutdown {
     }
   }
 
-  async onApplicationShutdown(signal?: string) {
-    this.logger.log(
-      `🧹 [RedisCacheService] Closing Redis due to signal: ${signal ?? 'manual stop'}`,
-    );
-    // await this.redisClient.closeConnection();
-  }
+
 
   // Get key
   async getKey(key: string): Promise<string | object | undefined> {
@@ -59,7 +54,7 @@ export class RedisCacheService implements CacheBase, OnApplicationShutdown {
         return data;
       }
     } catch (error) {
-      throw Error(
+      throw new Error(
         `[RedisCacheService:getKey] Error retrieving key "${key}": ${error}`,
       );
     }
@@ -76,7 +71,7 @@ export class RedisCacheService implements CacheBase, OnApplicationShutdown {
       await this.client.set(key, data);
       this.logger.log(`✅ Cache saved for key: ${key}`);
     } catch (error) {
-      throw Error(
+      throw new Error(
         `[RedisCacheService:setKey] Error saving key "${key}": ${error}`,
       );
     }
@@ -102,7 +97,7 @@ export class RedisCacheService implements CacheBase, OnApplicationShutdown {
         `✅ Cache saved with expiry (${expInSec}s) for key: ${key}`,
       );
     } catch (error) {
-      throw Error(
+      throw new Error(
         `[RedisCacheService:setKeyWithExpiry] Error saving key "${key}": ${error}`,
       );
     }
@@ -120,7 +115,7 @@ export class RedisCacheService implements CacheBase, OnApplicationShutdown {
           `[deleteKey] Key "${key}" not found or already deleted`,
         );
     } catch (error) {
-      throw Error(
+      throw new Error(
         `[RedisCacheService:deleteKey] Error deleting key "${key}": ${error}`,
       );
     }
