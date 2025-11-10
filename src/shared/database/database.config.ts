@@ -19,9 +19,9 @@ export class DatabaseConfig {
         logging: config.db.logging,
         entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
         extra: {
-          connectionLimit: Number(config.db.db_pool_max),   // max connections
-          min: Number(config.db.db_pool_min),               // min connections
-          waitForConnections: true,                         // wait for connections
+          connectionLimit: Number(config.db.db_pool_max), // max connections
+          min: Number(config.db.db_pool_min), // min connections
+          waitForConnections: true, // wait for connections
           connectTimeout: Number(config.db.db_connection_timeout), // connection timeout
           maxIdleTime: Number(config.db.db_connection_idle_timeout), // max idle time
         },

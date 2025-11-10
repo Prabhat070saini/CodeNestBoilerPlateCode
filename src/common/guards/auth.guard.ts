@@ -16,8 +16,7 @@ import { CACHE_BASE } from 'src/shared/cache/cache.interface';
 export class AuthnGuard implements CanActivate {
   constructor(
     private readonly tokenService: TokenService,
-     @Inject(CACHE_BASE) private cacheService: CacheBase    ,
-    
+    @Inject(CACHE_BASE) private cacheService: CacheBase,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -30,10 +29,7 @@ export class AuthnGuard implements CanActivate {
       });
     }
 
-    const verify =  this.tokenService.validate(
-      ETokenType.AccessToken,
-      token,
-    );
+    const verify = this.tokenService.validate(ETokenType.AccessToken, token);
     if (!verify.payload) {
       throw new UnauthorizedException({
         code: 9099,
@@ -44,7 +40,9 @@ export class AuthnGuard implements CanActivate {
     const payload = verify.payload;
 
     if (config.redis.user_redis) {
-      const accessToken =await this.cacheService.getKey(`accessToken:${payload.userId}`);
+      const accessToken = await this.cacheService.getKey(
+        `accessToken:${payload.userId}`,
+      );
       if (accessToken !== token) {
         throw new UnauthorizedException({
           message: 'Invalid or expire token a',

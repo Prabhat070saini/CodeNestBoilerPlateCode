@@ -12,8 +12,8 @@ import {
   SaveOptions,
   UpdateResult,
   SelectQueryBuilder,
-} from "typeorm";
-import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
+} from 'typeorm';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 type CriteriaType<T> =
   | string

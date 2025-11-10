@@ -15,4 +15,4 @@ export interface CacheBase {
   // Delete a key from the cache
   deleteKey(key: string): Promise<void>;
 }
-export const CACHE_BASE = "CACHE_BASE";
+export const CACHE_BASE = 'CACHE_BASE';

@@ -4,7 +4,7 @@ import { TokenModule } from './token/token.module';
 import { UtilsModule } from './utils/utils.module';
 @Global()
 @Module({
-  imports: [LibModule,TokenModule,UtilsModule],
+  imports: [LibModule, TokenModule, UtilsModule],
   controllers: [],
   providers: [],
 })

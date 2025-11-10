@@ -21,7 +21,7 @@ async function bootstrap(): Promise<void> {
   app.enableShutdownHooks();
 
   /*This tells NestJS to allow cross-origin requests*/
-  app.enableCors({ origin: "*" });
+  app.enableCors({ origin: '*' });
 
   /*This tells NestJS to set the global prefix to /api/*/
   app.setGlobalPrefix('api/');
@@ -29,7 +29,7 @@ async function bootstrap(): Promise<void> {
   /*This tells NestJS to set the versioning to URI*/
   app.enableVersioning({ type: VersioningType.URI });
 
-console.log(config.app.port)
+  console.log(config.app.port);
 
   app.useLogger(app.get(CustomLoggerService));
   await app.listen(config.app.port);

@@ -1,7 +1,4 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { SetMetadata } from "@nestjs/common";
-export const IS_PUBLIC_KEY = "isPublic";
+import { SetMetadata } from '@nestjs/common';
+export const IS_PUBLIC_KEY = 'isPublic';
 export const IsPublic = () => SetMetadata(IS_PUBLIC_KEY, true);
-
-
-

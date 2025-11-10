@@ -5,8 +5,9 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Index,
-  BeforeInsert} from 'typeorm';
-  import { ulid } from 'ulid';
+  BeforeInsert,
+} from 'typeorm';
+import { ulid } from 'ulid';
 import { ESchema } from 'src/common/constants/app.enum';
 @Entity({ name: 'users', schema: ESchema.DBO_SCHEMA })
 @Index(['email'], { unique: true })
@@ -15,7 +16,7 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar',length:26, unique: true })
+  @Column({ type: 'varchar', length: 26, unique: true })
   user_id: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
@@ -45,9 +46,9 @@ export class User {
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
 
-  @UpdateDateColumn({ type: 'timestamp',nullable:true })
+  @UpdateDateColumn({ type: 'timestamp', nullable: true })
   updated_at: Date;
-  @Column({ type: 'int',nullable:true })
+  @Column({ type: 'int', nullable: true })
   updated_by: number;
   @BeforeInsert()
   generateUlid() {

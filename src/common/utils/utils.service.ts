@@ -1,45 +1,42 @@
-import { Injectable } from "@nestjs/common";
-import { Response } from "express";
-import { IServiceOutput } from "../constants/app.interface";
-
+import { Injectable } from '@nestjs/common';
+import { Response } from 'express';
+import { IServiceOutput } from '../constants/app.interface';
 
 @Injectable()
 export class UtilsService {
- defaultMessage="ERROR"
- sendRestResponse(
-    res: Response,
-    output: IServiceOutput<any>,
-  ): any {
+  defaultMessage = 'ERROR';
+  sendRestResponse(res: Response, output: IServiceOutput<any>): any {
     if (output?.exception) {
       const { code, message, httpStatusCode } = output?.exception;
-      return res.status(httpStatusCode || 500).json({ code, message: message|| this.defaultMessage });
+      return res
+        .status(httpStatusCode || 500)
+        .json({ code, message: message || this.defaultMessage });
     }
-    
 
-    return res.status(output?.success?.httpStatusCode||200).json({
-      code: output?.success?.code||200,
+    return res.status(output?.success?.httpStatusCode || 200).json({
+      code: output?.success?.code || 200,
       message: output?.success?.message || 'Success',
-      data: output?.success?.data|| null,
+      data: output?.success?.data || null,
     });
   }
 
   getDurationAndUnit(seconds: number): { duration: number; unit: string } {
     if (seconds < 60) {
-      return { duration: seconds, unit: "Seconds" };
+      return { duration: seconds, unit: 'Seconds' };
     } else if (seconds < 3600) {
       // Less than an hour
       const minutes = Math.floor(seconds / 60);
-      return { duration: minutes, unit: "Minutes" };
+      return { duration: minutes, unit: 'Minutes' };
     } else {
       const hours = Math.floor(seconds / 3600);
-      return { duration: hours, unit: "Hours" };
+      return { duration: hours, unit: 'Hours' };
     }
   }
   generatePassword(): string {
-    const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    const lowercase = "abcdefghijklmnopqrstuvwxyz";
-    const digits = "0123456789";
-    const specialChars = "!@#$^*";
+    const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+    const digits = '0123456789';
+    const specialChars = '!@#$^*';
     const allCharacters = uppercase + lowercase + digits + specialChars;
 
     // Ensure password length is between 8 and 24
@@ -63,6 +60,6 @@ export class UtilsService {
     // Shuffle the password to ensure randomness
     password = password.sort(() => Math.random() - 0.5);
 
-    return password.join("");
+    return password.join('');
   }
 }

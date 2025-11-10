@@ -22,7 +22,7 @@ const schema = Joi.object({
   DB_CONNECTION_TIMEOUT: Joi.number().default(3000),
   DB_LOGGING: Joi.boolean().default(true).required(),
   DB_CONNECTION_IDLE_TIMEOUT: Joi.number().default(50),
-  
+
   // DB_POOL_MAX=10
   // DB_CONNECTION_TIMEOUT=3000
 

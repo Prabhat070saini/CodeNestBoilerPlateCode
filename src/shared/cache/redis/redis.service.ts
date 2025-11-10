@@ -1,6 +1,6 @@
-import { Injectable, Logger, OnApplicationShutdown } from "@nestjs/common";
-import { RedisClient } from "./redis-client";
-import { CacheBase } from "../cache.interface";
+import { Injectable, Logger, OnApplicationShutdown } from '@nestjs/common';
+import { RedisClient } from './redis-client';
+import { CacheBase } from '../cache.interface';
 
 @Injectable()
 export class RedisCacheService implements CacheBase, OnApplicationShutdown {
@@ -11,10 +11,10 @@ export class RedisCacheService implements CacheBase, OnApplicationShutdown {
     this.client = redisClient.getClient();
   }
 
-
-
   async onApplicationShutdown(signal?: string) {
-    this.logger.log(`🧹 [RedisCacheService] Closing Redis due to signal: ${signal ?? "manual stop"}`);
+    this.logger.log(
+      `🧹 [RedisCacheService] Closing Redis due to signal: ${signal ?? 'manual stop'}`,
+    );
     // await this.redisClient.closeConnection();
   }
 
@@ -29,7 +29,9 @@ export class RedisCacheService implements CacheBase, OnApplicationShutdown {
         return data;
       }
     } catch (error) {
-      throw Error(`[RedisCacheService:getKey] Error retrieving key "${key}": ${error}`);
+      throw Error(
+        `[RedisCacheService:getKey] Error retrieving key "${key}": ${error}`,
+      );
     }
   }
 
@@ -37,23 +39,35 @@ export class RedisCacheService implements CacheBase, OnApplicationShutdown {
   async setKey(key: string, value: string | object): Promise<void> {
     try {
       const data =
-        typeof value === "object" && value !== null ? JSON.stringify(value) : value;
+        typeof value === 'object' && value !== null
+          ? JSON.stringify(value)
+          : value;
       await this.client.set(key, data);
       this.logger.log(`✅ Cache saved for key: ${key}`);
     } catch (error) {
-      throw Error(`[RedisCacheService:setKey] Error saving key "${key}": ${error}`);
+      throw Error(
+        `[RedisCacheService:setKey] Error saving key "${key}": ${error}`,
+      );
     }
   }
 
   // ⏰ Set key with expiry
-  async setKeyWithExpiry(key: string, value: string | object, expInSec: number): Promise<void> {
+  async setKeyWithExpiry(
+    key: string,
+    value: string | object,
+    expInSec: number,
+  ): Promise<void> {
     try {
       const data =
-        typeof value === "object" && value !== null ? JSON.stringify(value) : value;
-      await this.client.set(key, data, "EX", expInSec);
+        typeof value === 'object' && value !== null
+          ? JSON.stringify(value)
+          : value;
+      await this.client.set(key, data, 'EX', expInSec);
       this.logger.log(`✅ Cache saved with expiry for key: ${key}`);
     } catch (error) {
-      throw Error(`[RedisCacheService:setKeyWithExpiry] Error saving key "${key}": ${error}`);
+      throw Error(
+        `[RedisCacheService:setKeyWithExpiry] Error saving key "${key}": ${error}`,
+      );
     }
   }
 
@@ -63,9 +77,14 @@ export class RedisCacheService implements CacheBase, OnApplicationShutdown {
       const result = await this.client.del(key);
       if (result === 1)
         this.logger.log(`[deleteKey] Key "${key}" deleted from cache`);
-      else this.logger.warn(`[deleteKey] Key "${key}" not found or already deleted`);
+      else
+        this.logger.warn(
+          `[deleteKey] Key "${key}" not found or already deleted`,
+        );
     } catch (error) {
-      throw Error(`[RedisCacheService:deleteKey] Error deleting key "${key}": ${error}`);
+      throw Error(
+        `[RedisCacheService:deleteKey] Error deleting key "${key}": ${error}`,
+      );
     }
   }
 }

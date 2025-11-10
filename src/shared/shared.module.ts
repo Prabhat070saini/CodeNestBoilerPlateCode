@@ -52,7 +52,7 @@ import { RedisModule } from './cache/redis/redis.module';
 @Module({
   imports: [
     DatabaseModule,
-    RedisModule
+    RedisModule,
     // HttpModule,
     // LoggerModule.forRoot({ level: config.log_level }),
     // redisModule,
