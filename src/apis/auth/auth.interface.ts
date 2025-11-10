@@ -10,3 +10,9 @@ export interface IGoogleOauthResponse {
   picture: string;
   isValid: boolean;
 }
+
+export interface ISendOtpResponse {
+  cooldownRemaining?: number;
+  attemptsLeft: number;
+  identifier:string;
+}

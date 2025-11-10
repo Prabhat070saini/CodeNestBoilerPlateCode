@@ -51,6 +51,11 @@ const schema = Joi.object({
   EMAIL_PASSWORD: Joi.string().required(),
   EMAIL_FROM: Joi.string().required(),
   EMAIL_PROVIDER: Joi.string().required(),
+
+
+
+
+  OTP_CRYPTO_SECRET:Joi.string().required(),
 }).unknown(true);
 // Validate process.env
 const { error, value: env } = schema.validate(process.env, {
@@ -93,8 +98,10 @@ export const config = {
   },
   token: {
     access_token_secret: env.ACCESS_TOKEN_SECRET,
-    access_token_exp_in_min: Number.parseInt(env.ACCESS_TOKEN_EXP_IN_MIN, 10) * 60, // Convert minutes to seconds
-    refresh_token_exp_in_min: Number.parseInt(env.REFRESH_TOKEN_EXP_IN_MIN, 10) * 60, // Convert minutes to seconds
+    access_token_exp_in_min:
+      Number.parseInt(env.ACCESS_TOKEN_EXP_IN_MIN, 10) * 60, // Convert minutes to seconds
+    refresh_token_exp_in_min:
+      Number.parseInt(env.REFRESH_TOKEN_EXP_IN_MIN, 10) * 60, // Convert minutes to seconds
     refresh_token_secret: env.REFRESH_TOKEN_SECRET,
   },
   aws: {
@@ -112,4 +119,7 @@ export const config = {
     from: env.EMAIL_FROM,
     provider: env.EMAIL_PROVIDER,
   },
+  otp:{
+    otp_crypto_secret:env.OTP_CRYPTO_SECRET
+  }
 };

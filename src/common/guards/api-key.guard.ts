@@ -21,7 +21,6 @@ export class ValidateApiKeyGuard implements CanActivate {
     const xApiKey = request.headers['x-api-key'];
     const isPublic =
       this.reflector.get<boolean>('isPublic', context.getHandler()) || false;
-    console.log(xApiKey, config.api_key.x_api_key);
     if (isPublic) {
       return true;
     }

@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
-import { IException } from './app.interface';
+import { Code } from 'typeorm';
 
-export const exception: Record<string, IException> = {
+export const exception = {
   USER_UNAUTHORIZED_REQUEST: {
     code: HttpStatus.UNAUTHORIZED,
     message: 'Authentication refused the request',
@@ -112,5 +112,32 @@ export const exception: Record<string, IException> = {
     code: 6002,
     message: 'Invalid refresh token',
     httpStatusCode: HttpStatus.UNAUTHORIZED,
+  },
+  INVALID_CREDENTIALS: {
+    code: 6003,
+    message: 'Invalid credentials',
+    httpStatusCode: HttpStatus.UNAUTHORIZED,
+  },
+  API_KEY_MISSING: {
+    code: 6004,
+    message: 'API key missing',
+    httpStatusCode: HttpStatus.UNAUTHORIZED,
+  },
+  OTP_COOLDOWN_ACTIVE: {
+    code: 7001,
+    message:
+      'You are sending OTPs too quickly. Please wait before trying again.',
+    httpStatusCode: HttpStatus.TOO_MANY_REQUESTS,
+  },
+
+  OTP_RATE_LIMIT_REACHED: {
+    code: 7002,
+    message: 'You have reached the OTP request limit. Please try again later.',
+    httpStatusCode: HttpStatus.TOO_MANY_REQUESTS,
+  },
+  MAX_ATTEMPTS_REACHED: {
+    code: 7003,
+    message: 'Maximum OTP verification attempts reached. Please try again later.',
+    httpStatusCode: HttpStatus.TOO_MANY_REQUESTS,
   },
 };

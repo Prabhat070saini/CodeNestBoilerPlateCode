@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Response } from 'express';
 import { IServiceOutput } from '../constants/app.interface';
+import * as crypto from 'crypto';
+import { ulid } from 'ulid';
 
 @Injectable()
 export class UtilsService {
@@ -61,5 +63,20 @@ export class UtilsService {
     password = password.sort(() => Math.random() - 0.5);
 
     return password.join('');
+  }
+  randomNumeric(length = 6): string {
+    if (!Number.isInteger(length) || length <= 0)
+      throw new Error('randomNumeric() requires a positive integer length.');
+    try {
+      const min = Math.pow(10, length - 1);
+      const max = Math.pow(10, length) - 1;
+      return crypto.randomInt(min, max).toString();
+    } catch (err) {
+      throw new Error(`randomNumeric() failed: ${(err as Error).message}`);
+    }
+  }
+
+  generateUlId(): string {
+    return ulid();
   }
 }

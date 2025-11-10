@@ -18,3 +18,9 @@ export enum EFindUser {
   PHONE = 'PHONE',
   USER_ID = 'USER_ID',
 }
+
+export enum ESendOtpPurpose {
+  FORGOT_PASSWORD = 'FORGOT_PASSWORD',
+  SIGN_IN = 'SIGN_IN',
+  SIGN_UP = 'SIGN_UP',
+}

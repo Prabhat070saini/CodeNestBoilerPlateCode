@@ -1,11 +1,13 @@
 import {
   IsEmail,
+  IsEnum,
   IsNotEmpty,
   IsString,
   IsStrongPassword,
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { ESendOtpPurpose } from 'src/common/constants/app.enum';
 
 export class SignUpDto {
   @IsNotEmpty()
@@ -15,8 +17,7 @@ export class SignUpDto {
 
   @IsNotEmpty()
   @IsEmail()
-  @MinLength(3)
-  @MaxLength(100) // ✅ allows up to 100 chars
+  @MaxLength(100) 
   email: string;
 
   @IsNotEmpty()
@@ -27,18 +28,42 @@ export class SignUpDto {
     minNumbers: 1,
     minSymbols: 1,
   })
-  @MaxLength(20) // ✅ allows up to 20 chars
+  @MaxLength(20) 
   password: string;
 }
 
 export class SignInDto {
   @IsNotEmpty()
   @IsEmail()
-  @MinLength(3)
-  @MaxLength(100) // ✅ allows up to 100 chars
+  @MaxLength(100) 
   email: string;
 
   @IsNotEmpty()
   @IsString()
   password: string;
+}
+
+export class SendOtpDto {
+  @IsNotEmpty()
+  @IsString()
+  @MaxLength(100)  
+  email: string;
+
+  @IsNotEmpty()
+  @IsEnum(ESendOtpPurpose)
+  purpose: ESendOtpPurpose;
+}
+
+export class VerifyOtpDto {
+  @IsNotEmpty()
+  @IsString()
+  identifier: string;
+
+  @IsNotEmpty()
+  @IsEnum(ESendOtpPurpose) 
+  purpose: ESendOtpPurpose;
+
+  @IsNotEmpty()
+  @IsString()
+  otp: string;
 }

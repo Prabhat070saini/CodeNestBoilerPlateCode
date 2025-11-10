@@ -1,4 +1,11 @@
-import { Global, Module, OnApplicationShutdown, Injectable, Inject, Logger } from '@nestjs/common';
+import {
+  Global,
+  Module,
+  OnApplicationShutdown,
+  Injectable,
+  Inject,
+  Logger,
+} from '@nestjs/common';
 import { DatabaseConfig } from './database.config';
 import { CAN_DATABASE_PROVIDER } from './database.provider';
 import { DataSource } from 'typeorm';

@@ -24,7 +24,6 @@ export class PermissionGuard implements CanActivate {
       [context.getHandler(), context.getClass()],
     );
 
-
     // 2️⃣ If no specific roles required, allow access
     if (!requiredRoles || requiredRoles.length === 0) {
       this.logger.debug('[PermissionGuard] No required roles specified');
@@ -39,7 +38,6 @@ export class PermissionGuard implements CanActivate {
     }
 
     const userRoles = user.roles || [];
-
 
     // 4️⃣ Check if user has at least one required role
     const hasPermission = requiredRoles.some((role) =>

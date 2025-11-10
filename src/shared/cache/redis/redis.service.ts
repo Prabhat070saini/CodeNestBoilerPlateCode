@@ -17,41 +17,39 @@ export class RedisCacheService implements CacheBase {
       this.logger.warn('🚫 Redis cache is DISABLED via environment config');
     }
   }
-  private parseExpiryToSeconds(exp: number | string): number {
-    if (typeof exp === 'number') return exp; // already in seconds
 
+  // Convert "10s", "5m", "2h", "1d" → seconds
+  private parseExpiryToSeconds(exp: number | string): number {
+    if (typeof exp === 'number') return exp;
     const match = /^(\d+)([smhd])$/.exec(exp.trim());
     if (!match) throw new Error(`Invalid expiry format: "${exp}"`);
-
     const value = Number.parseInt(match[1], 10);
     const unit = match[2];
-
     switch (unit) {
       case 's':
         return value;
       case 'm':
         return value * 60;
       case 'h':
-        return value * 60 * 60;
+        return value * 3600;
       case 'd':
-        return value * 60 * 60 * 24;
+        return value * 86400;
       default:
         throw new Error(`Unknown expiry unit: "${unit}"`);
     }
   }
 
-
-
-  // Get key
-  async getKey(key: string): Promise<string | object | undefined> {
+  // === Get key with type safety ===
+  async getKey<T>(key: string): Promise<T | undefined> {
+    if (!this.enabled) return undefined;
     try {
-      if (!this.enabled) return undefined;
       const data = await this.client.get(key);
       if (!data) return undefined;
+
       try {
-        return JSON.parse(data);
+        return JSON.parse(data) as T;
       } catch {
-        return data;
+        return data as unknown as T; // fallback if it's not JSON
       }
     } catch (error) {
       throw new Error(
@@ -60,14 +58,11 @@ export class RedisCacheService implements CacheBase {
     }
   }
 
-  // Set key
-  async setKey(key: string, value: string | object): Promise<void> {
+  // === Set key ===
+  async setKey<T>(key: string, value: T): Promise<void> {
+    if (!this.enabled) return;
     try {
-      if (!this.enabled) return;
-      const data =
-        typeof value === 'object' && value !== null
-          ? JSON.stringify(value)
-          : value;
+      const data = typeof value === 'string' ? value : JSON.stringify(value);
       await this.client.set(key, data);
       this.logger.log(`✅ Cache saved for key: ${key}`);
     } catch (error) {
@@ -77,21 +72,16 @@ export class RedisCacheService implements CacheBase {
     }
   }
 
-  //  Set key with expiry
-  async setKeyWithExpiry(
+  // === Set key with expiry ===
+  async setKeyWithExpiry<T>(
     key: string,
-    value: string | object,
+    value: T,
     exp: number | string,
   ): Promise<void> {
+    if (!this.enabled) return;
     try {
-      if (!this.enabled) return;
-
       const expInSec = this.parseExpiryToSeconds(exp);
-      const data =
-        typeof value === 'object' && value !== null
-          ? JSON.stringify(value)
-          : value;
-
+      const data = typeof value === 'string' ? value : JSON.stringify(value);
       await this.client.set(key, data, 'EX', expInSec);
       this.logger.log(
         `✅ Cache saved with expiry (${expInSec}s) for key: ${key}`,
@@ -103,10 +93,10 @@ export class RedisCacheService implements CacheBase {
     }
   }
 
-  //  Delete key
+  // === Delete key ===
   async deleteKey(key: string): Promise<void> {
+    if (!this.enabled) return;
     try {
-      if (!this.enabled) return;
       const result = await this.client.del(key);
       if (result === 1)
         this.logger.log(`[deleteKey] Key "${key}" deleted from cache`);

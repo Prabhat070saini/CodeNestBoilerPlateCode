@@ -1,8 +1,8 @@
 export interface RabbitMQConsumeOptions {
-  retries?: number;            
-  retryDelayMs?: number;       
-  dlq?: string;                
-  queueOptions?: any;          
+  retries?: number;
+  retryDelayMs?: number;
+  dlq?: string;
+  queueOptions?: any;
 }
 
 export interface RabbitMQPublishOptions {
@@ -12,9 +12,9 @@ export interface RabbitMQPublishOptions {
 }
 
 export interface RabbitMQConfig {
-  url: string;                     
-  defaultRetries?: number;         
-  defaultRetryDelayMs?: number;    
-  globalQueueOptions?: any;       
+  url: string;
+  defaultRetries?: number;
+  defaultRetryDelayMs?: number;
+  globalQueueOptions?: any;
   isDlq?: boolean;
 }

@@ -11,7 +11,7 @@ import { config } from 'src/config/config';
 import { ETokenType } from '../constants/app.enum';
 import { TokenService } from '../token/token.service';
 import { CACHE_BASE, CacheBase } from 'src/shared/cache/cache.interface';
-import { AuthKeys } from 'src/shared/cache/keys';
+import { RedisKeys } from 'src/shared/cache/keys';
 
 @Injectable()
 export class AuthnGuard implements CanActivate {
@@ -42,11 +42,11 @@ export class AuthnGuard implements CanActivate {
 
     if (config.redis.use_redis) {
       const accessToken = await this.cacheService.getKey(
-       AuthKeys.accessToken(payload.ref),
+        RedisKeys.auth.accessToken(payload.ref),
       );
       if (accessToken !== token) {
         this.logger.debug(`[canActivate] token not match with redis token`);
-          throw new UnauthorizedException({
+        throw new UnauthorizedException({
           message: 'Invalid or expire token',
           code: 5010,
         });

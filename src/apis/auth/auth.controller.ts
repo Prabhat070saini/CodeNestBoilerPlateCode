@@ -8,7 +8,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { SignUpDto, SignInDto } from './dto/auth.dto';
+import { SignUpDto, SignInDto, SendOtpDto, VerifyOtpDto } from './dto/auth.dto';
 import { UtilsService } from 'src/common/utils/utils.service';
 import { AuthGuard } from '@nestjs/passport';
 import { IsPublic } from 'src/common/decorators/public.decorator';
@@ -34,7 +34,9 @@ export class AuthController {
   @IsPublic()
   @Get('google')
   @UseGuards(AuthGuard('google'))
-  async googleAuth() { /* TODOdocument why this async method 'googleAuth' is empty */ }
+  async googleAuth() {
+    /* TODOdocument why this async method 'googleAuth' is empty */
+  }
 
   // Step 2: Google redirects back here
   @IsPublic()
@@ -45,5 +47,30 @@ export class AuthController {
       message: 'Login successful',
       user: req.user,
     };
+  }
+
+  @Post('send-otp')
+  async sendOtp(
+    @Body() sendOtpDto: SendOtpDto,
+    @Response() res,
+  ): Promise<void> {
+    const output = await this.authService.sendOtp(
+      sendOtpDto.email,
+      sendOtpDto.purpose,
+    );
+    this.utilsService.sendRestResponse(res, output);
+  }
+
+  @Post('verify-otp')
+  async verifyOtp(
+    @Body() verifyOtpDto: VerifyOtpDto,
+    @Response() res,
+  ): Promise<void> {
+    const output = await this.authService.verifyOtp(
+      verifyOtpDto.identifier,
+      verifyOtpDto.purpose,
+      verifyOtpDto.otp,
+    );
+    this.utilsService.sendRestResponse(res, output);
   }
 }

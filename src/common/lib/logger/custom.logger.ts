@@ -5,7 +5,7 @@ type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
 @Injectable()
 export class CustomLoggerService implements LoggerService {
-  private readonly  logger: winston.Logger;
+  private readonly logger: winston.Logger;
   private readonly level: LogLevel;
   private readonly levelPriority: Record<LogLevel, number> = {
     debug: 3,
@@ -35,12 +35,16 @@ export class CustomLoggerService implements LoggerService {
         new winston.transports.Console({
           format: winston.format.combine(
             winston.format.colorize({ all: true }),
-            winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss', }),
+            winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
             winston.format.printf(({ level, message, timestamp }) => {
               const tracingId = this.tracingService.getTracingId();
               const tracingInfo = tracingId ? `[tracing_id: ${tracingId}]` : '';
-              const messageString = typeof message === 'string' ? message : JSON.stringify(message);
-              const time = typeof timestamp === 'string' ? timestamp : (timestamp as Date).toISOString();
+              const messageString =
+                typeof message === 'string' ? message : JSON.stringify(message);
+              const time =
+                typeof timestamp === 'string'
+                  ? timestamp
+                  : (timestamp as Date).toISOString();
               return `[${level}] [${time}] ${tracingInfo} ${messageString}`;
             }),
           ),

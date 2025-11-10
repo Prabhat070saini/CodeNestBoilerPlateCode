@@ -1,4 +1,5 @@
 import { Injectable, Logger, Inject } from '@nestjs/common';
+
 import { UserRepository } from '../user/repository/user.repository';
 import { SignInDto, SignUpDto } from './dto/auth.dto';
 import { EFindUser, ETokenType } from 'src/common/constants/app.enum';
@@ -10,14 +11,25 @@ import {
   TokenPayload,
 } from 'src/common/constants/app.interface';
 import { TokenService } from 'src/common/token/token.service';
-import { IGoogleOauthResponse, ISignInResponse } from './auth.interface';
+import {
+  IGoogleOauthResponse,
+  ISendOtpResponse,
+  ISignInResponse,
+} from './auth.interface';
 import { UtilsService } from 'src/common/utils/utils.service';
-import { AuthKeys } from 'src/shared/cache/keys';
 import { CACHE_BASE, CacheBase } from 'src/shared/cache/cache.interface';
 import { config } from '../../config/config';
+import { Crypto } from 'src/common/lib/crypto/crypto';
+import { RedisKeys } from 'src/shared/cache/keys';
 @Injectable()
+
+// which i written the code in otp.service.ts file copy here
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
+  private readonly OTP_TTL = 300; // 5 min
+  private readonly COOL_DOWN_TTL = 60; // 1 min between resends
+  private readonly MAX_PER_HOUR = 3; // 3 OTPs/hour/purpose
+  private readonly MAX_ATTEMPTS = 3; // per OTP
   constructor(
     private readonly userRepository: UserRepository,
     private readonly hashingService: HashingService,
@@ -28,20 +40,13 @@ export class AuthService {
 
   async signUp(signUpDto: SignUpDto): Promise<IServiceOutput<null>> {
     try {
-      const { data: existingUser, exception: findUserExp } =
-        await this.userRepository.findUser({
-          valueType: EFindUser.EMAIL,
-          value: signUpDto.email,
-        });
+      const existingUser = await this.userRepository.findOne({
+        where: { email: signUpDto.email },
+        select: { id: true },
+      });
 
-      if (findUserExp) {
-        this.logger.debug(`[signUp] ${JSON.stringify(findUserExp)}`);
-        return { exception: findUserExp };
-      }
       if (existingUser) {
-        this.logger.debug(
-          `[signUp] User already exit with email ${signUpDto.email}`,
-        );
+        this.logger.debug(`[signUp] ${JSON.stringify(existingUser)}`);
         return { exception: exception.EMAIL_ALREADY_EXIST };
       }
 
@@ -70,22 +75,17 @@ export class AuthService {
       };
     } catch (error) {
       this.logger.error(`[signUp] ${JSON.stringify(error)}`);
-      return { exception: exception.INTERNAL_SERVER_ERROR };
+      return { exception: exception.SOMETHING_WENT_WRONG };
     }
   }
 
   async signIn(signInDto: SignInDto): Promise<IServiceOutput<ISignInResponse>> {
     try {
-      const { data: existingUser, exception: findUserExp } =
-        await this.userRepository.findUser({
-          valueType: EFindUser.EMAIL,
-          value: signInDto.email,
-        });
+      const existingUser = await this.userRepository.findOne({
+        where: { email: signInDto.email },
+        select: { user_id: true, password: true },
+      });
 
-      if (findUserExp) {
-        this.logger.debug(`[signIn] ${JSON.stringify(findUserExp)}`);
-        return { exception: findUserExp };
-      }
       if (!existingUser) {
         this.logger.debug(
           `[signIn] User not found with email ${signInDto.email}`,
@@ -100,7 +100,7 @@ export class AuthService {
         this.logger.debug(
           `[signIn] Invalid password for user ${signInDto.email}`,
         );
-        return { exception: exception.INVALID_PASSWORD };
+        return { exception: exception.INVALID_CREDENTIALS };
       }
       const accessTokenPayload: TokenPayload = {
         ref: existingUser.user_id,
@@ -113,12 +113,12 @@ export class AuthService {
       const accessToken = this.tokenService.generate(accessTokenPayload);
       const refreshToken = this.tokenService.generate(refreshTokenPayload);
       await this.cacheService.setKeyWithExpiry(
-        AuthKeys.accessToken(existingUser.user_id),
+        RedisKeys.auth.accessToken(existingUser.user_id),
         accessToken,
         config.token.access_token_exp_in_min,
       );
       await this.cacheService.setKeyWithExpiry(
-        AuthKeys.refreshToken(existingUser.user_id),
+        RedisKeys.auth.refreshToken(existingUser.user_id),
         refreshToken,
         config.token.refresh_token_exp_in_min,
       );
@@ -229,7 +229,7 @@ export class AuthService {
 
       if (config.redis.use_redis) {
         const storedRefreshToken = await this.cacheService.getKey(
-          AuthKeys.refreshToken(payload.userId),
+          RedisKeys.auth.refreshToken(payload.userId),
         );
 
         if (!storedRefreshToken || storedRefreshToken !== refreshToken) {
@@ -247,7 +247,7 @@ export class AuthService {
 
       if (config.redis.use_redis) {
         await this.cacheService.setKeyWithExpiry(
-          AuthKeys.accessToken(payload.userId),
+          RedisKeys.auth.accessToken(payload.userId),
           accessToken,
           config.token.access_token_exp_in_min,
         );
@@ -268,6 +268,118 @@ export class AuthService {
       };
     } catch (error) {
       this.logger.error(`[refreshToken] ${error}`);
+      return { exception: exception.SOMETHING_WENT_WRONG };
+    }
+  }
+
+  async sendOtp(email: string, purpose: string): Promise<IServiceOutput<ISendOtpResponse>> {
+    try {
+      const existingUser = await this.userRepository.findOne({
+        where: { email: email },
+        select: {
+          user_id: true,
+        },
+      });
+
+      if (!existingUser) {
+        this.logger.debug(`[signIn] ${JSON.stringify(existingUser)}`);
+        return { exception: exception.USER_NOT_FOUND };
+      }
+      const otpIdentifier = this.utilsService.generateUlId();
+      const identifier = existingUser.user_id;
+      if (await this.cacheService.getKey(RedisKeys.otp.cooldown(purpose, identifier))) {
+        return { exception: exception.OTP_COOLDOWN_ACTIVE };
+      }
+
+      const otpCount = Number((await this.cacheService.getKey(RedisKeys.otp.rate(purpose, identifier))) || 0);
+      if (otpCount >= this.MAX_PER_HOUR) {
+        this.logger.debug(
+          `[sendOtp] User has reached the maximum limit of OTPs`,
+        );
+        return { exception: exception.OTP_RATE_LIMIT_REACHED };
+      }
+      const otp = this.utilsService.randomNumeric(6);
+      const otpHash = Crypto.sha256(
+        `${otpIdentifier}:${otp}:${purpose}:${config.otp.otp_crypto_secret}`,
+      );
+
+      await this.cacheService.setKeyWithExpiry(
+        RedisKeys.otp.active(purpose, otpIdentifier),
+        { otpHash, attempts: 0 },
+        this.OTP_TTL,
+      );
+      await this.cacheService.setKeyWithExpiry(
+        RedisKeys.otp.cooldown(purpose, identifier),
+        '1',
+        this.COOL_DOWN_TTL,
+      );
+      await this.cacheService.setKeyWithExpiry(
+        RedisKeys.otp.rate(purpose, identifier),
+        String(otpCount + 1),
+        3600,
+      );
+      this.logger.warn(`[${purpose}] OTP for ${identifier}: ${otp}`);
+      const attemptsLeft = this.MAX_PER_HOUR - (otpCount + 1);
+
+      return {
+        success: {
+          code: 200,
+          message: 'OTP generated successfully',
+          data: {
+            cooldownRemaining: this.COOL_DOWN_TTL,
+            attemptsLeft,
+            identifier: otpIdentifier,
+          },
+          httpStatusCode: 200,
+        },
+      };
+    } catch (error) {
+      this.logger.error(`[sendOtp] ${error}`);
+      return { exception: exception.SOMETHING_WENT_WRONG };
+    }
+  }
+
+  async verifyOtp(identifier: string,purpose: string,otp: string): Promise<IServiceOutput<null>> {
+    try {
+      const record = await this.cacheService.getKey<{ otpHash: string; attempts: number; }>(RedisKeys.otp.active(purpose, identifier));
+      if (!record) {
+        this.logger.debug(`[verifyOtp] OTP not found for ${identifier}`);
+        return { exception: exception.INVALID_OTP };
+      }
+
+      if (record.attempts >= this.MAX_ATTEMPTS) {
+        await this.cacheService.deleteKey(
+          RedisKeys.otp.active(purpose, identifier),
+        );
+        return { exception: exception.MAX_ATTEMPTS_REACHED };
+      }
+
+      const inputHash = Crypto.sha256(
+        `${identifier}:${otp}:${purpose}:${config.otp.otp_crypto_secret}`,
+      );
+      if (inputHash !== record.otpHash) {
+        this.logger.debug(`[verifyOtp] Invalid OTP for ${identifier}`);
+        record.attempts++;
+        await this.cacheService.setKeyWithExpiry(
+          RedisKeys.otp.active(purpose, identifier),
+          record,
+          this.OTP_TTL,
+        );
+        return { exception: exception.INVALID_OTP };
+      }
+      await this.cacheService.deleteKey(
+        RedisKeys.otp.active(purpose, identifier),
+      );
+      return {
+        success: {
+          code: 200,
+          message: 'OTP verified successfully',
+          data: null,
+          httpStatusCode: 200,
+        },
+      };
+    } catch (error) {
+      this.logger.error(`[verifyOtp] ${error}`);
       return { exception: exception.SOMETHING_WENT_WRONG };
     }
   }

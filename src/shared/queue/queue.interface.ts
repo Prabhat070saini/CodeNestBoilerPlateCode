@@ -3,14 +3,14 @@ export interface IQueueProvider {
   publish(
     queueOrTopic: string,
     message: any,
-    options?: Record<string, any>
+    options?: Record<string, any>,
   ): Promise<void>;
 
   consume(
     queueOrTopic: string,
     handler: (message: any) => Promise<void>,
     options?: Record<string, any>,
-    useDlq?: boolean
+    useDlq?: boolean,
   ): Promise<void>;
 
   disconnect(): Promise<void>;

@@ -4,12 +4,12 @@ import { CacheModule } from './cache/cache.module';
 import { QueueModule } from './queue/queue.module';
 import { QueueProviderType } from './queue/queue.constants';
 
-const queueModule= QueueModule.forRoot(QueueProviderType.RABBITMQ, {
-      url: 'amqp://localhost',
-      defaultRetries: 3,
-      defaultRetryDelayMs: 5000,
-      isDlq: true,
-    });
+const queueModule = QueueModule.forRoot(QueueProviderType.RABBITMQ, {
+  url: 'amqp://localhost',
+  defaultRetries: 3,
+  defaultRetryDelayMs: 5000,
+  isDlq: true,
+});
 @Module({
   imports: [DatabaseModule, CacheModule, queueModule],
   controllers: [],

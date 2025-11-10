@@ -58,9 +58,6 @@ export class RedisClient implements OnApplicationShutdown {
     return this.connected;
   }
 
-
-
- 
   async onApplicationShutdown(signal?: string): Promise<void> {
     this.logger.log(
       `🧹 [RedisClient] Shutting down due to signal: ${signal ?? 'manual stop'}`,

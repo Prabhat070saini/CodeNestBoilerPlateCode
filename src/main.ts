@@ -29,8 +29,7 @@ async function bootstrap(): Promise<void> {
   /*This tells NestJS to set the versioning to URI*/
   app.enableVersioning({ type: VersioningType.URI });
 
-  console.log(config.app.port);
-
+  /*This tells NestJS to use the custom logger*/
   app.useLogger(app.get(CustomLoggerService));
   await app.listen(config.app.port);
 }
