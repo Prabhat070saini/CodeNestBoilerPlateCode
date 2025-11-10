@@ -1,5 +1,4 @@
 import { HttpStatus } from '@nestjs/common';
-import { Code } from 'typeorm';
 
 export const exception = {
   USER_UNAUTHORIZED_REQUEST: {
@@ -137,7 +136,8 @@ export const exception = {
   },
   MAX_ATTEMPTS_REACHED: {
     code: 7003,
-    message: 'Maximum OTP verification attempts reached. Please try again later.',
+    message:
+      'Maximum OTP verification attempts reached. Please try again later.',
     httpStatusCode: HttpStatus.TOO_MANY_REQUESTS,
   },
 };

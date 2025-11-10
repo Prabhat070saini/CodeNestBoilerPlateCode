@@ -14,5 +14,5 @@ export interface IGoogleOauthResponse {
 export interface ISendOtpResponse {
   cooldownRemaining?: number;
   attemptsLeft: number;
-  identifier:string;
+  identifier: string;
 }

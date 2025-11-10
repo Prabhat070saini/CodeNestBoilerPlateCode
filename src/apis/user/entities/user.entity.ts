@@ -51,7 +51,8 @@ export class User {
   @Column({ type: 'int', nullable: true })
   updated_by: number;
   @BeforeInsert()
-  generateUlid() {
+  generateUlid(): string {
     this.user_id = ulid();
+    return this.user_id;
   }
 }

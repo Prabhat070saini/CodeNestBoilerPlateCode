@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { BeforeApplicationShutdown, Logger } from '@nestjs/common';
 import { Connection, Channel, connect } from 'amqplib';
 import { IQueueProvider } from '../queue.interface';

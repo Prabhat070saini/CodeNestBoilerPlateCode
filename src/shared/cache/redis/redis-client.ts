@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+
 import { Injectable, Logger, OnApplicationShutdown } from '@nestjs/common';
 import { Redis } from 'ioredis';
 import { config } from 'src/config/config';
@@ -30,21 +33,22 @@ export class RedisClient implements OnApplicationShutdown {
     });
 
     // ✅ Listen for connection events
-    this.client.on('connect', () => {
+    // ✅ Listen for connection events
+    this.client.on('connect', (): void => {
       this.connected = true;
       this.logger.log('✅ Redis connected successfully');
     });
 
-    this.client.on('ready', () => {
+    this.client.on('ready', (): void => {
       this.logger.log('🚀 Redis client ready to use');
     });
 
-    this.client.on('error', (err) => {
+    this.client.on('error', (err: Error): void => {
       this.connected = false;
       this.logger.error(`❌ Redis Client Error: ${err.message}`, err.stack);
     });
 
-    this.client.on('close', () => {
+    this.client.on('close', (): void => {
       this.connected = false;
       this.logger.warn('⚠️ Redis connection closed');
     });

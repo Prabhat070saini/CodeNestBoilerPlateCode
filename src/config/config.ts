@@ -52,10 +52,7 @@ const schema = Joi.object({
   EMAIL_FROM: Joi.string().required(),
   EMAIL_PROVIDER: Joi.string().required(),
 
-
-
-
-  OTP_CRYPTO_SECRET:Joi.string().required(),
+  OTP_CRYPTO_SECRET: Joi.string().required(),
 }).unknown(true);
 // Validate process.env
 const { error, value: env } = schema.validate(process.env, {
@@ -119,7 +116,7 @@ export const config = {
     from: env.EMAIL_FROM,
     provider: env.EMAIL_PROVIDER,
   },
-  otp:{
-    otp_crypto_secret:env.OTP_CRYPTO_SECRET
-  }
+  otp: {
+    otp_crypto_secret: env.OTP_CRYPTO_SECRET,
+  },
 };

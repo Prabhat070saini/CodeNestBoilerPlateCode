@@ -2,7 +2,7 @@ import { Injectable, Logger, Inject } from '@nestjs/common';
 
 import { UserRepository } from '../user/repository/user.repository';
 import { SignInDto, SignUpDto } from './dto/auth.dto';
-import { EFindUser, ETokenType } from 'src/common/constants/app.enum';
+import { ETokenType } from 'src/common/constants/app.enum';
 import { exception } from 'src/common/constants/exception';
 import { HashingService } from 'src/common/lib/hashing/hashing.service';
 import { IUserCreate } from '../user/user.interface';
@@ -152,17 +152,11 @@ export class AuthService {
         return { exception: exception.USER_NOT_VERIFIED };
       }
 
-      let { data: existingUser, exception: findUserExp } =
-        await this.userRepository.findUser({
-          valueType: EFindUser.EMAIL,
-          value: user.email,
-        });
-      if (findUserExp) {
-        this.logger.debug(
-          `[validateGoogleUser] ${JSON.stringify(findUserExp)}`,
-        );
-        return { exception: findUserExp };
-      }
+      let existingUser = await this.userRepository.findOne({
+        where: { email: user.email },
+        select: { user_id: true, password: true },
+      });
+
       if (!existingUser) {
         const randomPassword = this.utilsService.generatePassword();
         const hashedPassword =
@@ -272,7 +266,10 @@ export class AuthService {
     }
   }
 
-  async sendOtp(email: string, purpose: string): Promise<IServiceOutput<ISendOtpResponse>> {
+  async sendOtp(
+    email: string,
+    purpose: string,
+  ): Promise<IServiceOutput<ISendOtpResponse>> {
     try {
       const existingUser = await this.userRepository.findOne({
         where: { email: email },
@@ -287,11 +284,19 @@ export class AuthService {
       }
       const otpIdentifier = this.utilsService.generateUlId();
       const identifier = existingUser.user_id;
-      if (await this.cacheService.getKey(RedisKeys.otp.cooldown(purpose, identifier))) {
+      if (
+        await this.cacheService.getKey(
+          RedisKeys.otp.cooldown(purpose, identifier),
+        )
+      ) {
         return { exception: exception.OTP_COOLDOWN_ACTIVE };
       }
 
-      const otpCount = Number((await this.cacheService.getKey(RedisKeys.otp.rate(purpose, identifier))) || 0);
+      const otpCount = Number(
+        (await this.cacheService.getKey(
+          RedisKeys.otp.rate(purpose, identifier),
+        )) || 0,
+      );
       if (otpCount >= this.MAX_PER_HOUR) {
         this.logger.debug(
           `[sendOtp] User has reached the maximum limit of OTPs`,
@@ -339,9 +344,16 @@ export class AuthService {
     }
   }
 
-  async verifyOtp(identifier: string,purpose: string,otp: string): Promise<IServiceOutput<null>> {
+  async verifyOtp(
+    identifier: string,
+    purpose: string,
+    otp: string,
+  ): Promise<IServiceOutput<null>> {
     try {
-      const record = await this.cacheService.getKey<{ otpHash: string; attempts: number; }>(RedisKeys.otp.active(purpose, identifier));
+      const record = await this.cacheService.getKey<{
+        otpHash: string;
+        attempts: number;
+      }>(RedisKeys.otp.active(purpose, identifier));
       if (!record) {
         this.logger.debug(`[verifyOtp] OTP not found for ${identifier}`);
         return { exception: exception.INVALID_OTP };

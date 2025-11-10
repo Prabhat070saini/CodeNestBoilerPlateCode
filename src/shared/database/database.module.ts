@@ -19,7 +19,7 @@ class DatabaseShutdownService implements OnApplicationShutdown {
     private readonly dataSource: DataSource,
   ) {}
 
-  async onApplicationShutdown(signal?: string) {
+  async onApplicationShutdown(signal?: string): Promise<void> {
     this.logger.log(
       `🧹 [DatabaseModule] Shutting down due to signal: ${signal ?? 'manual stop'}`,
     );

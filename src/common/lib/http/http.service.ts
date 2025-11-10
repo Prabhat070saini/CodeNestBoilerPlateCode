@@ -85,7 +85,7 @@ export class HttpService {
   get<T>(
     url: string,
     opts?: { headers?: Record<string, string>; params?: Record<string, any> },
-  ) {
+  ): Promise<T> {
     return this.request<T>('get', url, opts);
   }
 
@@ -93,7 +93,7 @@ export class HttpService {
     url: string,
     body?: any,
     opts?: { headers?: Record<string, string>; params?: Record<string, any> },
-  ) {
+  ): Promise<T> {
     return this.request<T>('post', url, { body, ...opts });
   }
 
@@ -101,7 +101,7 @@ export class HttpService {
     url: string,
     body?: any,
     opts?: { headers?: Record<string, string>; params?: Record<string, any> },
-  ) {
+  ): Promise<T> {
     return this.request<T>('put', url, { body, ...opts });
   }
 
@@ -109,14 +109,14 @@ export class HttpService {
     url: string,
     body?: any,
     opts?: { headers?: Record<string, string>; params?: Record<string, any> },
-  ) {
+  ): Promise<T> {
     return this.request<T>('patch', url, { body, ...opts });
   }
 
   delete<T>(
     url: string,
     opts?: { headers?: Record<string, string>; params?: Record<string, any> },
-  ) {
+  ): Promise<T> {
     return this.request<T>('delete', url, opts);
   }
 }

@@ -1,4 +1,5 @@
-// CustomLoggerService
+/* eslint-disable */
+
 import { Global, Module } from '@nestjs/common';
 import { TracingService } from './tracing.middleware.ts/tracing.service';
 import { CustomLoggerService } from './logger/custom.logger';

@@ -1,9 +1,10 @@
 import { Type } from 'class-transformer';
-import { IsInt, IsNotEmpty, IsUUID } from 'class-validator';
+import { IsInt, IsNotEmpty } from 'class-validator';
+import { IsUlid } from '../decorators/validate-ulid.decorator';
 
 export class IdValidateDto {
   @IsNotEmpty()
-  @IsUUID('all')
+  @IsUlid()
   id: string;
 }
 

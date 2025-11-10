@@ -18,7 +18,7 @@ export class SignUpDto {
 
   @IsNotEmpty()
   @IsEmail()
-  @MaxLength(100) 
+  @MaxLength(100)
   email: string;
 
   @IsNotEmpty()
@@ -29,14 +29,14 @@ export class SignUpDto {
     minNumbers: 1,
     minSymbols: 1,
   })
-  @MaxLength(20) 
+  @MaxLength(20)
   password: string;
 }
 
 export class SignInDto {
   @IsNotEmpty()
   @IsEmail()
-  @MaxLength(100) 
+  @MaxLength(100)
   email: string;
 
   @IsNotEmpty()
@@ -47,7 +47,7 @@ export class SignInDto {
 export class SendOtpDto {
   @IsNotEmpty()
   @IsString()
-  @MaxLength(100)  
+  @MaxLength(100)
   email: string;
 
   @IsNotEmpty()
@@ -61,7 +61,7 @@ export class VerifyOtpDto {
   identifier: string;
 
   @IsNotEmpty()
-  @IsEnum(ESendOtpPurpose) 
+  @IsEnum(ESendOtpPurpose)
   purpose: ESendOtpPurpose;
 
   @IsNotEmpty()

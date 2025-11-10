@@ -14,7 +14,10 @@ export class UserController {
   @UseGuards(PermissionGuard)
   @Role('MST002')
   @Get(':userId')
-  async getUserById(@Response() res, @Param('userId') userId: string) {
+  async getUserById(
+    @Response() res,
+    @Param('userId') userId: string,
+  ): Promise<void> {
     const output = await this.userService.findUserById(userId);
     this.utilsService.sendRestResponse(res, output);
   }

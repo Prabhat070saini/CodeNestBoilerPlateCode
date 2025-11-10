@@ -13,7 +13,8 @@ export class TracingMiddleware implements NestMiddleware {
 
   use(req: Request, res: Response, next: NextFunction): void {
     // Ensure tracingId is always treated as a string
-    const tracingId = (req.headers['tracing_id'] || this.utilsService.generateUlId()) as string;
+    const tracingId = (req.headers['tracing_id'] ||
+      this.utilsService.generateUlId()) as string;
 
     tracingNamespace.run(() => {
       // Set the tracing ID in the tracing service

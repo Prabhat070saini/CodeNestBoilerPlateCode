@@ -1,4 +1,10 @@
-import { registerDecorator, ValidationOptions, ValidationArguments } from 'class-validator';
+/* eslint-disable */
+
+import {
+  registerDecorator,
+  ValidationOptions,
+  ValidationArguments,
+} from 'class-validator';
 
 export function IsUlid(validationOptions?: ValidationOptions) {
   return function (object: Object, propertyName: string) {

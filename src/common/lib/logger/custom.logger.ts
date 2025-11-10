@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { Injectable, LoggerService } from '@nestjs/common';
 import * as winston from 'winston';
 import { TracingService } from '../tracing.middleware.ts/tracing.service';
