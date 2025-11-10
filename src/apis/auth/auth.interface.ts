@@ -3,3 +3,10 @@ export interface ISignInResponse {
   refreshToken: string;
   user_id: string;
 }
+
+export interface IGoogleOauthResponse {
+  name: string;
+  email: string;
+  picture: string;
+  isValid: boolean;
+}

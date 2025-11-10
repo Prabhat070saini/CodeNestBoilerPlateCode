@@ -103,4 +103,14 @@ export const exception: Record<string, IException> = {
     message: 'Something went wrong',
     httpStatusCode: HttpStatus.INTERNAL_SERVER_ERROR,
   },
+  USER_NOT_VERIFIED: {
+    code: 6001,
+    message: 'User not verified',
+    httpStatusCode: HttpStatus.UNAUTHORIZED,
+  },
+  INVALID_REFRESH_TOKEN: {
+    code: 6002,
+    message: 'Invalid refresh token',
+    httpStatusCode: HttpStatus.UNAUTHORIZED,
+  },
 };

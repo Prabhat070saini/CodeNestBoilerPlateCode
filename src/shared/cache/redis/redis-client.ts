@@ -9,6 +9,13 @@ export class RedisClient implements OnApplicationShutdown {
   private connected = false;
 
   constructor() {
+    if (!config.redis.use_redis) {
+      this.logger.warn(
+        '🚫 RedisClient not initialized because caching is disabled.',
+      );
+      return;
+    }
+
     this.client = new Redis({
       host: config.redis.host,
       port: Number(config.redis.port),

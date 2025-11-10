@@ -38,7 +38,7 @@ export class AuthnGuard implements CanActivate {
       });
     }
 
-    if (config.redis.user_redis) {
+    if (config.redis.use_redis) {
       const accessToken = await this.cacheService.getKey(
         `accessToken:${payload.ref}`,
       );

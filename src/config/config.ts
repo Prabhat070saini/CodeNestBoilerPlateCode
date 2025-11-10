@@ -89,7 +89,7 @@ export const config = {
     port: env.REDIS_PORT,
     password: env.REDIS_PASSWORD,
     db_connection_limit: env.REDIS_CONNECTION_LIMIT,
-    user_redis: env.USE_REDIS,
+    use_redis: env.USE_REDIS,
   },
   token: {
     access_token_secret: env.ACCESS_TOKEN_SECRET,
