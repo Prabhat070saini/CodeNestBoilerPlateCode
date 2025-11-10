@@ -3,6 +3,7 @@ import {
   ExecutionContext,
   Inject,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 
@@ -11,9 +12,11 @@ import { ETokenType } from '../constants/app.enum';
 import { TokenService } from '../token/token.service';
 import { CacheBase } from 'src/shared/cache/cache.interface';
 import { CACHE_BASE } from 'src/shared/cache/cache.interface';
+import { AuthKeys } from 'src/shared/cache/keys';
 
 @Injectable()
 export class AuthnGuard implements CanActivate {
+  private readonly logger = new Logger(AuthnGuard.name);
   constructor(
     private readonly tokenService: TokenService,
     @Inject(CACHE_BASE) private cacheService: CacheBase,
@@ -30,8 +33,8 @@ export class AuthnGuard implements CanActivate {
     }
 
     const payload = this.tokenService.validate(ETokenType.AccessToken, token);
-    console.log(payload, 'payload');
     if (!payload) {
+      this.logger.debug(`[canActivate] Invalid or expire token`);
       throw new UnauthorizedException({
         code: 9099,
         message: 'Invalid or expire token',
@@ -40,10 +43,11 @@ export class AuthnGuard implements CanActivate {
 
     if (config.redis.use_redis) {
       const accessToken = await this.cacheService.getKey(
-        `accessToken:${payload.ref}`,
+       AuthKeys.accessToken(payload.ref),
       );
       if (accessToken !== token) {
-        throw new UnauthorizedException({
+        this.logger.debug(`[canActivate] token not match with redis token`);
+          throw new UnauthorizedException({
           message: 'Invalid or expire token',
           code: 5010,
         });
@@ -53,6 +57,7 @@ export class AuthnGuard implements CanActivate {
     request.user = {
       ref: payload.ref,
       type: payload.type,
+      roles: ['MST001'],
     };
 
     return true;
