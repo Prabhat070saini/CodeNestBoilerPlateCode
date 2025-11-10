@@ -8,6 +8,7 @@ import { exception } from 'src/common/constants/exception';
 // import { FileModule, StorageProviderType } from '@prabhat7saini/filesystem';
 // import { EmailModule, EmailProviderType } from '@prabhat7saini/email';
 import { RedisModule } from './cache/redis/redis.module';
+import { CacheModule } from './cache/cache.module';
 
 // const redisModule = CacheModule.register(CacheProvider.REDIS, {
 //   host: config.redis.host,
@@ -52,7 +53,7 @@ import { RedisModule } from './cache/redis/redis.module';
 @Module({
   imports: [
     DatabaseModule,
-    RedisModule,
+    CacheModule,
     // HttpModule,
     // LoggerModule.forRoot({ level: config.log_level }),
     // redisModule,

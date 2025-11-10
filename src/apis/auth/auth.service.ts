@@ -11,6 +11,11 @@ import {
 } from 'src/common/constants/app.interface';
 import { TokenService } from 'src/common/token/token.service';
 import { ISignInResponse } from './auth.interface';
+import { AuthKeys } from 'src/shared/cache/keys';
+import { config } from 'src/config/config';
+import { CacheBase } from 'src/shared/cache/cache.interface';
+import { CACHE_BASE } from 'src/shared/cache/cache.interface';
+import { Inject } from '@nestjs/common';
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
@@ -18,6 +23,7 @@ export class AuthService {
     private readonly userRepository: UserRepository,
     private readonly hashingService: HashingService,
     private readonly tokenService: TokenService,
+ @Inject(CACHE_BASE) private readonly cacheService: CacheBase,
   ) {}
 
   async signUp(signUpDto: SignUpDto): Promise<IServiceOutput<null>> {
@@ -68,6 +74,7 @@ export class AuthService {
     }
   }
 
+
   async signIn(signInDto: SignInDto): Promise<IServiceOutput<ISignInResponse>> {
     try {
       const { data: existingUser, exception: findUserExp } =
@@ -106,6 +113,17 @@ export class AuthService {
       };
       const accessToken = this.tokenService.generate(accessTokenPayload);
       const refreshToken = this.tokenService.generate(refreshTokenPayload);
+      await this.cacheService.setKeyWithExpiry(
+        AuthKeys.accessToken(existingUser.user_id),
+        accessToken,
+        config.token.access_token_exp_in_min,
+      );
+      await this.cacheService.setKeyWithExpiry(
+        AuthKeys.refreshToken(existingUser.user_id),
+        refreshToken,
+        config.token.refresh_token_exp_in_min,
+      );
+
       const resp: ISignInResponse = {
         accessToken,
         refreshToken,

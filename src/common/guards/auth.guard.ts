@@ -29,31 +29,30 @@ export class AuthnGuard implements CanActivate {
       });
     }
 
-    const verify = this.tokenService.validate(ETokenType.AccessToken, token);
-    if (!verify.payload) {
+    const payload = this.tokenService.validate(ETokenType.AccessToken, token);
+    console.log(payload, 'payload');
+    if (!payload) {
       throw new UnauthorizedException({
         code: 9099,
         message: 'Invalid or expire token',
       });
     }
 
-    const payload = verify.payload;
-
     if (config.redis.user_redis) {
       const accessToken = await this.cacheService.getKey(
-        `accessToken:${payload.userId}`,
+        `accessToken:${payload.ref}`,
       );
       if (accessToken !== token) {
         throw new UnauthorizedException({
-          message: 'Invalid or expire token a',
+          message: 'Invalid or expire token',
           code: 5010,
         });
       }
     }
 
     request.user = {
-      id: payload.userId,
-      roles: payload.roles,
+      ref: payload.ref,
+      type: payload.type,
     };
 
     return true;
