@@ -3,12 +3,13 @@ import { DatabaseModule } from './database/database.module';
 import { CacheModule } from './cache/cache.module';
 import { QueueModule } from './queue/queue.module';
 import { QueueProviderType } from './queue/queue.constants';
+import { config } from '../config/config';
 
 const queueModule = QueueModule.forRoot(QueueProviderType.RABBITMQ, {
-  url: 'amqp://localhost',
-  defaultRetries: 3,
-  defaultRetryDelayMs: 5000,
-  isDlq: true,
+  url: config.queue.url,
+  defaultRetries: config.queue.defaultRetries,
+  defaultRetryDelayMs: config.queue.defaultRetryDelayMs,
+  isDlq: config.queue.isDlq,
 });
 @Module({
   imports: [DatabaseModule, CacheModule, queueModule],

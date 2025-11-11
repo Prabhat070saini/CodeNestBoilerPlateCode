@@ -3,14 +3,16 @@ import * as Joi from 'joi';
 
 dotenv.config();
 
-// 1️⃣ Define validation schema
+// Define validation schema
 const schema = Joi.object({
+  // App Config
   X_API_KEY: Joi.string().required(),
   ENV_NAME: Joi.string().default('development'),
   LOG_LEVEL: Joi.string().default('debug'),
   SERVER_HOST: Joi.string().default('localhost'),
   SERVER_PORT: Joi.number().default(3000),
 
+  // Database Config
   DB_DIALECT: Joi.string().required(),
   DB_HOST: Joi.string().required(),
   DB_PORT: Joi.number().required(),
@@ -23,9 +25,7 @@ const schema = Joi.object({
   DB_LOGGING: Joi.boolean().default(true).required(),
   DB_CONNECTION_IDLE_TIMEOUT: Joi.number().default(50),
 
-  // DB_POOL_MAX=10
-  // DB_CONNECTION_TIMEOUT=3000
-
+  // Redis Config
   REDIS_HOST: Joi.string().required(),
   REDIS_PORT: Joi.number().required(),
   // REDIS_PASSWORD: Joi.string(),
@@ -37,14 +37,14 @@ const schema = Joi.object({
   ACCESS_TOKEN_EXP_IN_MIN: Joi.string().required(),
   REFRESH_TOKEN_EXP_IN_MIN: Joi.string().required(),
 
-  AWS_ACCESS_KEY_ID: Joi.string(),
-  AWS_SECRET_ACCESS_KEY: Joi.string(),
-  AWS_REGION: Joi.string(),
-  AWS_S3_BUCKET_NAME: Joi.string(),
+  AWS_ACCESS_KEY_ID: Joi.string().required(),
+  AWS_SECRET_ACCESS_KEY: Joi.string().required(),
+  AWS_REGION: Joi.string().required(),
+  AWS_S3_BUCKET_NAME: Joi.string().required(),
   SIGNED_URL_EXPIRE: Joi.number().required(),
   // STORAGE_CDN_URL: Joi.string(),
 
-  // email config
+  // Email Config
   EMAIL_HOST: Joi.string().required(),
   EMAIL_PORT: Joi.number().required(),
   EMAIL_USERNAME: Joi.string().required(),
@@ -52,7 +52,18 @@ const schema = Joi.object({
   EMAIL_FROM: Joi.string().required(),
   EMAIL_PROVIDER: Joi.string().required(),
 
+  // Queue Config
+  RABBITMQ_URL: Joi.string().required(),
+  DEFAULT_RETRIES: Joi.number().required(),
+  DEFAULT_RETRY_DELAY_MS: Joi.number().required(),
+  IS_DLQ: Joi.boolean().required(),
+
+  // Otp Config
   OTP_CRYPTO_SECRET: Joi.string().required(),
+  OTP_TTL: Joi.number().required(),
+  COOL_DOWN_TTL: Joi.number().required(),
+  MAX_PER_HOUR: Joi.number().required(),
+  MAX_ATTEMPTS: Joi.number().required(),
 }).unknown(true);
 // Validate process.env
 const { error, value: env } = schema.validate(process.env, {
@@ -118,5 +129,15 @@ export const config = {
   },
   otp: {
     otp_crypto_secret: env.OTP_CRYPTO_SECRET,
+    otp_ttl: env.OTP_TTL,
+    cool_down_ttl: env.COOL_DOWN_TTL,
+    max_per_hour: env.MAX_PER_HOUR,
+    max_attempts: env.MAX_ATTEMPTS,
+  },
+  queue: {
+    url: env.RABBITMQ_URL,
+    defaultRetries: env.DEFAULT_RETRIES,
+    defaultRetryDelayMs: env.DEFAULT_RETRY_DELAY_MS,
+    isDlq: env.IS_DLQ,
   },
 };

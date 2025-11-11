@@ -26,10 +26,7 @@ import { RedisKeys } from 'src/shared/cache/keys';
 // which i written the code in otp.service.ts file copy here
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
-  private readonly OTP_TTL = 300; // 5 min
-  private readonly COOL_DOWN_TTL = 60; // 1 min between resends
-  private readonly MAX_PER_HOUR = 3; // 3 OTPs/hour/purpose
-  private readonly MAX_ATTEMPTS = 3; // per OTP
+
   constructor(
     private readonly userRepository: UserRepository,
     private readonly hashingService: HashingService,
@@ -297,7 +294,7 @@ export class AuthService {
           RedisKeys.otp.rate(purpose, identifier),
         )) || 0,
       );
-      if (otpCount >= this.MAX_PER_HOUR) {
+      if (otpCount >= config.otp.max_per_hour) {
         this.logger.debug(
           `[sendOtp] User has reached the maximum limit of OTPs`,
         );
@@ -311,12 +308,12 @@ export class AuthService {
       await this.cacheService.setKeyWithExpiry(
         RedisKeys.otp.active(purpose, otpIdentifier),
         { otpHash, attempts: 0 },
-        this.OTP_TTL,
+        config.otp.otp_ttl,
       );
       await this.cacheService.setKeyWithExpiry(
         RedisKeys.otp.cooldown(purpose, identifier),
         '1',
-        this.COOL_DOWN_TTL,
+        config.otp.cool_down_ttl,
       );
       await this.cacheService.setKeyWithExpiry(
         RedisKeys.otp.rate(purpose, identifier),
@@ -324,14 +321,14 @@ export class AuthService {
         3600,
       );
       this.logger.warn(`[${purpose}] OTP for ${identifier}: ${otp}`);
-      const attemptsLeft = this.MAX_PER_HOUR - (otpCount + 1);
+      const attemptsLeft = config.otp.max_per_hour - (otpCount + 1);
 
       return {
         success: {
           code: 200,
           message: 'OTP generated successfully',
           data: {
-            cooldownRemaining: this.COOL_DOWN_TTL,
+            cooldownRemaining: config.otp.cool_down_ttl,
             attemptsLeft,
             identifier: otpIdentifier,
           },
@@ -359,7 +356,7 @@ export class AuthService {
         return { exception: exception.INVALID_OTP };
       }
 
-      if (record.attempts >= this.MAX_ATTEMPTS) {
+      if (record.attempts >= config.otp.max_attempts) {
         await this.cacheService.deleteKey(
           RedisKeys.otp.active(purpose, identifier),
         );
@@ -375,7 +372,7 @@ export class AuthService {
         await this.cacheService.setKeyWithExpiry(
           RedisKeys.otp.active(purpose, identifier),
           record,
-          this.OTP_TTL,
+          config.otp.otp_ttl,
         );
         return { exception: exception.INVALID_OTP };
       }
