@@ -81,7 +81,7 @@ src
 │   ├── repository       # Base repositories
 │   └── utils            # Helper functions
 ├── config               # Application configuration
-└── shared               # Core shared modules
+└── Core               # Core  modules
     ├── cache            # Redis cache setup
     ├── database         # Database and TypeORM setup
     └── queue            # RabbitMQ queue setup

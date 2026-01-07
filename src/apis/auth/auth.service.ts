@@ -18,13 +18,11 @@ import {
   ISignInResponse,
 } from './auth.interface';
 import { UtilsService } from 'src/common/utils/utils.service';
-import { CACHE_BASE, CacheBase } from 'src/shared/cache/cache.interface';
+import { CACHE_BASE, CacheBase } from 'src/core/cache/cache.interface';
 import { config } from '../../config/config';
 import { Crypto } from 'src/common/lib/crypto/crypto';
-import { RedisKeys } from 'src/shared/cache/keys';
+import { RedisKeys } from 'src/core/cache/keys';
 @Injectable()
-
-// which i written the code in otp.service.ts file copy here
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
 
@@ -38,8 +36,9 @@ export class AuthService {
 
   async signUp(signUpDto: SignUpDto): Promise<IServiceOutput<null>> {
     try {
+      const { email, password, name } = signUpDto;
       const existingUser = await this.userRepository.findOne({
-        where: { email: signUpDto.email },
+        where: { email },
         select: { id: true },
       });
 
@@ -48,12 +47,10 @@ export class AuthService {
         return { exception: exception.EMAIL_ALREADY_EXIST };
       }
 
-      const hashedPassword = await this.hashingService.hashPassword(
-        signUpDto.password,
-      );
+      const hashedPassword = await this.hashingService.hashPassword(password);
       const newUser: IUserCreate = {
-        name: signUpDto.name,
-        email: signUpDto.email,
+        name,
+        email,
         password: hashedPassword,
       };
 
@@ -79,25 +76,22 @@ export class AuthService {
 
   async signIn(signInDto: SignInDto): Promise<IServiceOutput<ISignInResponse>> {
     try {
+      const { email, password } = signInDto;
       const existingUser = await this.userRepository.findOne({
-        where: { email: signInDto.email },
+        where: { email },
         select: { user_id: true, password: true },
       });
 
       if (!existingUser) {
-        this.logger.debug(
-          `[signIn] User not found with email ${signInDto.email}`,
-        );
+        this.logger.debug(`[signIn] User not found with email ${email}`);
         return { exception: exception.USER_NOT_FOUND };
       }
       const isPasswordMatch = await this.hashingService.matchPassword(
-        signInDto.password,
+        password,
         existingUser.password,
       );
       if (!isPasswordMatch) {
-        this.logger.debug(
-          `[signIn] Invalid password for user ${signInDto.email}`,
-        );
+        this.logger.debug(`[signIn] Invalid password for user ${email}`);
         return { exception: exception.INVALID_CREDENTIALS };
       }
       const accessTokenPayload: TokenPayload = {
@@ -143,18 +137,19 @@ export class AuthService {
     }
   }
   async validateGoogleUser(
-    user: IGoogleOauthResponse,
+    payload: IGoogleOauthResponse,
   ): Promise<IServiceOutput<ISignInResponse>> {
     try {
-      if (!user.isValid) {
+      const { isValid, email, name } = payload;
+      if (!isValid) {
         this.logger.debug(
-          `[validateGoogleUser] User not verified with email ${user.email}`,
+          `[validateGoogleUser] User not verified with email ${email}`,
         );
         return { exception: exception.USER_NOT_VERIFIED };
       }
 
       let existingUser = await this.userRepository.findOne({
-        where: { email: user.email },
+        where: { email },
         select: { user_id: true, password: true },
       });
 
@@ -163,8 +158,8 @@ export class AuthService {
         const hashedPassword =
           await this.hashingService.hashPassword(randomPassword);
         const newUser: IUserCreate = {
-          name: user.name,
-          email: user.email,
+          name,
+          email,
           password: hashedPassword,
         };
 
