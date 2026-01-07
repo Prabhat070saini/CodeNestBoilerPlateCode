@@ -110,6 +110,10 @@ cd CodeNestBoilerPlateCode
 ```bash
 npm install
 ```
+
+```bash
+npm run prepare
+```
 ## ADD ENV (example env)
 ```
 # ==========================
