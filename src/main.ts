@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { config } from './config/config';
 import { CustomLoggerService } from './common/lib/logger/custom.logger';
-
+import * as bodyParser from 'body-parser';
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
 
@@ -16,7 +16,8 @@ async function bootstrap(): Promise<void> {
       enableDebugMessages: true,
     }),
   );
-
+  app.use(bodyParser.json({ limit: '100mb' }));
+  app.use(bodyParser.urlencoded({ limit: '100mb', extended: true }));
   /*This tells NestJS to listen for process termination signals*/
   app.enableShutdownHooks();
 
@@ -28,7 +29,7 @@ async function bootstrap(): Promise<void> {
 
   /*This tells NestJS to set the versioning to URI*/
   app.enableVersioning({ type: VersioningType.URI });
-
+  console.log(`http://localhost:${config.app.port}`);
   /*This tells NestJS to use the custom logger*/
   app.useLogger(app.get(CustomLoggerService));
   await app.listen(config.app.port);

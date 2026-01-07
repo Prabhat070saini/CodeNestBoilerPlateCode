@@ -1,99 +1,224 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
+  <a href="https://nestjs.com/" target="_blank">
+    <img src="https://nestjs.com/img/logo-small.svg" width="120" alt="NestJS Logo" />
+  </a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+# NestJS Boilerplate Code
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+A reusable, production-oriented boilerplate for building scalable server-side applications using **NestJS** and **TypeScript**. Designed to standardize backend architecture and eliminate repeated setup of authentication, infrastructure, and cross-cutting concerns across projects.
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🚀 Overview
 
-## Project setup
+This project was created to avoid repeatedly re-implementing the same backend foundations—authentication, configuration, database access, caching, queues, validation, and logging—across multiple services.
+
+The focus is on **structure, maintainability, and real-world backend concerns**, not demo features. It serves as a solid starting point for enterprise-grade NestJS applications.
+
+---
+
+## 🎯 What This Project Demonstrates
+
+- Modular NestJS architecture with clear separation of concerns
+- Authentication and authorization using JWT and Passport
+- Role-based access control (RBAC)
+- Database access patterns with TypeORM and PostgreSQL
+- Redis-based caching for performance optimization
+- RabbitMQ-driven asynchronous processing
+- Global validation, error handling, and logging
+- Scalable, testable backend service design
+
+---
+
+## ✨ Key Features
+
+- JWT-based authentication using Passport
+- Google OAuth2 integration
+- Role-based access control (RBAC)
+- User management module with guarded routes
+- PostgreSQL integration using TypeORM
+- Database migrations and seeding support
+- Redis integration for caching
+- RabbitMQ for background jobs and async workflows
+- File uploads using Multer
+- Excel processing using `@univerjs-pro/exchange-client`
+- Global validation pipes (`class-validator`, `class-transformer`)
+- Centralized exception handling
+- Custom logger for structured application logs
+
+---
+
+## 🛠 Tech Stack
+
+- Framework: NestJS
+- Language: TypeScript
+- Database: PostgreSQL
+- ORM: TypeORM
+- Cache: Redis
+- Message Queue: RabbitMQ
+
+---
+## 📂 Project Structure
+
+- `src/apis`: Contains feature modules (Auth, User, Excel, etc.).
+- `src/common`: Shared utilities, decorators, guards, and interceptors.
+- `src/config`: Configuration files using `dotenv`.
+- `src/shared`: Shared modules like Database, Queue, and Cache setup.
+
+```text
+src
+├── apis                 # Feature specific modules
+│   ├── auth             # Authentication module
+│   ├── excel            # Excel processing module
+│   └── user             # User management module
+├── common               # Shared utilities
+│   ├── constants        # Global constants
+│   ├── decorators       # Custom decorators
+│   ├── dto              # Shared DTOs
+│   ├── guards           # Authentication guards
+│   ├── lib              # Libraries (Logger, etc.)
+│   ├── repository       # Base repositories
+│   └── utils            # Helper functions
+├── config               # Application configuration
+└── shared               # Core shared modules
+    ├── cache            # Redis cache setup
+    ├── database         # Database and TypeORM setup
+    └── queue            # RabbitMQ queue setup
+```
+## ⚙️ Prerequisites
+
+Ensure the following are installed and running locally:
+
+- Node.js (v16 or higher)
+- npm or yarn
+- PostgreSQL
+- Redis
+- RabbitMQ
+
+---
+
+## 📦 Installation
+
+Clone the repository:
 
 ```bash
-$ npm install
+git clone https://github.com/Prabhat070saini/CodeNestBoilerPlateCode.git
+cd CodeNestBoilerPlateCode
 ```
-
-## Compile and run the project
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm install
 ```
+## ADD ENV (example env)
+```
+# ==========================
+# App Config
+# ==========================
+X_API_KEY=your-api-key
+ENV_NAME=development
+LOG_LEVEL=debug
+SERVER_HOST=localhost
+SERVER_PORT=3000
 
-## Run tests
+# ==========================
+# Database Config
+# ==========================
+DB_DIALECT=postgres
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=postgres
+DB_NAME=example_db
+DB_POOL_MIN=5
+DB_POOL_MAX=20
+DB_CONNECTION_TIMEOUT=10000
+DB_LOGGING=false
+DB_CONNECTION_IDLE_TIMEOUT=60000
+
+# ==========================
+# Redis Config
+# ==========================
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_CONNECTION_LIMIT=50
+USE_REDIS=true
+# REDIS_PASSWORD=
+
+# ==========================
+# Queue / RabbitMQ Config
+# ==========================
+RABBITMQ_URL=amqp://localhost
+DEFAULT_RETRIES=3
+DEFAULT_RETRY_DELAY_MS=5000
+IS_DLQ=true
+
+# ==========================
+# JWT / Tokens
+# ==========================
+ACCESS_TOKEN_SECRET=your-access-token-secret
+REFRESH_TOKEN_SECRET=your-refresh-token-secret
+ACCESS_TOKEN_EXP_IN_MIN=15m
+REFRESH_TOKEN_EXP_IN_MIN=7d
+
+# ==========================
+# AWS / S3 (Optional)
+# ==========================
+AWS_ACCESS_KEY_ID=your-aws-access-key
+AWS_SECRET_ACCESS_KEY=your-aws-secret-key
+AWS_REGION=us-east-1
+AWS_S3_BUCKET_NAME=your-bucket-name
+SIGNED_URL_EXPIRE=3600
+# STORAGE_CDN_URL=https://cdn.example.com
+
+# ==========================
+# Email Config
+# ==========================
+EMAIL_HOST=smtp.example.com
+EMAIL_PORT=465
+EMAIL_USERNAME=example@example.com
+EMAIL_PASSWORD=your-email-password
+EMAIL_FROM=example@example.com
+EMAIL_PROVIDER=smtp
+
+# ==========================
+# Google OAuth Config
+# ==========================
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+
+# ==========================
+# OTP Config
+# ==========================
+OTP_CRYPTO_SECRET=your-otp-secret
+OTP_TTL=300
+COOL_DOWN_TTL=60
+MAX_PER_HOUR=3
+MAX_ATTEMPTS=3
+```
+## ▶️ Running the Application
+```bash
+npm run start
+```
+_Or for hot-reload during development:_
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm  run start:dev
 ```
 
-## Deployment
+Contributions are welcome! Please fork the repository and submit a Pull Request.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+1.  Fork the Project
+2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4.  Push to the Branch (`git push origin feature/AmazingFeature`)
+5.  Open a Pull Request
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## 📄 License
 
-```bash
-$ npm install -g mau
-$ mau deploy
-```
+Distributed under the MIT License. See `LICENSE` for more information.
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+---
 
-## Resources
+_Built with ❤️ by [Prabhat Saini](https://github.com/Prabhat070saini)_
 
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).

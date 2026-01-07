@@ -16,3 +16,8 @@ export interface ISendOtpResponse {
   attemptsLeft: number;
   identifier: string;
 }
+
+export interface IActiveOtp {
+  otpHash: string;
+  attempts: number;
+}
