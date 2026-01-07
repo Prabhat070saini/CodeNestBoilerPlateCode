@@ -3,6 +3,7 @@ import { UserRepository } from './repository/user.repository';
 import { IServiceOutput } from 'src/common/constants/app.interface';
 import { EFindUser } from 'src/common/constants/app.enum';
 import { exception } from 'src/common/constants/exception';
+import { HttpStatusCode } from 'axios';
 @Injectable()
 export class UserService {
   private readonly logger = new Logger(UserService.name);
@@ -24,10 +25,10 @@ export class UserService {
     }
     return {
       success: {
-        code: 200,
+        code: HttpStatusCode.Ok,
         message: 'User found successfully',
         data: user,
-        httpStatusCode: 200,
+        httpStatusCode: HttpStatusCode.Ok,
       },
     };
   }

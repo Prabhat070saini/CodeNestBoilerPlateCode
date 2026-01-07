@@ -22,6 +22,8 @@ import { CACHE_BASE, CacheBase } from 'src/core/cache/cache.interface';
 import { config } from '../../config/config';
 import { Crypto } from 'src/common/lib/crypto/crypto';
 import { RedisKeys } from 'src/core/cache/keys';
+import { HttpStatusCode } from 'axios';
+import { SUCCESS_MESSAGE } from 'src/common/constants/app.constant';
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
@@ -62,10 +64,10 @@ export class AuthService {
       }
       return {
         success: {
-          code: 200,
-          message: 'User created successfully',
+          code: HttpStatusCode.Ok,
+          message: SUCCESS_MESSAGE.USER_SIGNUP_SUCCESSFULLY,
           data: null,
-          httpStatusCode: 200,
+          httpStatusCode: HttpStatusCode.Ok,
         },
       };
     } catch (error) {
@@ -125,10 +127,10 @@ export class AuthService {
       };
       return {
         success: {
-          code: 200,
-          message: 'User logged in successfully',
+          code: HttpStatusCode.Ok,
+          message: SUCCESS_MESSAGE.USER_LOGIN_SUCCESSFULLY,
           data: resp,
-          httpStatusCode: 200,
+          httpStatusCode: HttpStatusCode.Ok,
         },
       };
     } catch (error) {
@@ -203,10 +205,10 @@ export class AuthService {
       };
       return {
         success: {
-          code: 200,
-          message: 'User logged in successfully',
+          code: HttpStatusCode.Ok,
+          message: SUCCESS_MESSAGE.USER_LOGIN_SUCCESSFULLY,
           data: resp,
-          httpStatusCode: 200,
+          httpStatusCode: HttpStatusCode.Ok,
         },
       };
     } catch (error) {
@@ -264,10 +266,10 @@ export class AuthService {
 
       return {
         success: {
-          code: 200,
-          message: 'Token refreshed successfully',
+          code: HttpStatusCode.Ok,
+          message: SUCCESS_MESSAGE.USER_REFRESH_TOKEN_SUCCESSFULLY,
           data: resp,
-          httpStatusCode: 200,
+          httpStatusCode: HttpStatusCode.Ok,
         },
       };
     } catch (error) {
@@ -342,17 +344,17 @@ export class AuthService {
 
       this.logger.warn(`[${purpose}] OTP for ${identifier}: ${otp}`);
       const attemptsLeft = config.otp.max_per_hour - (otpCount + 1);
-
+      const resp = {
+        cooldownRemaining: config.otp.cool_down_ttl,
+        attemptsLeft,
+        identifier: otpIdentifier,
+      };
       return {
         success: {
-          code: 200,
-          message: 'OTP generated successfully',
-          data: {
-            cooldownRemaining: config.otp.cool_down_ttl,
-            attemptsLeft,
-            identifier: otpIdentifier,
-          },
-          httpStatusCode: 200,
+          code: HttpStatusCode.Ok,
+          message: SUCCESS_MESSAGE.SEND_OTP_SUCCESSFULLY,
+          data: resp,
+          httpStatusCode: HttpStatusCode.Ok,
         },
       };
     } catch (error) {
@@ -409,10 +411,10 @@ export class AuthService {
       }
       return {
         success: {
-          code: 200,
-          message: 'OTP verified successfully',
+          code: HttpStatusCode.Ok,
+          message: SUCCESS_MESSAGE.OTP_VERIFIED_SUCCESSFULLY,
           data: null,
-          httpStatusCode: 200,
+          httpStatusCode: HttpStatusCode.Ok,
         },
       };
     } catch (error) {
