@@ -1,9 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, HttpStatus } from '@nestjs/common';
 import { UserRepository } from './repository/user.repository';
 import { IServiceOutput } from 'src/common/constants/app.interface';
 import { EFindUser } from 'src/common/constants/app.enum';
 import { exception } from 'src/common/constants/exception';
-import { HttpStatusCode } from 'axios';
 @Injectable()
 export class UserService {
   private readonly logger = new Logger(UserService.name);
@@ -25,10 +24,10 @@ export class UserService {
     }
     return {
       success: {
-        code: HttpStatusCode.Ok,
+        code: HttpStatus.OK,
         message: 'User found successfully',
         data: user,
-        httpStatusCode: HttpStatusCode.Ok,
+        httpStatusCode: HttpStatus.OK,
       },
     };
   }

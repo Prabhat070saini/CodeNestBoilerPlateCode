@@ -1,6 +1,7 @@
 import {
   CanActivate,
   ExecutionContext,
+  HttpStatus,
   Inject,
   Injectable,
   Logger,
@@ -27,7 +28,7 @@ export class AuthnGuard implements CanActivate {
     if (!token) {
       throw new UnauthorizedException({
         message: 'token not found',
-        code: 401,
+        code: HttpStatus.UNAUTHORIZED,
       });
     }
 
@@ -35,7 +36,7 @@ export class AuthnGuard implements CanActivate {
     if (!payload) {
       this.logger.debug(`[canActivate] Invalid or expire token`);
       throw new UnauthorizedException({
-        code: 9099,
+        code: HttpStatus.UNAUTHORIZED,
         message: 'Invalid or expire token',
       });
     }

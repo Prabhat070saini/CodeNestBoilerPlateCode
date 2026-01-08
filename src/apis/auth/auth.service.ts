@@ -1,4 +1,4 @@
-import { Injectable, Logger, Inject } from '@nestjs/common';
+import { Injectable, Logger, Inject, HttpStatus } from '@nestjs/common';
 
 import { UserRepository } from '../user/repository/user.repository';
 import { SignInDto, SignUpDto } from './dto/auth.dto';
@@ -23,7 +23,6 @@ import { CACHE_BASE, CacheBase } from 'src/core/cache/cache.interface';
 import { config } from '../../config/config';
 import { Crypto } from 'src/common/lib/crypto/crypto';
 import { RedisKeys } from 'src/core/cache/keys';
-import { HttpStatusCode } from 'axios';
 import { SUCCESS_MESSAGE } from 'src/common/constants/app.constant';
 @Injectable()
 export class AuthService {
@@ -65,10 +64,10 @@ export class AuthService {
       }
       return {
         success: {
-          code: HttpStatusCode.Ok,
+          code: HttpStatus.OK,
           message: SUCCESS_MESSAGE.USER_SIGNUP_SUCCESSFULLY,
           data: null,
-          httpStatusCode: HttpStatusCode.Ok,
+          httpStatusCode: HttpStatus.OK,
         },
       };
     } catch (error) {
@@ -128,10 +127,10 @@ export class AuthService {
       };
       return {
         success: {
-          code: HttpStatusCode.Ok,
+          code: HttpStatus.OK,
           message: SUCCESS_MESSAGE.USER_LOGIN_SUCCESSFULLY,
           data: resp,
-          httpStatusCode: HttpStatusCode.Ok,
+          httpStatusCode: HttpStatus.OK,
         },
       };
     } catch (error) {
@@ -206,10 +205,10 @@ export class AuthService {
       };
       return {
         success: {
-          code: HttpStatusCode.Ok,
+          code: HttpStatus.OK,
           message: SUCCESS_MESSAGE.USER_LOGIN_SUCCESSFULLY,
           data: resp,
-          httpStatusCode: HttpStatusCode.Ok,
+          httpStatusCode: HttpStatus.OK,
         },
       };
     } catch (error) {
@@ -260,10 +259,10 @@ export class AuthService {
 
       return {
         success: {
-          code: HttpStatusCode.Ok,
+          code: HttpStatus.OK,
           message: SUCCESS_MESSAGE.USER_REFRESH_TOKEN_SUCCESSFULLY,
           data: resp,
-          httpStatusCode: HttpStatusCode.Ok,
+          httpStatusCode: HttpStatus.OK,
         },
       };
     } catch (error) {
@@ -345,10 +344,10 @@ export class AuthService {
       };
       return {
         success: {
-          code: HttpStatusCode.Ok,
+          code: HttpStatus.OK,
           message: SUCCESS_MESSAGE.SEND_OTP_SUCCESSFULLY,
           data: resp,
-          httpStatusCode: HttpStatusCode.Ok,
+          httpStatusCode: HttpStatus.OK,
         },
       };
     } catch (error) {
@@ -405,10 +404,10 @@ export class AuthService {
       }
       return {
         success: {
-          code: HttpStatusCode.Ok,
+          code: HttpStatus.OK,
           message: SUCCESS_MESSAGE.OTP_VERIFIED_SUCCESSFULLY,
           data: null,
-          httpStatusCode: HttpStatusCode.Ok,
+          httpStatusCode: HttpStatus.OK,
         },
       };
     } catch (error) {
