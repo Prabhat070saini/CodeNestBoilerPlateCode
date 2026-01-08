@@ -8,13 +8,16 @@ import {
   Get,
   UseGuards,
   Req,
+  Headers,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto, SignInDto, SendOtpDto, VerifyOtpDto } from './dto/auth.dto';
 import { UtilsService } from 'src/common/utils/utils.service';
 import { AuthGuard } from '@nestjs/passport';
 import { IsPublic } from 'src/common/decorators/public.decorator';
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Auth')
 @Controller({ version: '1', path: 'auth' })
 export class AuthController {
   constructor(
@@ -33,6 +36,7 @@ export class AuthController {
     this.utilsService.sendRestResponse(res, output);
   }
   // Step 1: Redirect user to Google
+  @ApiTags('Auth - Social')
   @IsPublic()
   @Get('google')
   @UseGuards(AuthGuard('google'))
@@ -41,6 +45,7 @@ export class AuthController {
   }
 
   // Step 2: Google redirects back here
+  @ApiTags('Auth - Social')
   @IsPublic()
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
@@ -73,6 +78,21 @@ export class AuthController {
       verifyOtpDto.purpose,
       verifyOtpDto.otp,
     );
+    this.utilsService.sendRestResponse(res, output);
+  }
+
+  @ApiHeader({
+    name: 'refresh-token',
+    description: 'Refresh token sent via email',
+    required: true,
+  })
+  @Post('refresh-token')
+  async refreshToken(
+    @Headers('refresh-token') refreshToken: string,
+    @Response() res,
+  ): Promise<void> {
+    console.log(refreshToken);
+    const output = await this.authService.refreshToken(refreshToken);
     this.utilsService.sendRestResponse(res, output);
   }
 }

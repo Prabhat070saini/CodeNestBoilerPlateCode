@@ -14,6 +14,7 @@ import { TokenService } from 'src/common/token/token.service';
 import {
   IActiveOtp,
   IGoogleOauthResponse,
+  IRefreshTokenResponse,
   ISendOtpResponse,
   ISignInResponse,
 } from './auth.interface';
@@ -219,23 +220,16 @@ export class AuthService {
 
   async refreshToken(
     refreshToken: string,
-  ): Promise<IServiceOutput<{ accessToken: string; refreshToken: string }>> {
+  ): Promise<IServiceOutput<IRefreshTokenResponse>> {
     try {
-      const verify = this.tokenService.validate(
+      const verifyTokenPayload = this.tokenService.validate(
         ETokenType.RefreshToken,
         refreshToken,
       );
 
-      if (!verify?.payload) {
-        this.logger.debug(`[refreshToken] Invalid refresh token`);
-        return { exception: exception.INVALID_REFRESH_TOKEN };
-      }
-
-      const payload = verify.payload;
-
       if (config.redis.use_redis) {
         const storedRefreshToken = await this.cacheService.getKey(
-          RedisKeys.auth.refreshToken(payload.userId),
+          RedisKeys.auth.refreshToken(verifyTokenPayload.ref),
         );
 
         if (!storedRefreshToken || storedRefreshToken !== refreshToken) {
@@ -245,7 +239,7 @@ export class AuthService {
       }
 
       const accessTokenPayload: TokenPayload = {
-        ref: payload.userId,
+        ref: verifyTokenPayload.ref,
         type: ETokenType.AccessToken,
       };
 
@@ -253,13 +247,13 @@ export class AuthService {
 
       if (config.redis.use_redis) {
         await this.cacheService.setKeyWithExpiry(
-          RedisKeys.auth.accessToken(payload.userId),
+          RedisKeys.auth.accessToken(verifyTokenPayload.ref),
           accessToken,
           config.token.access_token_exp_in_min,
         );
       }
 
-      const resp = {
+      const resp: IRefreshTokenResponse = {
         accessToken,
         refreshToken,
       };

@@ -21,3 +21,8 @@ export interface IActiveOtp {
   otpHash: string;
   attempts: number;
 }
+
+export interface IRefreshTokenResponse {
+  accessToken: string;
+  refreshToken: string;
+}

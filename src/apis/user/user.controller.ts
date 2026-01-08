@@ -4,7 +4,11 @@ import { AuthnGuard } from 'src/common/guards/auth.guard';
 import { UtilsService } from 'src/common/utils/utils.service';
 import { PermissionGuard } from 'src/common/guards/permission.guard';
 import { Role } from 'src/common/decorators/roles.decorator';
+import { ApiTags } from '@nestjs/swagger';
+import { ApiJwtAndApiKey } from 'src/common/decorators/apiKey-jwt-swagger.decorator';
 @UseGuards(AuthnGuard)
+@ApiTags('User')
+@ApiJwtAndApiKey()
 @Controller({ version: '1', path: 'user' })
 export class UserController {
   constructor(
