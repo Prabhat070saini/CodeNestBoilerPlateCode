@@ -1,12 +1,12 @@
 import { Controller, UseGuards, Get, Response, Param } from '@nestjs/common';
 import { UserService } from './user.service';
-import { AuthnGuard } from 'src/common/guards/auth.guard';
-import { UtilsService } from 'src/common/utils/utils.service';
-import { PermissionGuard } from 'src/common/guards/permission.guard';
-import { Role } from 'src/common/decorators/roles.decorator';
+// import { AuthnGuard } from '../../common/guards/auth.guard';
+import { UtilsService } from '../../common/utils/utils.service';
+import { PermissionGuard } from '../../common/guards/permission.guard';
+import { Role } from '../../common/decorators/roles.decorator';
 import { ApiTags } from '@nestjs/swagger';
-import { ApiJwtAndApiKey } from 'src/common/decorators/apiKey-jwt-swagger.decorator';
-@UseGuards(AuthnGuard)
+import { ApiJwtAndApiKey } from '../../common/decorators/apiKey-jwt-swagger.decorator';
+// @UseGuards(AuthnGuard)
 @ApiTags('User')
 @ApiJwtAndApiKey()
 @Controller({ version: '1', path: 'user' })

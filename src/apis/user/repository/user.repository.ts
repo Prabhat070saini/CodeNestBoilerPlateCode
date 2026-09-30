@@ -3,9 +3,9 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { TYPEORM_DATABASE_PROVIDER } from '../../../common/constants/app.constant';
 import { TransactionBaseRepository } from '../../../common/repository/transaction.repository';
 import { User } from '../entities/user.entity';
-import { EFindUser } from 'src/common/constants/app.enum';
-import { IFunctionOutput } from 'src/common/constants/app.interface';
-import { exception } from 'src/common/constants/exception';
+import { EFindUser } from '../../../common/constants/app.enum';
+import { IFunctionOutput } from '../../../common/constants/app.interface';
+import { exception } from '../../../common/constants/exception';
 import { IUserCreate, IFindUser } from '../user.interface';
 import { ulid } from 'ulid';
 @Injectable()

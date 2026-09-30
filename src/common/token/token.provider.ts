@@ -1,7 +1,7 @@
 // src/common/jwt/token.provider.ts
 import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { JwtConfig, TokenPayload } from 'src/common/constants/app.interface';
+import { JwtConfig, TokenPayload } from '../../common/constants/app.interface';
 
 @Injectable()
 export class TokenProvider {

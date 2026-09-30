@@ -3,7 +3,7 @@
 import { Global, Module } from '@nestjs/common';
 import { TracingService } from './tracing.middleware.ts/tracing.service';
 import { CustomLoggerService } from './logger/custom.logger';
-import { config } from 'src/config/config';
+import { config } from '../../config/config';
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 

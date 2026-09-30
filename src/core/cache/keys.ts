@@ -4,7 +4,7 @@
  *
  * Always use these factories instead of string concatenation.
  */
-import { Crypto } from 'src/common/lib/crypto/crypto';
+import { Crypto } from '../../common/lib/crypto/crypto';
 
 export const RedisKeys = {
   // ===== AUTH KEYS =====

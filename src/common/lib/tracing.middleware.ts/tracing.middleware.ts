@@ -1,7 +1,7 @@
 import { Injectable, Logger, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { tracingNamespace, TracingService } from './tracing.service';
-import { UtilsService } from 'src/common/utils/utils.service';
+import { UtilsService } from '../../utils/utils.service';
 
 @Injectable()
 export class TracingMiddleware implements NestMiddleware {

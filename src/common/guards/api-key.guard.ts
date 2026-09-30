@@ -5,8 +5,8 @@ import {
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
-import { config } from 'src/config/config';
-import { exception } from 'src/common/constants/exception';
+import { config } from '../../config/config';
+import { exception } from '../../common/constants/exception';
 import { Reflector } from '@nestjs/core';
 
 @Injectable()
