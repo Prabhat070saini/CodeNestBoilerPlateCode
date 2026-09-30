@@ -12,9 +12,9 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto, SignInDto, SendOtpDto, VerifyOtpDto } from './dto/auth.dto';
-import { UtilsService } from 'src/common/utils/utils.service';
+import { UtilsService } from '../../common/utils/utils.service';
 import { AuthGuard } from '@nestjs/passport';
-import { IsPublic } from 'src/common/decorators/public.decorator';
+import { IsPublic } from '../../common/decorators/public.decorator';
 import { ApiHeader, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Auth')

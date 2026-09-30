@@ -1,8 +1,8 @@
 import { Injectable, Logger, HttpStatus } from '@nestjs/common';
 import { UserRepository } from './repository/user.repository';
-import { IServiceOutput } from 'src/common/constants/app.interface';
-import { EFindUser } from 'src/common/constants/app.enum';
-import { exception } from 'src/common/constants/exception';
+import { IServiceOutput } from '../../common/constants/app.interface';
+import { EFindUser } from '../../common/constants/app.enum';
+import { exception } from '../../common/constants/exception';
 @Injectable()
 export class UserService {
   private readonly logger = new Logger(UserService.name);

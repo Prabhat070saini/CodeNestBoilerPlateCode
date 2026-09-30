@@ -8,8 +8,8 @@ import {
   MinLength,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { ESendOtpPurpose } from 'src/common/constants/app.enum';
-import { IsUlid } from 'src/common/decorators/validate-ulid.decorator';
+import { ESendOtpPurpose } from '../../../common/constants/app.enum';
+import { IsUlid } from '../../../common/decorators/validate-ulid.decorator';
 
 export class SignUpDto {
   @ApiProperty({ example: 'John Doe', description: 'User full name' })

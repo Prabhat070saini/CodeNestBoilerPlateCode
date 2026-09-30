@@ -2,7 +2,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ETokenType } from '../constants/app.enum';
 import { JwtConfig, TokenPayload } from '../constants/app.interface';
-import { config } from 'src/config/config';
+import { config } from '../../config/config';
 import { TokenProvider } from './token.provider';
 
 @Injectable()

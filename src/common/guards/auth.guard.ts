@@ -8,11 +8,11 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 
-import { config } from 'src/config/config';
+import { config } from '../..//config/config';
 import { ETokenType } from '../constants/app.enum';
 import { TokenService } from '../token/token.service';
-import { CACHE_BASE, CacheBase } from 'src/core/cache/cache.interface';
-import { RedisKeys } from 'src/core/cache/keys';
+import { CACHE_BASE, CacheBase } from '../../core/cache/cache.interface';
+import { RedisKeys } from '../../core/cache/keys';
 
 @Injectable()
 export class AuthnGuard implements CanActivate {

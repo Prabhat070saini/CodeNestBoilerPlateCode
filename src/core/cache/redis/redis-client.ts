@@ -3,7 +3,7 @@
 
 import { Injectable, Logger, OnApplicationShutdown } from '@nestjs/common';
 import { Redis } from 'ioredis';
-import { config } from 'src/config/config';
+import { config } from '../../../config/config';
 
 @Injectable()
 export class RedisClient implements OnApplicationShutdown {

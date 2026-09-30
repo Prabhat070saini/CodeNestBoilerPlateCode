@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UserRepository } from '../user/repository/user.repository';
 import { AuthController } from './auth.controller';
-import { HashingService } from 'src/common/lib/hashing/hashing.service';
+import { HashingService } from '../../common/lib/hashing/hashing.service';
 import { PassportModule } from '@nestjs/passport';
 import { GoogleStrategy } from './google.strategy';
-import { CommonRepository } from 'src/common/repository/common.repository';
+import { CommonRepository } from '../../common/repository/common.repository';
 
 @Module({
   imports: [PassportModule],

@@ -1,4 +1,4 @@
-import { EFindUser } from 'src/common/constants/app.enum';
+import { EFindUser } from '../../common/constants/app.enum';
 
 export interface IUserCreate {
   name: string;

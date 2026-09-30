@@ -2,15 +2,15 @@ import { Injectable, Logger, Inject, HttpStatus } from '@nestjs/common';
 
 import { UserRepository } from '../user/repository/user.repository';
 import { SignInDto, SignUpDto } from './dto/auth.dto';
-import { ETokenType } from 'src/common/constants/app.enum';
-import { exception } from 'src/common/constants/exception';
-import { HashingService } from 'src/common/lib/hashing/hashing.service';
+import { ETokenType } from '../../common/constants/app.enum';
+import { exception } from '../../common/constants/exception';
+import { HashingService } from '../../common/lib/hashing/hashing.service';
 import { IUserCreate } from '../user/user.interface';
 import {
   IServiceOutput,
   TokenPayload,
-} from 'src/common/constants/app.interface';
-import { TokenService } from 'src/common/token/token.service';
+} from '../../common/constants/app.interface';
+import { TokenService } from '../../common/token/token.service';
 import {
   IActiveOtp,
   IGoogleOauthResponse,
@@ -18,12 +18,12 @@ import {
   ISendOtpResponse,
   ISignInResponse,
 } from './auth.interface';
-import { UtilsService } from 'src/common/utils/utils.service';
-import { CACHE_BASE, CacheBase } from 'src/core/cache/cache.interface';
+import { UtilsService } from '../../common/utils/utils.service';
+import { CACHE_BASE, CacheBase } from '../../core/cache/cache.interface';
 import { config } from '../../config/config';
-import { Crypto } from 'src/common/lib/crypto/crypto';
-import { RedisKeys } from 'src/core/cache/keys';
-import { SUCCESS_MESSAGE } from 'src/common/constants/app.constant';
+import { Crypto } from '../../common/lib/crypto/crypto';
+import { RedisKeys } from '../../core/cache/keys';
+import { SUCCESS_MESSAGE } from '../../common/constants/app.constant';
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
