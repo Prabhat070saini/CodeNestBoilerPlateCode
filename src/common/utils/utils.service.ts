@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Response } from 'express';
+import { FastifyReply } from 'fastify';
 import { IServiceOutput } from '../constants/app.interface';
 import * as crypto from 'crypto';
 import { ulid } from 'ulid';
@@ -7,15 +7,18 @@ import { ulid } from 'ulid';
 @Injectable()
 export class UtilsService {
   defaultMessage = 'ERROR';
-  sendRestResponse(res: Response, output: IServiceOutput<any>): any {
+  sendRestResponse(
+    res: FastifyReply,
+    output: IServiceOutput<any>,
+  ): FastifyReply {
     if (output?.exception) {
       const { code, message, httpStatusCode } = output.exception;
       return res
         .status(httpStatusCode || 500)
-        .json({ code, message: message || this.defaultMessage });
+        .send({ code, message: message || this.defaultMessage });
     }
 
-    return res.status(output?.success?.httpStatusCode || 200).json({
+    return res.status(output?.success?.httpStatusCode || 200).send({
       code: output?.success?.code || 200,
       message: output?.success?.message || 'Success',
       data: output?.success?.data || null,

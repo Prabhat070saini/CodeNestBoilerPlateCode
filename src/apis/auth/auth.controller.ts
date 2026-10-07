@@ -4,12 +4,13 @@ import {
   Controller,
   Post,
   Body,
-  Response,
+  Res,
   Get,
   UseGuards,
   Req,
   Headers,
 } from '@nestjs/common';
+import { FastifyReply, FastifyRequest } from 'fastify';
 import { AuthService } from './auth.service';
 import { SignUpDto, SignInDto, SendOtpDto, VerifyOtpDto } from './dto/auth.dto';
 import { UtilsService } from '../../common/utils/utils.service';
@@ -26,12 +27,18 @@ export class AuthController {
   ) {}
 
   @Post('sign-up')
-  async signUp(@Body() signUpDto: SignUpDto, @Response() res): Promise<void> {
+  async signUp(
+    @Body() signUpDto: SignUpDto,
+    @Res() res: FastifyReply,
+  ): Promise<void> {
     const output = await this.authService.signUp(signUpDto);
-    return this.utilsService.sendRestResponse(res, output);
+    this.utilsService.sendRestResponse(res, output);
   }
   @Post('sign-in')
-  async signIn(@Body() signInDto: SignInDto, @Response() res): Promise<void> {
+  async signIn(
+    @Body() signInDto: SignInDto,
+    @Res() res: FastifyReply,
+  ): Promise<void> {
     const output = await this.authService.signIn(signInDto);
     this.utilsService.sendRestResponse(res, output);
   }
@@ -49,17 +56,17 @@ export class AuthController {
   @IsPublic()
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
-  async googleAuthRedirect(@Req() req) {
+  async googleAuthRedirect(@Req() req: FastifyRequest) {
     return {
       message: 'Login successful',
-      user: req.user,
+      user: (req as any).user,
     };
   }
 
   @Post('send-otp')
   async sendOtp(
     @Body() sendOtpDto: SendOtpDto,
-    @Response() res,
+    @Res() res: FastifyReply,
   ): Promise<void> {
     const output = await this.authService.sendOtp(
       sendOtpDto.email,
@@ -71,7 +78,7 @@ export class AuthController {
   @Post('verify-otp')
   async verifyOtp(
     @Body() verifyOtpDto: VerifyOtpDto,
-    @Response() res,
+    @Res() res: FastifyReply,
   ): Promise<void> {
     const output = await this.authService.verifyOtp(
       verifyOtpDto.identifier,
@@ -89,7 +96,7 @@ export class AuthController {
   @Post('refresh-token')
   async refreshToken(
     @Headers('refresh-token') refreshToken: string,
-    @Response() res,
+    @Res() res: FastifyReply,
   ): Promise<void> {
     console.log(refreshToken);
     const output = await this.authService.refreshToken(refreshToken);

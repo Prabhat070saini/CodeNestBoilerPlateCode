@@ -26,11 +26,12 @@
     "seed": "nest build && typeorm-extension seed:run -d dist/shared/database/migration_seeder_setup/data.source.js"
   },
   "dependencies": {
+    "@fastify/static": "^7.0.4",
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0",
     "@nestjs/jwt": "^11.0.1",
     "@nestjs/passport": "^11.0.5",
-    "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/platform-fastify": "^10.4.22",
     "@nestjs/swagger": "^7.4.2",
     "amqplib": "^0.10.9",
     "axios": "^1.13.2",
@@ -46,7 +47,6 @@
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
-    "swagger-ui-express": "^5.0.1",
     "typeorm": "^0.3.26",
     "typeorm-extension": "^3.7.1",
     "ulid": "^3.0.1",

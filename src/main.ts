@@ -1,13 +1,24 @@
 import { NestFactory } from '@nestjs/core';
+import {
+  FastifyAdapter,
+  NestFastifyApplication,
+} from '@nestjs/platform-fastify';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { config } from './config/config';
 import { CustomLoggerService } from './common/lib/logger/custom.logger';
-import * as bodyParser from 'body-parser';
 import { xApiKeyHeader } from './common/constants/app.constant';
+
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create(AppModule);
+  const adapter = new FastifyAdapter({
+    bodyLimit: 100 * 1024 * 1024, // 100mb
+  });
+
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    adapter,
+  );
 
   /* This tells NestJS to use the global validation pipe for all requests*/
   app.useGlobalPipes(
@@ -18,18 +29,17 @@ async function bootstrap(): Promise<void> {
       enableDebugMessages: true,
     }),
   );
-  app.use(bodyParser.json({ limit: '100mb' }));
-  app.use(bodyParser.urlencoded({ limit: '100mb', extended: true }));
-  /*This tells NestJS to listen for process termination signals*/
+
+  /* This tells NestJS to listen for process termination signals */
   app.enableShutdownHooks();
 
-  /*This tells NestJS to allow cross-origin requests*/
+  /* This tells NestJS to allow cross-origin requests */
   app.enableCors({ origin: '*' });
 
-  /*This tells NestJS to set the global prefix to /api/*/
+  /* This tells NestJS to set the global prefix to /api/ */
   app.setGlobalPrefix('api/');
 
-  /*This tells NestJS to set the versioning to URI*/
+  /* This tells NestJS to set the versioning to URI */
   app.enableVersioning({ type: VersioningType.URI });
 
   /* Swagger Configuration */
@@ -78,8 +88,8 @@ async function bootstrap(): Promise<void> {
     `Swagger UI is running on: http://localhost:${config.app.port}/docs`,
   );
 
-  /*This tells NestJS to use the custom logger*/
+  /* This tells NestJS to use the custom logger */
   app.useLogger(app.get(CustomLoggerService));
-  await app.listen(config.app.port);
+  await app.listen(config.app.port, '0.0.0.0');
 }
 bootstrap();

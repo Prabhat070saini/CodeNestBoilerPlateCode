@@ -1,5 +1,5 @@
 import { Injectable, Logger, NestMiddleware } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
+import { IncomingMessage, ServerResponse } from 'http';
 import { tracingNamespace, TracingService } from './tracing.service';
 import { UtilsService } from '../../utils/utils.service';
 
@@ -11,7 +11,7 @@ export class TracingMiddleware implements NestMiddleware {
     private readonly utilsService: UtilsService,
   ) {}
 
-  use(req: Request, res: Response, next: NextFunction): void {
+  use(req: IncomingMessage, res: ServerResponse, next: () => void): void {
     // Ensure tracingId is always treated as a string
     const tracingId = (req.headers['tracing_id'] ||
       this.utilsService.generateUlId()) as string;
@@ -19,8 +19,9 @@ export class TracingMiddleware implements NestMiddleware {
     tracingNamespace.run(() => {
       // Set the tracing ID in the tracing service
       this.tracingService.setTracingId(tracingId);
-      const baseUrl = `${req.protocol}://${req.get('host')}`;
-      const fullUrl = `${baseUrl}${req.originalUrl}`;
+      const host = req.headers['host'] || 'localhost';
+      const protocol = (req.socket as any)?.encrypted ? 'https' : 'http';
+      const fullUrl = `${protocol}://${host}${req.url}`;
       // Capture request start time
       const startTime = process.hrtime();
       this.logger.log({
