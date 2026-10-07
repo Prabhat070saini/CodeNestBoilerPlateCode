@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AppService } from './app.service';
 import { IsPublic } from './common/decorators/public.decorator';
 
@@ -7,7 +7,7 @@ import { IsPublic } from './common/decorators/public.decorator';
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
-
+  @ApiOperation({ summary: 'health check' })
   @IsPublic()
   @Get()
   getHello(): string {

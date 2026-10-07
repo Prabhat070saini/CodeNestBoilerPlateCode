@@ -39,9 +39,7 @@ export class BookRepository {
       return { exception: { code: 500, message: 'Something went wrong' } };
     }
   }
-  async getBookbyId(
-    contentId: string,
-  ): Promise<
+  async getBookbyId(contentId: string): Promise<
     IFunctionOutput<{
       book: BookDetails;
       recommendations: BookRecommendation[];
