@@ -35,7 +35,7 @@ export class AuthController {
     const output = await this.authService.signIn(signInDto);
     this.utilsService.sendRestResponse(res, output);
   }
-  // Step 1: Redirect user to Google
+  // Step 1:  user to GRedirectoogle
   @ApiTags('Auth - Social')
   @IsPublic()
   @Get('google')

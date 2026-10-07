@@ -8,6 +8,7 @@ export const SUCCESS_MESSAGE = {
   USER_REFRESH_TOKEN_SUCCESSFULLY: 'User refresh token successfully',
   SEND_OTP_SUCCESSFULLY: 'OTP sent successfully',
   OTP_VERIFIED_SUCCESSFULLY: 'OTP verified successfully',
+  SUCCESS: 'Success',
 };
 
 export const EXCEPTION_MESSAGE = {
