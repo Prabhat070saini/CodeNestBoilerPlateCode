@@ -19,11 +19,11 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "typeorm": "npm run build && npx typeorm -d dist/shared/database/migration_seeder_setup/data.source.js",
-    "migration:generate": "npm run typeorm -- migration:generate ./src/shared/database/migration_seeder_setup/migrations/migrationFile",
+    "typeorm": "npm run build && npx typeorm -d dist/core/database/migration_seeder_setup/data.source.js",
+    "migration:generate": "npm run typeorm -- migration:generate ./src/core/database/migration_seeder_setup/migrations/migrationFile",
     "migration:run": "npm run typeorm -- migration:run && npm run seed",
     "migration:revert": "npm run typeorm -- migration:revert",
-    "seed": "nest build && typeorm-extension seed:run -d dist/shared/database/migration_seeder_setup/data.source.js"
+    "seed": "nest build && typeorm-extension seed:run -d dist/core/database/migration_seeder_setup/data.source.js"
   },
   "dependencies": {
     "@fastify/static": "^7.0.4",

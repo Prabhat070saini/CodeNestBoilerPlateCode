@@ -67,7 +67,7 @@ export class UtilsService {
 
     return password.join('');
   }
-  randomNumeric(length = 6): string {
+  randomNumeric(length: number = 6): string {
     if (!Number.isInteger(length) || length <= 0)
       throw new Error('randomNumeric() requires a positive integer length.');
     try {
