@@ -1,23 +1,22 @@
 import { NestFactory } from '@nestjs/core';
-import {
-  FastifyAdapter,
-  NestFastifyApplication,
-} from '@nestjs/platform-fastify';
+import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { config } from './config/config';
 import { CustomLoggerService } from './common/lib/logger/custom.logger';
 import { xApiKeyHeader } from './common/constants/app.constant';
+import { createFastifyAdapter } from './common/lib/http/fastify';
 
 async function bootstrap(): Promise<void> {
-  const adapter = new FastifyAdapter({
-    bodyLimit: 100 * 1024 * 1024, // 100mb
-  });
+  const adapter = await createFastifyAdapter();
 
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     adapter,
+    {
+      bufferLogs: true,
+    },
   );
 
   /* This tells NestJS to use the global validation pipe for all requests*/
@@ -32,9 +31,6 @@ async function bootstrap(): Promise<void> {
 
   /* This tells NestJS to listen for process termination signals */
   app.enableShutdownHooks();
-
-  /* This tells NestJS to allow cross-origin requests */
-  app.enableCors({ origin: '*' });
 
   /* This tells NestJS to set the global prefix to /api/ */
   app.setGlobalPrefix('api/');
@@ -84,6 +80,7 @@ async function bootstrap(): Promise<void> {
     },
   });
 
+  /*eslint-disable */
   console.log(
     `Swagger UI is running on: http://localhost:${config.app.port}/docs`,
   );

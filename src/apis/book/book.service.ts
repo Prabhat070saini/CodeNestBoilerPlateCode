@@ -21,7 +21,6 @@ export class BookService {
         pageSize,
         search,
       );
-      console.log('books', books, 'exception', exception);
       if (exception) {
         this.logger.log(
           `Error in getBooklist: ${exception.code}|${exception.message}`,

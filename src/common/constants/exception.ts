@@ -1,140 +1,180 @@
 import { HttpStatus } from '@nestjs/common';
 import { EXCEPTION_MESSAGE } from './app.constant';
 
+import {
+  AUTHENTICATION_EXCEPTION_CODES,
+  AUTH_EXCEPTION_CODES,
+  RATE_LIMIT_EXCEPTION_CODES,
+  ENCODING_EXCEPTION_CODES,
+  CRYPTO_EXCEPTION_CODES,
+} from './app.constant';
+
 export const exception = {
   USER_UNAUTHORIZED_REQUEST: {
     code: HttpStatus.UNAUTHORIZED,
     message: EXCEPTION_MESSAGE.AUTH.UNAUTHORIZED_REQUEST,
     httpStatusCode: HttpStatus.UNAUTHORIZED,
   },
+
   PHONE_NOT_REGISTERED: {
     code: HttpStatus.UNAUTHORIZED,
     message: EXCEPTION_MESSAGE.AUTH.PHONE_NOT_REGISTERED,
     httpStatusCode: HttpStatus.UNAUTHORIZED,
   },
+
   NO_DATA_FOUND: {
     code: HttpStatus.NOT_FOUND,
     message: EXCEPTION_MESSAGE.NO_DATA_FOUND,
     httpStatusCode: HttpStatus.NOT_FOUND,
   },
+
   USER_NOT_FOUND: {
     code: HttpStatus.NOT_FOUND,
     message: EXCEPTION_MESSAGE.USER.NOT_FOUND,
     httpStatusCode: HttpStatus.NOT_FOUND,
   },
+
   BAD_REQUEST: {
     code: HttpStatus.BAD_REQUEST,
     message: EXCEPTION_MESSAGE.AUTH.BAD_REQUEST,
     httpStatusCode: HttpStatus.BAD_REQUEST,
   },
+
   SOMETHING_WENT_WRONG: {
     code: HttpStatus.INTERNAL_SERVER_ERROR,
     message: EXCEPTION_MESSAGE.SOMETHING_WENT_WRONG,
     httpStatusCode: HttpStatus.INTERNAL_SERVER_ERROR,
   },
+
   OTP_EXPIRED: {
     code: HttpStatus.UNAUTHORIZED,
     message: EXCEPTION_MESSAGE.AUTH.OTP_EXPIRED,
     httpStatusCode: HttpStatus.UNAUTHORIZED,
   },
+
   INVALID_OTP: {
     code: HttpStatus.UNAUTHORIZED,
     message: EXCEPTION_MESSAGE.AUTH.INVALID_OTP,
     httpStatusCode: HttpStatus.UNAUTHORIZED,
   },
+
   EMAIL_ALREADY_EXIST: {
     code: HttpStatus.CONFLICT,
     message: EXCEPTION_MESSAGE.AUTH.EMAIL_ALREADY_EXIST,
     httpStatusCode: HttpStatus.CONFLICT,
   },
+
   DISABLE_USER: {
     code: HttpStatus.UNAUTHORIZED,
     message: EXCEPTION_MESSAGE.USER.DISABLE_USER,
     httpStatusCode: HttpStatus.UNAUTHORIZED,
   },
+
   HEADERS_NOT_FOUND: {
     code: HttpStatus.UNAUTHORIZED,
     message: EXCEPTION_MESSAGE.AUTH.HEADERS_NOT_FOUND,
     httpStatusCode: HttpStatus.UNAUTHORIZED,
   },
+
   PERMISSION_DENINED: {
     code: HttpStatus.FORBIDDEN,
     message: EXCEPTION_MESSAGE.AUTH.PERMISSION_DENINED,
     httpStatusCode: HttpStatus.FORBIDDEN,
   },
+
   PROTECTED_ROUTE: {
     code: HttpStatus.FORBIDDEN,
     message: EXCEPTION_MESSAGE.AUTH.PROTECTED_ROUTE,
     httpStatusCode: HttpStatus.FORBIDDEN,
   },
+
   API_KEY_INVALID: {
     code: HttpStatus.FORBIDDEN,
     message: EXCEPTION_MESSAGE.AUTH.API_KEY_INVALID,
     httpStatusCode: HttpStatus.FORBIDDEN,
   },
+
   INVALID_OR_EXPIRED_ACCESS_TOKEN: {
-    code: 6001, // call refresh token code
+    code: AUTH_EXCEPTION_CODES.INVALID_OR_EXPIRED_ACCESS_TOKEN,
     message: EXCEPTION_MESSAGE.AUTH.INVALID_OR_EXPIRED_ACCESS_TOKEN,
     httpStatusCode: HttpStatus.UNAUTHORIZED,
   },
+
   INVALID_OR_EXPIRED_REFRESH_TOKEN: {
-    code: 6002, // logout user code
+    code: AUTH_EXCEPTION_CODES.INVALID_OR_EXPIRED_REFRESH_TOKEN,
     message: EXCEPTION_MESSAGE.AUTH.INVALID_OR_EXPIRED_REFRESH_TOKEN,
     httpStatusCode: HttpStatus.UNAUTHORIZED,
   },
+
   BASE_64_DECODING_FAILED: {
-    code: 5002,
+    code: ENCODING_EXCEPTION_CODES.BASE_64_DECODING_FAILED,
     message: EXCEPTION_MESSAGE.SOMETHING_WENT_WRONG,
     httpStatusCode: HttpStatus.INTERNAL_SERVER_ERROR,
   },
+
   BASE_64_ENCODING_FAILED: {
-    code: 5001,
+    code: ENCODING_EXCEPTION_CODES.BASE_64_ENCODING_FAILED,
     message: EXCEPTION_MESSAGE.SOMETHING_WENT_WRONG,
     httpStatusCode: HttpStatus.INTERNAL_SERVER_ERROR,
   },
+
   ENCRYPTION_FAILED: {
-    code: 5101,
+    code: CRYPTO_EXCEPTION_CODES.ENCRYPTION_FAILED,
     message: EXCEPTION_MESSAGE.SOMETHING_WENT_WRONG,
     httpStatusCode: HttpStatus.INTERNAL_SERVER_ERROR,
   },
+
   DECRYPTION_FAILED: {
-    code: 5102,
+    code: CRYPTO_EXCEPTION_CODES.DECRYPTION_FAILED,
     message: EXCEPTION_MESSAGE.SOMETHING_WENT_WRONG,
     httpStatusCode: HttpStatus.INTERNAL_SERVER_ERROR,
   },
+
   USER_NOT_VERIFIED: {
-    code: 6001,
+    code: AUTH_EXCEPTION_CODES.USER_NOT_VERIFIED,
     message: EXCEPTION_MESSAGE.USER.NOT_VERIFIED,
     httpStatusCode: HttpStatus.UNAUTHORIZED,
   },
+
   INVALID_REFRESH_TOKEN: {
-    code: 6002,
+    code: AUTH_EXCEPTION_CODES.INVALID_REFRESH_TOKEN,
     message: EXCEPTION_MESSAGE.AUTH.INVALID_REFRESH_TOKEN,
     httpStatusCode: HttpStatus.UNAUTHORIZED,
   },
+
   INVALID_CREDENTIALS: {
-    code: 6003,
+    code: AUTH_EXCEPTION_CODES.INVALID_CREDENTIALS,
     message: EXCEPTION_MESSAGE.AUTH.INVALID_CREDENTIALS,
     httpStatusCode: HttpStatus.UNAUTHORIZED,
   },
+
   API_KEY_MISSING: {
-    code: 6004,
+    code: AUTH_EXCEPTION_CODES.API_KEY_MISSING,
     message: EXCEPTION_MESSAGE.AUTH.API_KEY_MISSING,
     httpStatusCode: HttpStatus.UNAUTHORIZED,
   },
+
   OTP_COOLDOWN_ACTIVE: {
-    code: 7001,
+    code: RATE_LIMIT_EXCEPTION_CODES.OTP_COOLDOWN_ACTIVE,
     message: EXCEPTION_MESSAGE.AUTH.OTP_COOLDOWN_ACTIVE,
     httpStatusCode: HttpStatus.TOO_MANY_REQUESTS,
   },
+
   OTP_RATE_LIMIT_REACHED: {
-    code: 7002,
+    code: RATE_LIMIT_EXCEPTION_CODES.OTP_RATE_LIMIT_REACHED,
     message: EXCEPTION_MESSAGE.AUTH.OTP_RATE_LIMIT_REACHED,
     httpStatusCode: HttpStatus.TOO_MANY_REQUESTS,
   },
+
   MAX_ATTEMPTS_REACHED: {
-    code: 7003,
+    code: RATE_LIMIT_EXCEPTION_CODES.MAX_ATTEMPTS_REACHED,
     message: EXCEPTION_MESSAGE.AUTH.MAX_ATTEMPTS_REACHED,
     httpStatusCode: HttpStatus.TOO_MANY_REQUESTS,
   },
-};
+
+  INVALID_HEADER: {
+    code: AUTHENTICATION_EXCEPTION_CODES.INVALID_HEADER,
+    message: EXCEPTION_MESSAGE.AUTH.UNAUTHORIZED_REQUEST,
+    httpStatusCode: HttpStatus.UNAUTHORIZED,
+  },
+} as const;

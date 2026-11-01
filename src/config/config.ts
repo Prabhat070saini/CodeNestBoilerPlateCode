@@ -6,6 +6,7 @@ dotenv.config();
 // Define validation schema
 const schema = Joi.object({
   // App Config
+  CORS_ORIGIN: Joi.string().default(''),
   X_API_KEY: Joi.string().required(),
   ENV_NAME: Joi.string().default('development'),
   LOG_LEVEL: Joi.string().default('debug'),
@@ -76,6 +77,11 @@ if (error) {
 //  Export typed config object
 export const config = {
   env: env.ENV_NAME,
+  cors: {
+    origins: env.CORS_ORIGIN.split(',')
+      .map((origin: string) => origin.trim())
+      .filter(Boolean),
+  },
   api_key: {
     x_api_key: env.X_API_KEY,
   },

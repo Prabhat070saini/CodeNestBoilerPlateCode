@@ -16,19 +16,12 @@ export class BookRepository {
     search?: string,
   ): Promise<IFunctionOutput<BookListing[]>> {
     try {
-      console.log(
-        'getBooklist called in repository',
-        pageIndex,
-        pageSize,
-        search,
-      );
       const query = `SELECT * FROM public.get_books_listing($1,$2,$3)`;
       const result = await this.dataSource.query(query, [
         pageIndex,
         pageSize,
         search,
       ]);
-      console.log('result', result);
       return {
         data: result,
       };

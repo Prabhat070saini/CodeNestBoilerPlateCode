@@ -13,6 +13,7 @@ import { ETokenType } from '../constants/app.enum';
 import { TokenService } from '../token/token.service';
 import { CACHE_BASE, CacheBase } from '../../core/cache/cache.interface';
 import { RedisKeys } from '../../core/cache/keys';
+import { FastifyRequest } from 'fastify';
 
 @Injectable()
 export class AuthnGuard implements CanActivate {
@@ -23,7 +24,7 @@ export class AuthnGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest();
+    const request = context.switchToHttp().getRequest<FastifyRequest>();
     const token = request.headers.authorization?.split(' ')[1];
     if (!token) {
       throw new UnauthorizedException({

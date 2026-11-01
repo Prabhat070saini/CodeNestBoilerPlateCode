@@ -24,3 +24,10 @@ export enum ESendOtpPurpose {
   SIGN_IN = 'SIGN_IN',
   SIGN_UP = 'SIGN_UP',
 }
+
+export enum EApplicationEnvironmentType {
+  DEVELOPMENT = 'development',
+  PRODUCTION = 'production',
+  UAT = 'uat',
+  QA = 'qa',
+}

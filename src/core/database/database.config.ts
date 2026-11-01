@@ -27,6 +27,7 @@ export class DatabaseConfig {
         },
       } as DataSourceOptions;
     } catch (error) {
+      /* eslint-disable */
       console.error(
         '[MySQL Database connection] Trouble connecting to the database:',
         error,

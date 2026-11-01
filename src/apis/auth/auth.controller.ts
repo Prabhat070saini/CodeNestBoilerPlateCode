@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import {
   Controller,
   Post,
@@ -47,6 +45,7 @@ export class AuthController {
   @IsPublic()
   @Get('google')
   @UseGuards(AuthGuard('google'))
+  /* eslint-disable */
   async googleAuth() {
     /* TODOdocument why this async method 'googleAuth' is empty */
   }
@@ -62,6 +61,7 @@ export class AuthController {
       user: (req as any).user,
     };
   }
+  /* eslint-enable */
 
   @Post('send-otp')
   async sendOtp(
@@ -98,7 +98,6 @@ export class AuthController {
     @Headers('refresh-token') refreshToken: string,
     @Res() res: FastifyReply,
   ): Promise<void> {
-    console.log(refreshToken);
     const output = await this.authService.refreshToken(refreshToken);
     this.utilsService.sendRestResponse(res, output);
   }
