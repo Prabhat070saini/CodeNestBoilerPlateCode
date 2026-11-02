@@ -32,6 +32,7 @@ const schema = Joi.object({
   // REDIS_PASSWORD: Joi.string(),
   REDIS_CONNECTION_LIMIT: Joi.number().default(50),
   USE_REDIS: Joi.boolean().default(true),
+  REDIS_RETRY_LIMIT: Joi.number().default(5),
 
   ACCESS_TOKEN_SECRET: Joi.string().required(),
   REFRESH_TOKEN_SECRET: Joi.string().required(),
@@ -109,6 +110,7 @@ export const config = {
     password: env.REDIS_PASSWORD,
     db_connection_limit: env.REDIS_CONNECTION_LIMIT,
     use_redis: env.USE_REDIS,
+    retry_limit: env.REDIS_RETRY_LIMIT,
   },
   token: {
     access_token_secret: env.ACCESS_TOKEN_SECRET,
