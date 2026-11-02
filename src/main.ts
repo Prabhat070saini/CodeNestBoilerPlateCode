@@ -80,14 +80,13 @@ async function bootstrap(): Promise<void> {
     },
   });
 
+  /* This tells NestJS to use the custom logger */
+  app.useLogger(app.get(CustomLoggerService));
+  await app.listen(config.app.port, '0.0.0.0');
   /*eslint-disable */
   console.log(
     `Swagger UI is running on: http://localhost:${config.app.port}/docs`,
   );
-
-  /* This tells NestJS to use the custom logger */
-  app.useLogger(app.get(CustomLoggerService));
-  await app.listen(config.app.port, '0.0.0.0');
 }
 bootstrap().catch((error) => {
   console.error('Application startup failed:', error);

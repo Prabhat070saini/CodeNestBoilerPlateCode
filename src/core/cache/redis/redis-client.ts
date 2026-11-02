@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable  */
 
 import {
   Injectable,
@@ -28,12 +27,13 @@ export class RedisClient implements OnModuleInit, OnApplicationShutdown {
       port: Number(config.redis.port),
       password: config.redis.password || undefined,
 
-      // Don't connect automatically; connect during module initialization.
       lazyConnect: true,
 
       retryStrategy: (times: number): number | null => {
-        if (times > config.redis.retry_limit) {
-          this.logger.error(
+        console.log('[Redis Retry Strategy] Attempt:', times);
+
+        if (times >= Number(config.redis.retry_limit)) {
+          console.error(
             `Redis retry limit (${config.redis.retry_limit}) exceeded.`,
           );
 
@@ -42,14 +42,13 @@ export class RedisClient implements OnModuleInit, OnApplicationShutdown {
 
         const delay = Math.min(times * 200, 2000);
 
-        this.logger.warn(
+        console.warn(
           `Redis reconnecting in ${delay}ms (attempt ${times}/${config.redis.retry_limit})`,
         );
 
         return delay;
       },
     });
-
     this.client.on('connect', () => {
       this.connected = true;
     });
@@ -78,29 +77,46 @@ export class RedisClient implements OnModuleInit, OnApplicationShutdown {
       throw new Error('Redis client is not initialized');
     }
 
-    try {
-      this.logger.log('Connecting to Redis...');
+    this.logger.log('Connecting to Redis...');
 
-      await this.client.connect();
+    await new Promise<void>((resolve, reject) => {
+      const client = this.client!;
 
-      if (this.client.status !== 'ready') {
-        throw new Error(`Redis is not ready. Status: ${this.client.status}`);
-      }
+      const cleanup = () => {
+        client.removeListener('ready', onReady);
+        client.removeListener('end', onEnd);
+      };
 
-      this.connected = true;
-      this.logger.log('Redis connection established successfully');
-    } catch (error) {
-      this.connected = false;
+      const onReady = () => {
+        cleanup();
+        this.connected = true;
 
-      this.logger.error(
-        `Redis connection failed. Application startup aborted: ${(error as Error).message}`,
-      );
+        this.logger.log('Redis connection established successfully');
+        resolve();
+      };
 
-      // Prevent further reconnection attempts.
-      this.client.disconnect();
+      const onEnd = () => {
+        cleanup();
+        this.connected = false;
 
-      throw new Error(`Redis connection failed: ${(error as Error).message}`);
-    }
+        reject(
+          new Error(
+            `Redis connection failed after ${config.redis.retry_limit} retries.`,
+          ),
+        );
+      };
+
+      // Register listeners before initiating the connection.
+      client.once('ready', onReady);
+      client.once('end', onEnd);
+
+      // Let retryStrategy manage subsequent connection attempts.
+      client.connect().catch((error: Error) => {
+        this.logger.warn(
+          `Initial Redis connection attempt failed: ${error.message}. Waiting for retries...`,
+        );
+      });
+    });
   }
   getClient(): Redis {
     if (!this.client) {
