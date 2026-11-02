@@ -1,10 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { RedisClient } from './redis-client';
-import { CacheBase } from '../cache.interface';
+import { ICacheProvider } from '../cache.interface';
 import { config } from '../../../config/config';
 
 @Injectable()
-export class RedisCacheService implements CacheBase {
+export class RedisCacheService implements ICacheProvider {
   private readonly logger = new Logger(RedisCacheService.name);
   private readonly client;
   private readonly enabled = config.redis.use_redis;
@@ -12,9 +12,9 @@ export class RedisCacheService implements CacheBase {
   constructor(private readonly redisClient: RedisClient) {
     if (this.enabled) {
       this.client = this.redisClient.getClient();
-      this.logger.log('🧠 Redis cache is ENABLED');
+      this.logger.log(' Redis cache is ENABLED');
     } else {
-      this.logger.warn('🚫 Redis cache is DISABLED via environment config');
+      this.logger.warn(' Redis cache is DISABLED via environment config');
     }
   }
 
@@ -64,7 +64,7 @@ export class RedisCacheService implements CacheBase {
     try {
       const data = typeof value === 'string' ? value : JSON.stringify(value);
       await this.client.set(key, data);
-      this.logger.log(`✅ Cache saved for key: ${key}`);
+      this.logger.log(` Cache saved for key: ${key}`);
     } catch (error) {
       throw new Error(
         `[RedisCacheService:setKey] Error saving key "${key}": ${error}`,
@@ -84,7 +84,7 @@ export class RedisCacheService implements CacheBase {
       const data = typeof value === 'string' ? value : JSON.stringify(value);
       await this.client.set(key, data, 'EX', expInSec);
       this.logger.log(
-        `✅ Cache saved with expiry (${expInSec}s) for key: ${key}`,
+        ` Cache saved with expiry (${expInSec}s) for key: ${key}`,
       );
     } catch (error) {
       throw new Error(

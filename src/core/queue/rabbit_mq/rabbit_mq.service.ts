@@ -21,7 +21,7 @@ export class RabbitMQService
   async connect(): Promise<void> {
     this.conn = await connect(this.config.url);
     this.channel = await this.conn.createChannel();
-    this.logger.log(`[RabbitMQ] ✅ Connected to ${this.config.url}`);
+    this.logger.log(`[RabbitMQ]  Connected to ${this.config.url}`);
   }
 
   async publish(

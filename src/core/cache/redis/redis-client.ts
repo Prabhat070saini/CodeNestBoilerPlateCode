@@ -32,25 +32,25 @@ export class RedisClient implements OnApplicationShutdown {
       },
     });
 
-    // ✅ Listen for connection events
-    // ✅ Listen for connection events
+    //  Listen for connection events
+    //  Listen for connection events
     this.client.on('connect', (): void => {
       this.connected = true;
-      this.logger.log('✅ Redis connected successfully');
+      this.logger.log(' Redis connected successfully');
     });
 
     this.client.on('ready', (): void => {
-      this.logger.log('🚀 Redis client ready to use');
+      this.logger.log(' Redis client ready to use');
     });
 
     this.client.on('error', (err: Error): void => {
       this.connected = false;
-      this.logger.error(`❌ Redis Client Error: ${err.message}`, err.stack);
+      this.logger.error(` Redis Client Error: ${err.message}`, err.stack);
     });
 
     this.client.on('close', (): void => {
       this.connected = false;
-      this.logger.warn('⚠️ Redis connection closed');
+      this.logger.warn(' Redis connection closed');
     });
   }
 
@@ -64,7 +64,7 @@ export class RedisClient implements OnApplicationShutdown {
 
   async onApplicationShutdown(signal?: string): Promise<void> {
     this.logger.log(
-      `🧹 [RedisClient] Shutting down due to signal: ${signal ?? 'manual stop'}`,
+      ` [RedisClient] Shutting down due to signal: ${signal ?? 'manual stop'}`,
     );
   }
 }

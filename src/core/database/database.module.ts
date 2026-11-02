@@ -21,19 +21,19 @@ class DatabaseShutdownService implements OnApplicationShutdown {
 
   async onApplicationShutdown(signal?: string): Promise<void> {
     this.logger.log(
-      `🧹 [DatabaseModule] Shutting down due to signal: ${signal ?? 'manual stop'}`,
+      ` [DatabaseModule] Shutting down due to signal: ${signal ?? 'manual stop'}`,
     );
     try {
       if (this.dataSource?.isInitialized) {
         await this.dataSource.destroy();
-        this.logger.log('✅ Database connection closed gracefully');
+        this.logger.log(' Database connection closed gracefully');
       } else {
         this.logger.log(
-          'ℹ️ Database connection already closed or not initialized',
+          ' Database connection already closed or not initialized',
         );
       }
     } catch (error) {
-      this.logger.error('❌ Error while closing database connection:', error);
+      this.logger.error(' Error while closing database connection:', error);
     }
   }
 }

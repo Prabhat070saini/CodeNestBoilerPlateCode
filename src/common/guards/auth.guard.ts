@@ -11,16 +11,17 @@ import {
 import { config } from '../..//config/config';
 import { ETokenType } from '../constants/app.enum';
 import { TokenService } from '../token/token.service';
-import { CACHE_BASE, CacheBase } from '../../core/cache/cache.interface';
-import { RedisKeys } from '../../core/cache/keys';
+import { ICacheProvider } from '../../core/cache/cache.interface';
+import { CacheKeys } from '../../core/cache/keys';
 import { FastifyRequest } from 'fastify';
+import { CACHE_PROVIDER } from '../../core/cache/cache.constants';
 
 @Injectable()
 export class AuthnGuard implements CanActivate {
   private readonly logger = new Logger(AuthnGuard.name);
   constructor(
     private readonly tokenService: TokenService,
-    @Inject(CACHE_BASE) private readonly cacheService: CacheBase,
+    @Inject(CACHE_PROVIDER) private readonly cacheService: ICacheProvider,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -44,7 +45,7 @@ export class AuthnGuard implements CanActivate {
 
     if (config.redis.use_redis) {
       const accessToken = await this.cacheService.getKey(
-        RedisKeys.auth.accessToken(payload.ref),
+        CacheKeys.auth.accessToken(payload.ref),
       );
       if (accessToken !== token) {
         this.logger.debug(`[canActivate] token not match with redis token`);

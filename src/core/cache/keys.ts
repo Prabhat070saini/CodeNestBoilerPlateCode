@@ -6,7 +6,7 @@
  */
 import { Crypto } from '../../common/lib/crypto/crypto';
 
-export const RedisKeys = {
+export const CacheKeys = {
   // ===== AUTH KEYS =====
   auth: {
     userId: (id: string): string => `auth:userId:${id}`,

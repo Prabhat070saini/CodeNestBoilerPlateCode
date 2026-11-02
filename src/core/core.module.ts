@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from './database/database.module';
+import { CacheProviderType } from './cache/cache.constants';
+import { CacheModule } from './cache/cache.module';
 // import { CacheModule } from './cache/cache.module';
 // import { QueueModule } from './queue/queue.module';
 // import { QueueProviderType } from './queue/queue.constants';
@@ -11,8 +13,10 @@ import { DatabaseModule } from './database/database.module';
 // //   defaultRetryDelayMs: config.queue.defaultRetryDelayMs,
 // //   isDlq: config.queue.isDlq,
 // // });
+// ,
+
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, CacheModule.forRoot(CacheProviderType.REDIS)],
   controllers: [],
   providers: [],
   exports: [],

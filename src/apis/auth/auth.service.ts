@@ -19,11 +19,12 @@ import {
   ISignInResponse,
 } from './auth.interface';
 import { UtilsService } from '../../common/utils/utils.service';
-import { CACHE_BASE, CacheBase } from '../../core/cache/cache.interface';
 import { config } from '../../config/config';
 import { Crypto } from '../../common/lib/crypto/crypto';
-import { RedisKeys } from '../../core/cache/keys';
+import { CacheKeys } from '../../core/cache/keys';
 import { SUCCESS_MESSAGE } from '../../common/constants/app.constant';
+import { ICacheProvider } from '../../core/cache/cache.interface';
+import { CACHE_PROVIDER } from '../../core/cache/cache.constants';
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
@@ -33,7 +34,7 @@ export class AuthService {
     private readonly hashingService: HashingService,
     private readonly tokenService: TokenService,
     private readonly utilsService: UtilsService,
-    @Inject(CACHE_BASE) private readonly cacheService: CacheBase,
+    @Inject(CACHE_PROVIDER) private readonly cacheService: ICacheProvider,
   ) {}
 
   async signUp(signUpDto: SignUpDto): Promise<IServiceOutput<null>> {
@@ -109,12 +110,12 @@ export class AuthService {
 
       if (config.redis.use_redis) {
         await this.cacheService.setKeyWithExpiry(
-          RedisKeys.auth.accessToken(existingUser.user_id),
+          CacheKeys.auth.accessToken(existingUser.user_id),
           accessToken,
           config.token.access_token_exp_in_min,
         );
         await this.cacheService.setKeyWithExpiry(
-          RedisKeys.auth.refreshToken(existingUser.user_id),
+          CacheKeys.auth.refreshToken(existingUser.user_id),
           refreshToken,
           config.token.refresh_token_exp_in_min,
         );
@@ -187,12 +188,12 @@ export class AuthService {
 
       if (config.redis.use_redis) {
         await this.cacheService.setKeyWithExpiry(
-          RedisKeys.auth.accessToken(existingUser.user_id),
+          CacheKeys.auth.accessToken(existingUser.user_id),
           accessToken,
           config.token.access_token_exp_in_min,
         );
         await this.cacheService.setKeyWithExpiry(
-          RedisKeys.auth.refreshToken(existingUser.user_id),
+          CacheKeys.auth.refreshToken(existingUser.user_id),
           refreshToken,
           config.token.refresh_token_exp_in_min,
         );
@@ -228,7 +229,7 @@ export class AuthService {
 
       if (config.redis.use_redis) {
         const storedRefreshToken = await this.cacheService.getKey(
-          RedisKeys.auth.refreshToken(verifyTokenPayload.ref),
+          CacheKeys.auth.refreshToken(verifyTokenPayload.ref),
         );
 
         if (!storedRefreshToken || storedRefreshToken !== refreshToken) {
@@ -246,7 +247,7 @@ export class AuthService {
 
       if (config.redis.use_redis) {
         await this.cacheService.setKeyWithExpiry(
-          RedisKeys.auth.accessToken(verifyTokenPayload.ref),
+          CacheKeys.auth.accessToken(verifyTokenPayload.ref),
           accessToken,
           config.token.access_token_exp_in_min,
         );
@@ -293,14 +294,14 @@ export class AuthService {
 
       if (config.redis.use_redis) {
         const cooldown = await this.cacheService.getKey(
-          RedisKeys.otp.cooldown(purpose, identifier),
+          CacheKeys.otp.cooldown(purpose, identifier),
         );
         if (cooldown) {
           return { exception: exception.OTP_COOLDOWN_ACTIVE };
         }
 
         const rate = await this.cacheService.getKey(
-          RedisKeys.otp.rate(purpose, identifier),
+          CacheKeys.otp.rate(purpose, identifier),
         );
         otpCount = Number(rate || 0);
 
@@ -319,17 +320,17 @@ export class AuthService {
 
       if (config.redis.use_redis) {
         await this.cacheService.setKeyWithExpiry<IActiveOtp>(
-          RedisKeys.otp.active(purpose, otpIdentifier),
+          CacheKeys.otp.active(purpose, otpIdentifier),
           { otpHash, attempts: 0 },
           config.otp.otp_ttl,
         );
         await this.cacheService.setKeyWithExpiry(
-          RedisKeys.otp.cooldown(purpose, identifier),
+          CacheKeys.otp.cooldown(purpose, identifier),
           '1',
           config.otp.cool_down_ttl,
         );
         await this.cacheService.setKeyWithExpiry(
-          RedisKeys.otp.rate(purpose, identifier),
+          CacheKeys.otp.rate(purpose, identifier),
           String(otpCount + 1),
           3600,
         );
@@ -368,7 +369,7 @@ export class AuthService {
       }
 
       const record = await this.cacheService.getKey<IActiveOtp>(
-        RedisKeys.otp.active(purpose, identifier),
+        CacheKeys.otp.active(purpose, identifier),
       );
       if (!record) {
         this.logger.debug(`[verifyOtp] OTP not found for ${identifier}`);
@@ -377,7 +378,7 @@ export class AuthService {
 
       if (record.attempts >= config.otp.max_attempts) {
         await this.cacheService.deleteKey(
-          RedisKeys.otp.active(purpose, identifier),
+          CacheKeys.otp.active(purpose, identifier),
         );
         return { exception: exception.MAX_ATTEMPTS_REACHED };
       }
@@ -389,7 +390,7 @@ export class AuthService {
         this.logger.debug(`[verifyOtp] Invalid OTP for ${identifier}`);
         record.attempts++;
         await this.cacheService.setKeyWithExpiry(
-          RedisKeys.otp.active(purpose, identifier),
+          CacheKeys.otp.active(purpose, identifier),
           record,
           config.otp.otp_ttl,
         );
@@ -399,7 +400,7 @@ export class AuthService {
       // Only delete the OTP if Redis is enabled
       if (config.redis.use_redis) {
         await this.cacheService.deleteKey(
-          RedisKeys.otp.active(purpose, identifier),
+          CacheKeys.otp.active(purpose, identifier),
         );
       }
       return {
