@@ -89,4 +89,8 @@ async function bootstrap(): Promise<void> {
   app.useLogger(app.get(CustomLoggerService));
   await app.listen(config.app.port, '0.0.0.0');
 }
-bootstrap();
+bootstrap().catch((error) => {
+  console.error('Application startup failed:', error);
+
+  process.exit(1);
+});
