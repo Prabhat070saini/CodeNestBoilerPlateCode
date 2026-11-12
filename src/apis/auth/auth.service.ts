@@ -22,7 +22,10 @@ import { UtilsService } from '../../common/utils/utils.service';
 import { config } from '../../config/config';
 import { Crypto } from '../../common/lib/crypto/crypto';
 import { CacheKeys } from '../../core/cache/keys';
-import { SUCCESS_MESSAGE } from '../../common/constants/app.constant';
+import {
+  EXCEPTION_MESSAGE,
+  SUCCESS_MESSAGE,
+} from '../../common/constants/app.constant';
 import { ICacheProvider } from '../../core/cache/cache.interface';
 import { CACHE_PROVIDER } from '../../core/cache/cache.constants';
 @Injectable()
@@ -87,7 +90,9 @@ export class AuthService {
 
       if (!existingUser) {
         this.logger.debug(`[signIn] User not found with email ${email}`);
-        return { exception: exception.USER_NOT_FOUND };
+        return {
+          exception: exception.NO_DATA_FOUND(EXCEPTION_MESSAGE.USER.NOT_FOUND),
+        };
       }
       const isPasswordMatch = await this.hashingService.matchPassword(
         password,
@@ -286,7 +291,9 @@ export class AuthService {
 
       if (!existingUser) {
         this.logger.debug(`[signIn] ${JSON.stringify(existingUser)}`);
-        return { exception: exception.USER_NOT_FOUND };
+        return {
+          exception: exception.NO_DATA_FOUND(EXCEPTION_MESSAGE.USER.NOT_FOUND),
+        };
       }
       const otpIdentifier = this.utilsService.generateUlId();
       const identifier = existingUser.user_id;

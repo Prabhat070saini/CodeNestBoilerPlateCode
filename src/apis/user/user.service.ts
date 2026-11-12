@@ -3,6 +3,7 @@ import { UserRepository } from './repository/user.repository';
 import { IServiceOutput } from '../../common/constants/app.interface';
 import { EFindUser } from '../../common/constants/app.enum';
 import { exception } from '../../common/constants/exception';
+import { EXCEPTION_MESSAGE } from '../../common/constants';
 @Injectable()
 export class UserService {
   private readonly logger = new Logger(UserService.name);
@@ -20,7 +21,9 @@ export class UserService {
     }
     if (!user) {
       this.logger.debug(`[findUserById] User not found with user_id ${userId}`);
-      return { exception: exception.USER_NOT_FOUND };
+      return {
+        exception: exception.NO_DATA_FOUND(EXCEPTION_MESSAGE.USER.NOT_FOUND),
+      };
     }
     return {
       success: {

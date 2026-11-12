@@ -34,7 +34,7 @@ export class UserRepository extends TransactionBaseRepository<User> {
       return { data: user };
     } catch (error) {
       this.logger.error(`[findUser] ${JSON.stringify(error)}`);
-      return { exception: exception.SOMETHING_WENT_WRONG };
+      return { exception: exception.UnauthorizedException('prabhat') };
     }
   }
 

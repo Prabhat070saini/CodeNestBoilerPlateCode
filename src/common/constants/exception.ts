@@ -9,37 +9,41 @@ import {
   CRYPTO_EXCEPTION_CODES,
 } from './app.constant';
 
-export const exception = {
-  USER_UNAUTHORIZED_REQUEST: {
-    code: HttpStatus.UNAUTHORIZED,
-    message: EXCEPTION_MESSAGE.AUTH.UNAUTHORIZED_REQUEST,
-    httpStatusCode: HttpStatus.UNAUTHORIZED,
-  },
+export const createException = (
+  code: number,
+  httpStatusCode: HttpStatus,
+  defaultMessage?: string,
+) => {
+  return (
+    message?: string,
+  ): { code: number; message: string; httpStatusCode: HttpStatus } => ({
+    code: code,
+    message: message || defaultMessage,
+    httpStatusCode: httpStatusCode,
+  });
+};
 
+export const exception = {
   PHONE_NOT_REGISTERED: {
     code: HttpStatus.UNAUTHORIZED,
     message: EXCEPTION_MESSAGE.AUTH.PHONE_NOT_REGISTERED,
     httpStatusCode: HttpStatus.UNAUTHORIZED,
   },
-
-  NO_DATA_FOUND: {
-    code: HttpStatus.NOT_FOUND,
-    message: EXCEPTION_MESSAGE.NO_DATA_FOUND,
-    httpStatusCode: HttpStatus.NOT_FOUND,
-  },
-
-  USER_NOT_FOUND: {
-    code: HttpStatus.NOT_FOUND,
-    message: EXCEPTION_MESSAGE.USER.NOT_FOUND,
-    httpStatusCode: HttpStatus.NOT_FOUND,
-  },
-
-  BAD_REQUEST: {
-    code: HttpStatus.BAD_REQUEST,
-    message: EXCEPTION_MESSAGE.AUTH.BAD_REQUEST,
-    httpStatusCode: HttpStatus.BAD_REQUEST,
-  },
-
+  UnauthorizedException: createException(
+    HttpStatus.UNAUTHORIZED,
+    HttpStatus.UNAUTHORIZED,
+    EXCEPTION_MESSAGE.AUTH.UNAUTHORIZED_REQUEST,
+  ),
+  NO_DATA_FOUND: createException(
+    HttpStatus.NOT_FOUND,
+    HttpStatus.NOT_FOUND,
+    EXCEPTION_MESSAGE.NO_DATA_FOUND,
+  ),
+  BAD_REQUEST: createException(
+    HttpStatus.BAD_REQUEST,
+    HttpStatus.BAD_REQUEST,
+    EXCEPTION_MESSAGE.AUTH.BAD_REQUEST,
+  ),
   SOMETHING_WENT_WRONG: {
     code: HttpStatus.INTERNAL_SERVER_ERROR,
     message: EXCEPTION_MESSAGE.SOMETHING_WENT_WRONG,
