@@ -11,6 +11,7 @@ export enum ESortDir {
 
 export enum ESchema {
   DBO_SCHEMA = 'dbo',
+  PUBLIC_SCHEMA = 'public',
 }
 
 export enum EFindUser {

@@ -1,6 +1,7 @@
 import { DataSource } from 'typeorm';
 import { runSeeders } from 'typeorm-extension';
 import { Logger } from '@nestjs/common';
+import SchemaSeeder from './schema.seeder';
 
 export default class InitSeeder {
   private readonly logger = new Logger(InitSeeder.name);
@@ -8,9 +9,7 @@ export default class InitSeeder {
     dataSource: DataSource,
     // factoryManager: SeederFactoryManager,
   ): Promise<void> {
-    const seeds = [
-      /* add your seeders here */
-    ];
+    const seeds = [SchemaSeeder];
 
     // Only run if seeds array is not empty
     if (seeds.length === 0) {
