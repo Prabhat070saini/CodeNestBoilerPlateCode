@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import { EXCEPTION_MESSAGE } from './app.constant';
+import { EXCEPTION_MESSAGE } from './response.message';
 
 import {
   AUTHENTICATION_EXCEPTION_CODES,
@@ -8,20 +8,7 @@ import {
   ENCODING_EXCEPTION_CODES,
   CRYPTO_EXCEPTION_CODES,
 } from './app.constant';
-
-export const createException = (
-  code: number,
-  httpStatusCode: HttpStatus,
-  defaultMessage?: string,
-) => {
-  return (
-    message?: string,
-  ): { code: number; message: string; httpStatusCode: HttpStatus } => ({
-    code: code,
-    message: message || defaultMessage,
-    httpStatusCode: httpStatusCode,
-  });
-};
+import { createException } from '../functions/common.function';
 
 export const exception = {
   PHONE_NOT_REGISTERED: {

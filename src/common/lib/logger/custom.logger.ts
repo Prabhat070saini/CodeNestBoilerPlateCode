@@ -80,10 +80,19 @@ export class CustomLoggerService implements LoggerService {
     this.write('debug', message, context);
   }
 
-  error(message: any, trace?: string, context?: string): void {
-    this.write('error', message, context, trace);
-  }
+  error(message: any, error?: any, context?: string): void {
+    const stack =
+      error instanceof Error
+        ? error.stack
+        : typeof error === 'string'
+          ? error
+          : undefined;
+    this.write('error', message, context);
 
+    if (stack) {
+      process.stderr.write(`${stack}\n`);
+    }
+  }
   private write(
     level: LogLevel,
     message: any,

@@ -36,3 +36,12 @@ export interface IFunctionOutput<T> {
   data?: T;
   exception?: IException;
 }
+
+export interface ISuccessResponse<T = undefined> {
+  success: {
+    code: number;
+    message: string;
+    data?: T;
+    httpStatusCode: number;
+  };
+}

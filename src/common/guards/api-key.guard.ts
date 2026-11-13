@@ -16,7 +16,6 @@ export class ValidateApiKeyGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    this.logger.log(`[ValidateApiKeyGuard] Incoming request`);
     const request = context.switchToHttp().getRequest();
     const xApiKey = request.headers['x-api-key'];
     const isPublic =

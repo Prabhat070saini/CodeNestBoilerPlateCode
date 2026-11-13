@@ -25,9 +25,10 @@ import { CacheKeys } from '../../core/cache/keys';
 import {
   EXCEPTION_MESSAGE,
   SUCCESS_MESSAGE,
-} from '../../common/constants/app.constant';
+} from '../../common/constants/response.message';
 import { ICacheProvider } from '../../core/cache/cache.interface';
 import { CACHE_PROVIDER } from '../../core/cache/cache.constants';
+import { success } from '../../common/functions/common.function';
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
@@ -66,14 +67,12 @@ export class AuthService {
         this.logger.debug(`[signUp] ${JSON.stringify(createUserExp)}`);
         return { exception: createUserExp };
       }
-      return {
-        success: {
-          code: HttpStatus.OK,
-          message: SUCCESS_MESSAGE.USER_SIGNUP_SUCCESSFULLY,
-          data: null,
-          httpStatusCode: HttpStatus.OK,
-        },
-      };
+      return success(
+        HttpStatus.OK,
+        HttpStatus.OK,
+        SUCCESS_MESSAGE.AUTH.USER_SIGNUP_SUCCESSFULLY,
+        null,
+      );
     } catch (error) {
       this.logger.error(`[signUp] ${JSON.stringify(error)}`);
       return { exception: exception.SOMETHING_WENT_WRONG };
@@ -131,14 +130,12 @@ export class AuthService {
         refreshToken,
         user_id: existingUser.user_id,
       };
-      return {
-        success: {
-          code: HttpStatus.OK,
-          message: SUCCESS_MESSAGE.USER_LOGIN_SUCCESSFULLY,
-          data: resp,
-          httpStatusCode: HttpStatus.OK,
-        },
-      };
+      return success(
+        HttpStatus.OK,
+        HttpStatus.OK,
+        SUCCESS_MESSAGE.AUTH.USER_LOGIN_SUCCESSFULLY,
+        resp,
+      );
     } catch (error) {
       this.logger.error(`[signIn] ${error}`);
       return { exception: exception.SOMETHING_WENT_WRONG };
@@ -209,14 +206,12 @@ export class AuthService {
         refreshToken,
         user_id: existingUser.user_id,
       };
-      return {
-        success: {
-          code: HttpStatus.OK,
-          message: SUCCESS_MESSAGE.USER_LOGIN_SUCCESSFULLY,
-          data: resp,
-          httpStatusCode: HttpStatus.OK,
-        },
-      };
+      return success(
+        HttpStatus.OK,
+        HttpStatus.OK,
+        SUCCESS_MESSAGE.AUTH.USER_LOGIN_SUCCESSFULLY,
+        resp,
+      );
     } catch (error) {
       this.logger.error(`[validateGoogleUser] ${error}`);
       return { exception: exception.SOMETHING_WENT_WRONG };
@@ -262,15 +257,12 @@ export class AuthService {
         accessToken,
         refreshToken,
       };
-
-      return {
-        success: {
-          code: HttpStatus.OK,
-          message: SUCCESS_MESSAGE.USER_REFRESH_TOKEN_SUCCESSFULLY,
-          data: resp,
-          httpStatusCode: HttpStatus.OK,
-        },
-      };
+      return success(
+        HttpStatus.OK,
+        HttpStatus.OK,
+        SUCCESS_MESSAGE.AUTH.USER_REFRESH_TOKEN_SUCCESSFULLY,
+        resp,
+      );
     } catch (error) {
       this.logger.error(`[refreshToken] ${error}`);
       return { exception: exception.SOMETHING_WENT_WRONG };
@@ -350,14 +342,12 @@ export class AuthService {
         attemptsLeft,
         identifier: otpIdentifier,
       };
-      return {
-        success: {
-          code: HttpStatus.OK,
-          message: SUCCESS_MESSAGE.SEND_OTP_SUCCESSFULLY,
-          data: resp,
-          httpStatusCode: HttpStatus.OK,
-        },
-      };
+      return success(
+        HttpStatus.OK,
+        HttpStatus.OK,
+        SUCCESS_MESSAGE.AUTH.SEND_OTP_SUCCESSFULLY,
+        resp,
+      );
     } catch (error) {
       this.logger.error(`[sendOtp] ${error}`);
       return { exception: exception.SOMETHING_WENT_WRONG };
@@ -410,14 +400,12 @@ export class AuthService {
           CacheKeys.otp.active(purpose, identifier),
         );
       }
-      return {
-        success: {
-          code: HttpStatus.OK,
-          message: SUCCESS_MESSAGE.OTP_VERIFIED_SUCCESSFULLY,
-          data: null,
-          httpStatusCode: HttpStatus.OK,
-        },
-      };
+      return success(
+        HttpStatus.OK,
+        HttpStatus.OK,
+        SUCCESS_MESSAGE.AUTH.OTP_VERIFIED_SUCCESSFULLY,
+        null,
+      );
     } catch (error) {
       this.logger.error(`[verifyOtp] ${error}`);
       return { exception: exception.SOMETHING_WENT_WRONG };

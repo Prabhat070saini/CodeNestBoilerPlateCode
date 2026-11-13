@@ -1,10 +1,11 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { BookRepository } from './repository/book.repository';
 import { IServiceOutput } from '../../common/constants/app.interface';
-import { SUCCESS_MESSAGE } from '../../common/constants/app.constant';
+import { SUCCESS_MESSAGE } from '../../common/constants/response.message';
 import { exception } from '../../common/constants/exception';
 import { IBookDetailsResponse, IBooksListingResponse } from './book.interface';
 import { BookListingDto } from './dto/book.dto';
+import { success } from '../../common/functions/common.function';
 
 @Injectable()
 export class BookService {
@@ -28,22 +29,15 @@ export class BookService {
         );
         return { exception: exception };
       }
-
-      return {
-        success: {
-          code: HttpStatus.OK,
-          message: SUCCESS_MESSAGE.SUCCESS,
-          data: {
-            books: books,
-            total_count: Number(books[0]?.total_count) || 0,
-          },
-          httpStatusCode: HttpStatus.OK,
-        },
-      };
+      return success(HttpStatus.OK, HttpStatus.OK, SUCCESS_MESSAGE.SUCCESS, {
+        books: books,
+        total_count: Number(books[0]?.total_count) || 0,
+      });
     } catch (error) {
       this.logger.error(
-        `Error in getBooklist: ${error instanceof Error ? `${error.message}|{error.stack}` : error}`,
-        'BookService',
+        `Error in getBooklist:`,
+        error,
+        'BookService|getBooklist',
       );
       return { exception: exception.SOMETHING_WENT_WRONG };
     }
@@ -67,17 +61,10 @@ export class BookService {
         );
         return { exception: exception };
       }
-      return {
-        success: {
-          code: HttpStatus.OK,
-          message: SUCCESS_MESSAGE.SUCCESS,
-          data: {
-            books: [data.book],
-            recommendations: data.recommendations,
-          },
-          httpStatusCode: HttpStatus.OK,
-        },
-      };
+      return success(HttpStatus.OK, HttpStatus.OK, SUCCESS_MESSAGE.SUCCESS, {
+        books: [data.book],
+        recommendations: data.recommendations,
+      });
     } catch (error) {
       this.logger.error(
         `Error in getBookbyId: ${error instanceof Error ? `${error.message}|{error.stack}` : error}`,
