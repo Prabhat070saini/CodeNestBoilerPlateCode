@@ -1,6 +1,6 @@
 export const CACHE_PROVIDER = 'CACHE_PROVIDER';
 
-export enum CacheProviderType {
+export enum ECacheProviderType {
   REDIS = 'redis',
   MEMCACHED = 'memcached',
   MEMORY = 'memory',

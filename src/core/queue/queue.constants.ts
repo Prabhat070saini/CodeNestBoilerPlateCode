@@ -1,4 +1,4 @@
-export enum QueueProviderType {
+export enum EQueueProviderType {
   RABBITMQ = 'rabbitmq',
   KAFKA = 'kafka',
   BULL = 'bull',

@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from './database/database.module';
-import { CacheProviderType } from './cache/cache.constants';
+import { ECacheProviderType } from './cache/cache.constants';
 import { CacheModule } from './cache/cache.module';
 // import { CacheModule } from './cache/cache.module';
 // import { QueueModule } from './queue/queue.module';
-// import { QueueProviderType } from './queue/queue.constants';
+// import { EQueueProviderType } from './queue/queue.constants';
 // import { config } from '../config/config';
 
-// // const queueModule = QueueModule.forRoot(QueueProviderType.RABBITMQ, {
+// // const queueModule = QueueModule.forRoot(EQueueProviderType.RABBITMQ, {
 // //   url: config.queue.url,
 // //   defaultRetries: config.queue.defaultRetries,
 // //   defaultRetryDelayMs: config.queue.defaultRetryDelayMs,
@@ -16,7 +16,7 @@ import { CacheModule } from './cache/cache.module';
 // ,
 
 @Module({
-  imports: [DatabaseModule, CacheModule.forRoot(CacheProviderType.REDIS)],
+  imports: [DatabaseModule, CacheModule.forRoot(ECacheProviderType.REDIS)],
   controllers: [],
   providers: [],
   exports: [],

@@ -2,7 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { TYPEORM_DATABASE_PROVIDER } from '../../../common/constants/app.constant';
 import { DataSource } from 'typeorm';
 import { IFunctionOutput } from '../../../common/constants/app.interface';
-import { BookDetails, BookListing, BookRecommendation } from './interface';
+import { IBookDetails, IBookListing, IBookRecommendation } from './interface';
 
 @Injectable()
 export class BookRepository {
@@ -14,7 +14,7 @@ export class BookRepository {
     pageIndex: number,
     pageSize: number,
     search?: string,
-  ): Promise<IFunctionOutput<BookListing[]>> {
+  ): Promise<IFunctionOutput<IBookListing[]>> {
     try {
       const query = `SELECT * FROM public.get_books_listing($1,$2,$3)`;
       const result = await this.dataSource.query(query, [
@@ -34,8 +34,8 @@ export class BookRepository {
   }
   async getBookbyId(contentId: string): Promise<
     IFunctionOutput<{
-      book: BookDetails;
-      recommendations: BookRecommendation[];
+      book: IBookDetails;
+      recommendations: IBookRecommendation[];
     }>
   > {
     const queryRunner = this.dataSource.createQueryRunner();
@@ -51,7 +51,7 @@ export class BookRepository {
         'FETCH ALL FROM recommendation_result',
       );
       const books = await queryRunner.query('FETCH ALL FROM book_result');
-      const book = books[0] as BookDetails;
+      const book = books[0] as IBookDetails;
       if (!book) {
         await queryRunner.rollbackTransaction();
         return { exception: { code: 404, message: 'Book not found' } };
@@ -61,7 +61,7 @@ export class BookRepository {
       return {
         data: {
           book,
-          recommendations: recommendations as BookRecommendation[],
+          recommendations: recommendations as IBookRecommendation[],
         },
       };
     } catch (error) {

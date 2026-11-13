@@ -4,9 +4,9 @@ import { BeforeApplicationShutdown, Logger } from '@nestjs/common';
 import { Connection, Channel, connect } from 'amqplib';
 import { IQueueProvider } from '../queue.interface';
 import {
-  RabbitMQConfig,
-  RabbitMQConsumeOptions,
-  RabbitMQPublishOptions,
+  IRabbitMQConfig,
+  IRabbitMQConsumeOptions,
+  IRabbitMQPublishOptions,
 } from './rabbit_mq.interface';
 // remove console add this.logger.debug or info which is relawant
 export class RabbitMQService
@@ -16,7 +16,7 @@ export class RabbitMQService
   private channel: Channel;
   private readonly logger = new Logger(RabbitMQService.name);
 
-  constructor(private readonly config: RabbitMQConfig) {}
+  constructor(private readonly config: IRabbitMQConfig) {}
 
   async connect(): Promise<void> {
     this.conn = await connect(this.config.url);
@@ -27,7 +27,7 @@ export class RabbitMQService
   async publish(
     queue: string,
     message: any,
-    options?: RabbitMQPublishOptions,
+    options?: IRabbitMQPublishOptions,
   ): Promise<void> {
     await this.channel.assertQueue(queue, {
       durable: true,
@@ -43,7 +43,7 @@ export class RabbitMQService
   async consume(
     queue: string,
     handler: (msg: any) => Promise<void>,
-    options?: RabbitMQConsumeOptions,
+    options?: IRabbitMQConsumeOptions,
     useDlq?: boolean,
   ): Promise<void> {
     const retries = options?.retries ?? this.config.defaultRetries ?? 3;

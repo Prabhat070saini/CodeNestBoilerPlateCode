@@ -9,6 +9,7 @@ export class UtilsService {
   defaultMessage = 'ERROR';
   sendRestResponse(
     res: FastifyReply,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     output: IServiceOutput<any>,
   ): FastifyReply {
     if (output?.exception) {

@@ -1,5 +1,5 @@
 import 'fastify';
-
+/*eslint-disable */
 declare module 'fastify' {
   interface FastifyRequest {
     user: {

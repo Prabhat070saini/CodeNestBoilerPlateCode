@@ -95,6 +95,7 @@ export class TransactionBaseRepository<T> {
     return entity;
   }
   async save(
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: { entity: any; options?: SaveOptions },
     queryRunner?: QueryRunner,
   ): Promise<T> {

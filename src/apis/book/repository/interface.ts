@@ -1,4 +1,4 @@
-export interface BookListing {
+export interface IBookListing {
   content_id: string;
   isbn: string;
   publisher: string;
@@ -13,7 +13,7 @@ export interface BookListing {
   total_count: string;
 }
 
-export interface BookDetails {
+export interface IBookDetails {
   id: string;
   content_type: string;
   title: string;
@@ -28,7 +28,7 @@ export interface BookDetails {
   edition: string;
 }
 
-export interface BookRecommendation {
+export interface IBookRecommendation {
   score: string;
   recommendation_type: string;
   id: string;

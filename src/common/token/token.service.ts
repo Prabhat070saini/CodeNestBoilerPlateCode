@@ -1,14 +1,14 @@
 // src/common/jwt/token.service.ts
 import { Injectable, Logger } from '@nestjs/common';
 import { ETokenType } from '../constants/app.enum';
-import { JwtConfig, TokenPayload } from '../constants/app.interface';
+import { IJwtConfig, ITokenPayload } from '../constants/app.interface';
 import { config } from '../../config/config';
 import { TokenProvider } from './token.provider';
 
 @Injectable()
 export class TokenService {
   private readonly logger = new Logger(TokenService.name);
-  private readonly tokenConfigs: Record<ETokenType, JwtConfig> = {
+  private readonly tokenConfigs: Record<ETokenType, IJwtConfig> = {
     [ETokenType.AccessToken]: {
       secret: config.token.access_token_secret,
       expiresIn: config.token.access_token_exp_in_min,
@@ -23,7 +23,7 @@ export class TokenService {
 
   constructor(private readonly provider: TokenProvider) {}
 
-  generate(payload: TokenPayload): string {
+  generate(payload: ITokenPayload): string {
     try {
       const cfg = this.tokenConfigs[payload.type];
       return this.provider.generateToken(cfg, payload);
@@ -33,7 +33,7 @@ export class TokenService {
     }
   }
 
-  validate(type: ETokenType, token: string): TokenPayload {
+  validate(type: ETokenType, token: string): ITokenPayload {
     try {
       const cfg = this.tokenConfigs[type];
       return this.provider.validateToken(cfg, token);

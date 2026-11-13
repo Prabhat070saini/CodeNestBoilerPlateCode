@@ -3,7 +3,7 @@ import axios, { AxiosHeaders, AxiosInstance, AxiosRequestConfig } from 'axios';
 import { TracingService } from '../tracing/tracing.service';
 import { CustomLoggerService } from '../logger/custom.logger';
 
-interface HttpRequestOptions {
+interface IHttpRequestOptions {
   body?: unknown;
   headers?: Record<string, string>;
   params?: Record<string, unknown>;
@@ -70,7 +70,7 @@ export class HttpService {
   private async request<T>(
     method: 'get' | 'post' | 'put' | 'patch' | 'delete',
     url: string,
-    { body, headers, params, skipTracing }: HttpRequestOptions = {},
+    { body, headers, params, skipTracing }: IHttpRequestOptions = {},
   ): Promise<T> {
     const config: AxiosRequestConfig = {
       method,
@@ -90,14 +90,14 @@ export class HttpService {
     return response.data;
   }
 
-  get<T>(url: string, opts?: Omit<HttpRequestOptions, 'body'>): Promise<T> {
+  get<T>(url: string, opts?: Omit<IHttpRequestOptions, 'body'>): Promise<T> {
     return this.request<T>('get', url, opts);
   }
 
   post<T>(
     url: string,
     body?: unknown,
-    opts?: Omit<HttpRequestOptions, 'body'>,
+    opts?: Omit<IHttpRequestOptions, 'body'>,
   ): Promise<T> {
     return this.request<T>('post', url, { ...opts, body });
   }
@@ -105,7 +105,7 @@ export class HttpService {
   put<T>(
     url: string,
     body?: unknown,
-    opts?: Omit<HttpRequestOptions, 'body'>,
+    opts?: Omit<IHttpRequestOptions, 'body'>,
   ): Promise<T> {
     return this.request<T>('put', url, { ...opts, body });
   }
@@ -113,12 +113,12 @@ export class HttpService {
   patch<T>(
     url: string,
     body?: unknown,
-    opts?: Omit<HttpRequestOptions, 'body'>,
+    opts?: Omit<IHttpRequestOptions, 'body'>,
   ): Promise<T> {
     return this.request<T>('patch', url, { ...opts, body });
   }
 
-  delete<T>(url: string, opts?: Omit<HttpRequestOptions, 'body'>): Promise<T> {
+  delete<T>(url: string, opts?: Omit<IHttpRequestOptions, 'body'>): Promise<T> {
     return this.request<T>('delete', url, opts);
   }
 }

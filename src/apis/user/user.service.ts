@@ -5,12 +5,13 @@ import { EFindUser } from '../../common/constants/app.enum';
 import { exception } from '../../common/constants/exception';
 import { EXCEPTION_MESSAGE, SUCCESS_MESSAGE } from '../../common/constants';
 import { success } from '../../common/functions/common.function';
+import { User } from './entities/user.entity';
 @Injectable()
 export class UserService {
   private readonly logger = new Logger(UserService.name);
   constructor(private readonly userRepository: UserRepository) {}
 
-  async findUserById(userId: string): Promise<IServiceOutput<any>> {
+  async findUserById(userId: string): Promise<IServiceOutput<User>> {
     try {
       const { data: user, exception: findUserExp } =
         await this.userRepository.findUser({

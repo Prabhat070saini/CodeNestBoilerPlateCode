@@ -2,13 +2,13 @@ import { ETokenType } from './app.enum';
 
 export type JwtExpires = `${number}${'s' | 'm' | 'h' | 'd'}` | number;
 
-export interface JwtConfig {
+export interface IJwtConfig {
   secret: string;
   expiresIn: JwtExpires; // e.g., '1h', '7d', etc.
   type: ETokenType;
 }
 
-export interface TokenPayload {
+export interface ITokenPayload {
   ref?: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   payload?: any;

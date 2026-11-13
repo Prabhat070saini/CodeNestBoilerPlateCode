@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 export interface IQueueProvider {
   connect(): Promise<void>;
   publish(
@@ -16,11 +18,11 @@ export interface IQueueProvider {
   disconnect(): Promise<void>;
 }
 
-export interface QueueProviderConfig {
+export interface IQueueProviderConfig {
   [key: string]: any;
 }
 
-export interface RabbitMQConfig extends QueueProviderConfig {
+export interface IRabbitMQConfig extends IQueueProviderConfig {
   url: string;
   defaultRetries?: number;
   defaultRetryDelayMs?: number;
@@ -28,8 +30,8 @@ export interface RabbitMQConfig extends QueueProviderConfig {
   globalQueueOptions?: any;
   isDlq?: boolean;
 }
-
-export interface KafkaConfig extends QueueProviderConfig {
+/* eslint-enable @typescript-eslint/no-explicit-any */
+export interface IKafkaConfig extends IQueueProviderConfig {
   brokers: string[];
   clientId: string;
   groupId: string;

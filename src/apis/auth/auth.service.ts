@@ -8,7 +8,7 @@ import { HashingService } from '../../common/lib/hashing/hashing.service';
 import { IUserCreate } from '../user/user.interface';
 import {
   IServiceOutput,
-  TokenPayload,
+  ITokenPayload,
 } from '../../common/constants/app.interface';
 import { TokenService } from '../../common/token/token.service';
 import {
@@ -101,11 +101,11 @@ export class AuthService {
         this.logger.debug(`[signIn] Invalid password for user ${email}`);
         return { exception: exception.INVALID_CREDENTIALS };
       }
-      const accessTokenPayload: TokenPayload = {
+      const accessTokenPayload: ITokenPayload = {
         ref: existingUser.user_id,
         type: ETokenType.AccessToken,
       };
-      const refreshTokenPayload: TokenPayload = {
+      const refreshTokenPayload: ITokenPayload = {
         ref: existingUser.user_id,
         type: ETokenType.RefreshToken,
       };
@@ -177,11 +177,11 @@ export class AuthService {
         existingUser = createdUser;
       }
 
-      const accessTokenPayload: TokenPayload = {
+      const accessTokenPayload: ITokenPayload = {
         ref: existingUser.user_id,
         type: ETokenType.AccessToken,
       };
-      const refreshTokenPayload: TokenPayload = {
+      const refreshTokenPayload: ITokenPayload = {
         ref: existingUser.user_id,
         type: ETokenType.RefreshToken,
       };
@@ -238,7 +238,7 @@ export class AuthService {
         }
       }
 
-      const accessTokenPayload: TokenPayload = {
+      const accessTokenPayload: ITokenPayload = {
         ref: verifyTokenPayload.ref,
         type: ETokenType.AccessToken,
       };

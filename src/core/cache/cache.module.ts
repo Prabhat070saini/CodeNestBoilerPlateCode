@@ -3,16 +3,16 @@ import { DynamicModule, Global, Module } from '@nestjs/common';
 import { RedisModule } from './redis/redis.module';
 import { RedisCacheService } from './redis/redis.service';
 
-import { CACHE_PROVIDER, CacheProviderType } from './cache.constants';
+import { CACHE_PROVIDER, ECacheProviderType } from './cache.constants';
 
 @Global()
 @Module({})
 export class CacheModule {
-  static forRoot(provider: CacheProviderType): DynamicModule {
+  static forRoot(provider: ECacheProviderType): DynamicModule {
     let cacheProvider;
 
     switch (provider) {
-      case CacheProviderType.REDIS:
+      case ECacheProviderType.REDIS:
         cacheProvider = {
           provide: CACHE_PROVIDER,
           useExisting: RedisCacheService,

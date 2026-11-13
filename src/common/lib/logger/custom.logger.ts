@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable, LoggerService, Inject } from '@nestjs/common';
 import * as winston from 'winston';
 
