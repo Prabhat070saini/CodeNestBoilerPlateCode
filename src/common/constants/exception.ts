@@ -80,8 +80,8 @@ export const exception = {
   },
 
   API_KEY_INVALID: {
-    code: HttpStatus.FORBIDDEN,
-    message: EXCEPTION_MESSAGE.AUTH.API_KEY_INVALID,
+    code: AUTH_EXCEPTION_CODES.INVALID_API_KEY,
+    message: EXCEPTION_MESSAGE.AUTH.UNAUTHORIZED_REQUEST,
     httpStatusCode: HttpStatus.FORBIDDEN,
   },
 
@@ -141,7 +141,7 @@ export const exception = {
 
   API_KEY_MISSING: {
     code: AUTH_EXCEPTION_CODES.API_KEY_MISSING,
-    message: EXCEPTION_MESSAGE.AUTH.API_KEY_MISSING,
+    message: EXCEPTION_MESSAGE.AUTH.UNAUTHORIZED_REQUEST,
     httpStatusCode: HttpStatus.UNAUTHORIZED,
   },
 

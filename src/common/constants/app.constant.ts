@@ -81,6 +81,7 @@ export const AUTH_EXCEPTION_CODES = {
   INVALID_REFRESH_TOKEN: 6002,
   INVALID_CREDENTIALS: 6003,
   API_KEY_MISSING: 6004,
+  INVALID_API_KEY: 6005,
 } as const;
 
 // NOTE: Use only 70XX for rate-limit exceptions

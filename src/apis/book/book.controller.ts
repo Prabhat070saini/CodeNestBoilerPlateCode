@@ -1,10 +1,10 @@
-import { Controller, Get, Query, Param, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, Param, Res } from '@nestjs/common';
 import { BookService } from './book.service';
 import { UtilsService } from '../../common/utils/utils.service';
 import { BookListingDto } from './dto/book.dto';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { FastifyReply } from 'fastify';
-import { AuthnGuard } from '../../common/guards/auth.guard';
+// import { AuthnGuard } from '../../common/guards/auth.guard';
 
 @ApiTags('Book')
 @Controller({ version: '1', path: 'book' })
@@ -14,7 +14,7 @@ export class BookController {
     private readonly utilsService: UtilsService,
   ) {}
 
-  @UseGuards(AuthnGuard)
+  // @UseGuards(AuthnGuard)
   @ApiOperation({ summary: 'Get list of books' })
   @Get('list')
   async getBooklist(

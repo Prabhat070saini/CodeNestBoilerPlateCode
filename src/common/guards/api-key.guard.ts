@@ -8,6 +8,7 @@ import {
 import { config } from '../../config/config';
 import { exception } from '../../common/constants/exception';
 import { Reflector } from '@nestjs/core';
+import { xApiKeyHeader } from '../constants';
 
 @Injectable()
 export class ValidateApiKeyGuard implements CanActivate {
@@ -17,7 +18,7 @@ export class ValidateApiKeyGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const xApiKey = request.headers['x-api-key'];
+    const xApiKey = request.headers[xApiKeyHeader] as string;
     const isPublic =
       this.reflector.get<boolean>('isPublic', context.getHandler()) || false;
     if (isPublic) {

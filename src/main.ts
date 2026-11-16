@@ -1,17 +1,20 @@
 import { NestFactory } from '@nestjs/core';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+
 import { AppModule } from './app.module';
-import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { config } from './config/config';
+
 import { CustomLoggerService } from './common/lib/logger/custom.logger';
-import { xApiKeyHeader } from './common/constants/app.constant';
 import { createFastifyAdapter } from './common/Interceptor';
-import fastifyCookie from '@fastify/cookie';
+import { registerCookiePlugin } from './common/Interceptor/plugins/cookie.plugin';
+import { configureApplication } from './bootstrap/application.bootstrap';
+import { configureSwagger } from './bootstrap/swagger.bootstrap';
 
 async function bootstrap(): Promise<void> {
+  // 1. Create  adapter
   const adapter = await createFastifyAdapter();
 
+  // 2. Create NestJS application
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     adapter,
@@ -20,78 +23,30 @@ async function bootstrap(): Promise<void> {
     },
   );
 
-  await app.register(fastifyCookie);
-  /* This tells NestJS to use the global validation pipe for all requests*/
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      transform: true,
-      forbidNonWhitelisted: true,
-      enableDebugMessages: true,
-    }),
-  );
-
-  /* This tells NestJS to listen for process termination signals */
-  app.enableShutdownHooks();
-
-  /* This tells NestJS to set the global prefix to /api/ */
-  app.setGlobalPrefix('api/');
-
-  /* This tells NestJS to set the versioning to URI */
-  app.enableVersioning({ type: VersioningType.URI });
-
-  /* Swagger Configuration */
-  const options = new DocumentBuilder()
-    .setTitle('Boilerplate API')
-    .setDescription('The Boilerplate API description')
-    .setVersion('1.0')
-    .addApiKey(
-      { type: 'apiKey', name: xApiKeyHeader, in: 'header' },
-      xApiKeyHeader,
-    )
-    .addSecurityRequirements(xApiKeyHeader)
-    .addBearerAuth(
-      {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-      },
-      'access-token',
-    )
-    .addServer(`http://localhost:${config.app.port}/`, 'Local Environment')
-    .addServer('https://api.dev.example.com/', 'Development Environment') // Example host
-    .addServer('https://api.prod.example.com/', 'Production Environment') // Example host
-    .build();
-
-  const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('docs', app, document, {
-    swaggerOptions: {
-      persistAuthorization: true,
-      authAction: {
-        [xApiKeyHeader]: {
-          name: xApiKeyHeader,
-          schema: {
-            type: 'apiKey',
-            in: 'header',
-            name: xApiKeyHeader,
-            description: '',
-          },
-          value: config.api_key.x_api_key,
-        },
-      },
-    },
-  });
-
-  /* This tells NestJS to use the custom logger */
+  // 3. Initialize application logger
   app.useLogger(app.get(CustomLoggerService));
+
+  // 4. Register cookies
+  await registerCookiePlugin(app);
+
+  // 5. Configure application
+  configureApplication(app);
+
+  // 6. Configure Swagger
+  configureSwagger(app);
+
+  // 7. Start HTTP server
   await app.listen(config.app.port, '0.0.0.0');
   /*eslint-disable */
-  console.log(
-    `Swagger UI is running on: http://localhost:${config.app.port}/docs`,
-  );
+  console.log({
+    message: 'Application started successfully',
+    port: config.app.port,
+    environment: config.env,
+    swagger: `http://localhost:${config.app.port}/docs`,
+  });
 }
-bootstrap().catch((error) => {
+bootstrap().catch((error: unknown) => {
   console.error('Application startup failed:', error);
-
   process.exit(1);
 });
+/*eslint-enable */
