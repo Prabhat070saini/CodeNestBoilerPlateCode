@@ -1,7 +1,13 @@
 import { FastifyInstance } from 'fastify';
 import helmet from '@fastify/helmet';
+import { config } from '../../../config/config';
+import { EApplicationEnvironmentType } from '../../constants';
 
 export async function registerHelmet(fastify: FastifyInstance): Promise<void> {
+  const HSTS_ENABLED_ENVIRONMENTS = [
+    EApplicationEnvironmentType.PRODUCTION,
+    EApplicationEnvironmentType.UAT,
+  ];
   await fastify.register(helmet, {
     contentSecurityPolicy: {
       directives: {
@@ -13,14 +19,13 @@ export async function registerHelmet(fastify: FastifyInstance): Promise<void> {
       },
     },
 
-    hsts:
-      process.env.NODE_ENV === 'production'
-        ? {
-            maxAge: 31536000,
-            includeSubDomains: true,
-            preload: true,
-          }
-        : false,
+    strictTransportSecurity: HSTS_ENABLED_ENVIRONMENTS.includes(config.env)
+      ? {
+          maxAge: 31536000,
+          includeSubDomains: true,
+          preload: false,
+        }
+      : false,
 
     xContentTypeOptions: true,
     xFrameOptions: { action: 'deny' },
