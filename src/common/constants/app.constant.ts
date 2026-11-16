@@ -1,3 +1,6 @@
+import { config } from '../../config/config';
+import { EApplicationEnvironmentType } from './app.enum';
+
 export const xApiKeyHeader = 'x-api-key';
 
 export const TYPEORM_DATABASE_PROVIDER = 'TYPEORM_DATABASE_PROVIDER';
@@ -90,3 +93,20 @@ export const RATE_LIMIT_EXCEPTION_CODES = {
   OTP_RATE_LIMIT_REACHED: 7002,
   MAX_ATTEMPTS_REACHED: 7003,
 } as const;
+export const cookieConfig = {
+  accessToken: {
+    httpOnly: true,
+    secure: config.env === EApplicationEnvironmentType.PRODUCTION,
+    sameSite: 'lax' as const,
+    path: '/',
+    maxAge: config.token.access_token_exp_in_min * 60,
+  },
+
+  refreshToken: {
+    httpOnly: true,
+    secure: config.env === EApplicationEnvironmentType.PRODUCTION,
+    sameSite: 'lax' as const,
+    path: '/api/v1/auth/refresh',
+    maxAge: config.token.refresh_token_exp_in_min * 60,
+  },
+};

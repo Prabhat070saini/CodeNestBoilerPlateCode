@@ -1,8 +1,8 @@
 import { FastifyAdapter } from '@nestjs/platform-fastify';
 
-import { registerFastifyDecorators } from './decorator';
+import { registerFastifyDecorators } from '../decorators/request.decorator';
 import { registerInterceptor } from './register.interceptor';
-import { FastifyInstance } from 'fastify';
+import { registerContentTypeParsers } from './parsers/text-plain.parser';
 
 export async function createFastifyAdapter(): Promise<FastifyAdapter> {
   const adapter = new FastifyAdapter({
@@ -12,18 +12,8 @@ export async function createFastifyAdapter(): Promise<FastifyAdapter> {
   const fastify = adapter.getInstance();
 
   registerFastifyDecorators(fastify);
-  registerFastifyParsers(fastify);
+  registerContentTypeParsers(fastify);
   await registerInterceptor(fastify);
 
   return adapter;
-}
-
-export function registerFastifyParsers(fastify: FastifyInstance): void {
-  fastify.addContentTypeParser(
-    'text/plain',
-    { parseAs: 'string' },
-    (_request, body, done) => {
-      done(null, body);
-    },
-  );
 }

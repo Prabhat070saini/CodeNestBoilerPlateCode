@@ -2,7 +2,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import { FastifyInstance } from 'fastify';
 
-import { registerTracingHooks } from './hooks/tracing.hook';
+import { registerTracingHooks } from './hooks';
 import { TracingService } from '../lib/tracing/tracing.service';
 import { UtilsService } from '../utils/utils.service';
 

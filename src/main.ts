@@ -6,7 +6,7 @@ import { config } from './config/config';
 
 import { CustomLoggerService } from './common/lib/logger/custom.logger';
 import { createFastifyAdapter } from './common/Interceptor';
-import { registerCookiePlugin } from './common/Interceptor/plugins/cookie.plugin';
+import { registerCookiePlugin } from './common/Interceptor/plugins';
 import { configureApplication } from './bootstrap/application.bootstrap';
 import { configureSwagger } from './bootstrap/swagger.bootstrap';
 

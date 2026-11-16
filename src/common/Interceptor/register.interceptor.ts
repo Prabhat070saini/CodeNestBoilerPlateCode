@@ -1,8 +1,6 @@
 import { FastifyInstance } from 'fastify';
-import { registerCors } from './plugins/cors.plugin';
-import { registerHelmet } from './plugins/helmet.plugin';
-import { registerCacheControl } from './hooks/cache-control.hook';
-import { registerHeaderValidation } from './hooks/header-validation.hook';
+import { registerCors, registerHelmet } from './plugins';
+import { registerHeaderValidation, registerCacheControl } from './hooks';
 
 export async function registerInterceptor(
   fastify: FastifyInstance,

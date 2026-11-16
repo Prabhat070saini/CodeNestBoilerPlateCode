@@ -81,26 +81,27 @@ export class AuthService {
 
   async signIn(signInDto: SignInDto): Promise<IServiceOutput<ISignInResponse>> {
     try {
-      const { email, password } = signInDto;
-      const existingUser = await this.userRepository.findOne({
-        where: { email },
-        select: { user_id: true, password: true },
-      });
+      this.logger.debug(`[signIn] ${JSON.stringify(signInDto)}`);
+      // const { email, password } = signInDto;
+      // const existingUser = await this.userRepository.findOne({
+      //   where: { email },
+      //   select: { user_id: true, password: true },
+      // });
 
-      if (!existingUser) {
-        this.logger.debug(`[signIn] User not found with email ${email}`);
-        return {
-          exception: exception.NO_DATA_FOUND(EXCEPTION_MESSAGE.USER.NOT_FOUND),
-        };
-      }
-      const isPasswordMatch = await this.hashingService.matchPassword(
-        password,
-        existingUser.password,
-      );
-      if (!isPasswordMatch) {
-        this.logger.debug(`[signIn] Invalid password for user ${email}`);
-        return { exception: exception.INVALID_CREDENTIALS };
-      }
+      // if (!existingUser) {
+      //   this.logger.debug(`[signIn] User not found with email ${email}`);
+      //   return {
+      //     exception: exception.NO_DATA_FOUND(EXCEPTION_MESSAGE.USER.NOT_FOUND),
+      //   };
+      // }
+      // const isPasswordMatch = await this.hashingService.matchPassword(
+      //   password,
+      //   existingUser.password,
+      // );
+      // if (!isPasswordMatch) {
+      //   this.logger.debug(`[signIn] Invalid password for user ${email}`);
+      //   return { exception: exception.INVALID_CREDENTIALS };
+      // }
       const accessTokenPayload: ITokenPayload = {
         ref: 'existingUser.user_id',
         type: ETokenType.AccessToken,

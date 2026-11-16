@@ -1,3 +1,3 @@
-export * from './config';
-export * from './decorator';
+export * from './create-http-adapter';
 export * from './tracing.provider.interceptor';
+export * from './plugins';
