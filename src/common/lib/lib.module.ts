@@ -4,7 +4,7 @@ import { TracingService } from './tracing/tracing.service';
 import { CustomLoggerService } from './logger/custom.logger';
 import { config } from '../../config/config';
 import { LogLevel } from '../constants';
-import { FastifyTracingProvider } from './http/fastify';
+import { TracingProvider } from '../Interceptor';
 
 const validLevels: LogLevel[] = ['error', 'warn', 'info', 'debug'];
 
@@ -18,7 +18,7 @@ const logLevel: LogLevel = validLevels.includes(configuredLevel as LogLevel)
 @Module({
   providers: [
     TracingService,
-    FastifyTracingProvider,
+    TracingProvider,
     {
       provide: CustomLoggerService,
       useFactory: (tracingService: TracingService): CustomLoggerService =>

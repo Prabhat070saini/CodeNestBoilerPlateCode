@@ -1,9 +1,8 @@
 import { FastifyAdapter } from '@nestjs/platform-fastify';
 
-import { registerFastifyDecorators } from './fastify.decorator';
-import { registerFastifyPlugins } from './fastify.plugins';
+import { registerFastifyDecorators } from './decorator';
+import { registerInterceptor } from './register.interceptor';
 import { FastifyInstance } from 'fastify';
-import { registerHeaderValidation } from './fastify.header-validation';
 
 export async function createFastifyAdapter(): Promise<FastifyAdapter> {
   const adapter = new FastifyAdapter({
@@ -14,8 +13,7 @@ export async function createFastifyAdapter(): Promise<FastifyAdapter> {
 
   registerFastifyDecorators(fastify);
   registerFastifyParsers(fastify);
-  registerHeaderValidation(fastify);
-  await registerFastifyPlugins(fastify);
+  await registerInterceptor(fastify);
 
   return adapter;
 }

@@ -14,6 +14,8 @@ export const ALLOWED_HEADERS = new Set([
   'user-agent',
   'accept-encoding',
   'connection',
+  'cache-control',
+  'origin',
 ]);
 
 // Success messages
@@ -38,6 +40,9 @@ export const AUTHENTICATION_EXCEPTION_CODES = {
   INVALID_TOKEN: 1201,
   TOKEN_EXPIRED: 1202,
   INVALID_HEADER: 1203,
+  INVALID_ORIGIN: 1204,
+  SESSION_EXPIRED: 1205,
+  TOKEN_NOT_FOUND: 1206,
 } as const;
 
 // NOTE: Use only 13XX

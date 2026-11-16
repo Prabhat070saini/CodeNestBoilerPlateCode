@@ -6,7 +6,8 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { config } from './config/config';
 import { CustomLoggerService } from './common/lib/logger/custom.logger';
 import { xApiKeyHeader } from './common/constants/app.constant';
-import { createFastifyAdapter } from './common/lib/http/fastify';
+import { createFastifyAdapter } from './common/Interceptor';
+import fastifyCookie from '@fastify/cookie';
 
 async function bootstrap(): Promise<void> {
   const adapter = await createFastifyAdapter();
@@ -19,6 +20,7 @@ async function bootstrap(): Promise<void> {
     },
   );
 
+  await app.register(fastifyCookie);
   /* This tells NestJS to use the global validation pipe for all requests*/
   app.useGlobalPipes(
     new ValidationPipe({

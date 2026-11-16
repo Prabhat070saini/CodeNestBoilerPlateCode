@@ -102,11 +102,11 @@ export class AuthService {
         return { exception: exception.INVALID_CREDENTIALS };
       }
       const accessTokenPayload: ITokenPayload = {
-        ref: existingUser.user_id,
+        ref: 'existingUser.user_id',
         type: ETokenType.AccessToken,
       };
       const refreshTokenPayload: ITokenPayload = {
-        ref: existingUser.user_id,
+        ref: 'existingUser.user_id',
         type: ETokenType.RefreshToken,
       };
       const accessToken = this.tokenService.generate(accessTokenPayload);
@@ -114,12 +114,12 @@ export class AuthService {
 
       if (config.redis.use_redis) {
         await this.cacheService.setKeyWithExpiry(
-          CacheKeys.auth.accessToken(existingUser.user_id),
+          CacheKeys.auth.accessToken('existingUser.user_id'),
           accessToken,
           config.token.access_token_exp_in_min,
         );
         await this.cacheService.setKeyWithExpiry(
-          CacheKeys.auth.refreshToken(existingUser.user_id),
+          CacheKeys.auth.refreshToken('existingUser.user_id'),
           refreshToken,
           config.token.refresh_token_exp_in_min,
         );
@@ -128,7 +128,7 @@ export class AuthService {
       const resp: ISignInResponse = {
         accessToken,
         refreshToken,
-        user_id: existingUser.user_id,
+        user_id: 'existingUser.user_id',
       };
       return success(
         HttpStatus.OK,

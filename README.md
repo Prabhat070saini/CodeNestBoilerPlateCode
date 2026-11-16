@@ -64,7 +64,7 @@ The focus is on **structure, maintainability, and real-world backend concerns**,
 - `src/apis`: Contains feature modules (Auth, User, Excel, etc.).
 - `src/common`: Shared utilities, decorators, guards, and interceptors.
 - `src/config`: Configuration files using `dotenv`.
-- `src/shared`: Shared modules like Database, Queue, and Cache setup.
+- `src/core`: Shared modules like Database, Queue, and Cache setup.
 
 ```text
 src

@@ -1,7 +1,6 @@
 import {
   CanActivate,
   ExecutionContext,
-  HttpStatus,
   Inject,
   Injectable,
   Logger,
@@ -15,6 +14,10 @@ import { ICacheProvider } from '../../core/cache/cache.interface';
 import { CacheKeys } from '../../core/cache/keys';
 import { FastifyRequest } from 'fastify';
 import { CACHE_PROVIDER } from '../../core/cache/cache.constants';
+import {
+  AUTHENTICATION_EXCEPTION_CODES,
+  EXCEPTION_MESSAGE,
+} from '../constants';
 
 @Injectable()
 export class AuthnGuard implements CanActivate {
@@ -26,11 +29,13 @@ export class AuthnGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<FastifyRequest>();
-    const token = request.headers.authorization?.split(' ')[1];
+    // const token = request.headers.authorization?.split(' ')[1];
+    const token = request.cookies?.access_token;
     if (!token) {
+      this.logger.debug(`[canActivate] token not found`);
       throw new UnauthorizedException({
-        message: 'token not found',
-        code: HttpStatus.UNAUTHORIZED,
+        message: EXCEPTION_MESSAGE.AUTH.UNAUTHORIZED_REQUEST,
+        code: AUTHENTICATION_EXCEPTION_CODES.TOKEN_NOT_FOUND,
       });
     }
 
@@ -38,8 +43,8 @@ export class AuthnGuard implements CanActivate {
     if (!payload) {
       this.logger.debug(`[canActivate] Invalid or expire token`);
       throw new UnauthorizedException({
-        code: HttpStatus.UNAUTHORIZED,
-        message: 'Invalid or expire token',
+        code: AUTHENTICATION_EXCEPTION_CODES.INVALID_TOKEN,
+        message: EXCEPTION_MESSAGE.AUTH.UNAUTHORIZED_REQUEST,
       });
     }
 
@@ -50,8 +55,8 @@ export class AuthnGuard implements CanActivate {
       if (accessToken !== token) {
         this.logger.debug(`[canActivate] token not match with redis token`);
         throw new UnauthorizedException({
-          message: 'Invalid or expire token',
-          code: 5010,
+          message: EXCEPTION_MESSAGE.AUTH.UNAUTHORIZED_REQUEST,
+          code: AUTHENTICATION_EXCEPTION_CODES.SESSION_EXPIRED,
         });
       }
     }

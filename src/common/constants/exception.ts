@@ -168,4 +168,9 @@ export const exception = {
     message: EXCEPTION_MESSAGE.AUTH.UNAUTHORIZED_REQUEST,
     httpStatusCode: HttpStatus.UNAUTHORIZED,
   },
+  INVALID_ORIGIN: {
+    code: AUTHENTICATION_EXCEPTION_CODES.INVALID_ORIGIN,
+    message: EXCEPTION_MESSAGE.AUTH.UNAUTHORIZED_REQUEST,
+    httpStatusCode: HttpStatus.UNAUTHORIZED,
+  },
 } as const;

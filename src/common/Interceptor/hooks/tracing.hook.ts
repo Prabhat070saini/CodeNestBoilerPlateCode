@@ -1,8 +1,8 @@
 import { FastifyInstance } from 'fastify';
 import { Logger } from '@nestjs/common';
 
-import { TracingService } from '../../tracing/tracing.service';
-import { UtilsService } from '../../../utils/utils.service';
+import { TracingService } from '../../lib/tracing/tracing.service';
+import { UtilsService } from '../../utils/utils.service';
 
 export function registerTracingHooks(
   fastify: FastifyInstance,

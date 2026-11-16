@@ -2,12 +2,12 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import { FastifyInstance } from 'fastify';
 
-import { TracingService } from '../../tracing/tracing.service';
-import { UtilsService } from '../../../utils/utils.service';
-import { registerTracingHooks } from './fastify.tracing';
+import { registerTracingHooks } from './hooks/tracing.hook';
+import { TracingService } from '../lib/tracing/tracing.service';
+import { UtilsService } from '../utils/utils.service';
 
 @Injectable()
-export class FastifyTracingProvider implements OnModuleInit {
+export class TracingProvider implements OnModuleInit {
   constructor(
     private readonly adapterHost: HttpAdapterHost,
     private readonly tracingService: TracingService,

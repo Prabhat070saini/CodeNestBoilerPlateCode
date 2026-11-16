@@ -1,4 +1,5 @@
-import { ETokenType } from './app.enum';
+import { config } from '../../config/config';
+import { EApplicationEnvironmentType, ETokenType } from './app.enum';
 
 export type JwtExpires = `${number}${'s' | 'm' | 'h' | 'd'}` | number;
 
@@ -45,3 +46,21 @@ export interface ISuccessResponse<T = undefined> {
     httpStatusCode: number;
   };
 }
+
+export const cookieConfig = {
+  accessToken: {
+    httpOnly: true,
+    secure: config.env === EApplicationEnvironmentType.PRODUCTION,
+    sameSite: 'lax' as const,
+    path: '/',
+    maxAge: config.token.access_token_exp_in_min * 60,
+  },
+
+  refreshToken: {
+    httpOnly: true,
+    secure: config.env === EApplicationEnvironmentType.PRODUCTION,
+    sameSite: 'lax' as const,
+    path: '/api/v1/auth/refresh',
+    maxAge: config.token.refresh_token_exp_in_min * 60,
+  },
+};

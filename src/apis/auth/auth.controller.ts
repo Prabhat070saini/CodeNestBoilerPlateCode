@@ -15,6 +15,7 @@ import { UtilsService } from '../../common/utils/utils.service';
 import { AuthGuard } from '@nestjs/passport';
 import { IsPublic } from '../../common/decorators/public.decorator';
 import { ApiHeader, ApiTags } from '@nestjs/swagger';
+import { cookieConfig } from '../../common/constants';
 
 @ApiTags('Auth')
 @Controller({ version: '1', path: 'auth' })
@@ -38,6 +39,19 @@ export class AuthController {
     @Res() res: FastifyReply,
   ): Promise<void> {
     const output = await this.authService.signIn(signInDto);
+    if (!output.exception) {
+      res.setCookie(
+        'access_token',
+        output.success.data.accessToken,
+        cookieConfig.accessToken,
+      );
+
+      res.setCookie(
+        'refresh_token',
+        output.success.data.refreshToken,
+        cookieConfig.refreshToken,
+      );
+    }
     this.utilsService.sendRestResponse(res, output);
   }
   // Step 1:  user to GRedirectoogle
