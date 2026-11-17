@@ -4,130 +4,134 @@
   </a>
 </p>
 
-# NestJS Boilerplate Code
+# NestJS Boilerplate
 
-A reusable, production-oriented boilerplate for building scalable server-side applications using **NestJS** and **TypeScript**. Designed to standardize backend architecture and eliminate repeated setup of authentication, infrastructure, and cross-cutting concerns across projects.
+A production-oriented NestJS + TypeScript starter for backend APIs. It standardizes authentication, configuration, database access, caching, logging, and HTTP cross-cutting concerns so new services do not re-implement the same foundation.
 
----
-
-## 🚀 Overview
-
-This project was created to avoid repeatedly re-implementing the same backend foundations—authentication, configuration, database access, caching, queues, validation, and logging—across multiple services.
-
-The focus is on **structure, maintainability, and real-world backend concerns**, not demo features. It serves as a solid starting point for enterprise-grade NestJS applications.
+HTTP is served with **Fastify** (`@nestjs/platform-fastify`), not Express.
 
 ---
 
-## 🎯 What This Project Demonstrates
+## Overview
 
-- Modular NestJS architecture with clear separation of concerns
-- Authentication and authorization using JWT and Passport
-- Role-based access control (RBAC)
-- Database access patterns with TypeORM and PostgreSQL
-- Redis-based caching for performance optimization
-- RabbitMQ-driven asynchronous processing
-- Global validation, error handling, and logging
-- Scalable, testable backend service design
+The project is a modular NestJS application with:
 
----
+- URI versioning under the global prefix `/api` (feature routes are `/api/v1/...`)
+- Joi-validated environment configuration
+- PostgreSQL via TypeORM (`dbo` schema)
+- Redis as a pluggable cache provider
+- JWT auth with httpOnly cookies, OTP, and Google OAuth
+- API key guard on all routes except those marked public
+- Winston logging with request tracing (`x-request-id`)
+- Swagger at `/docs`
 
-## ✨ Key Features
-
-- JWT-based authentication using Passport
-- Google OAuth2 integration
-- Role-based access control (RBAC)
-- User management module with guarded routes
-- PostgreSQL integration using TypeORM
-- Database migrations and seeding support
-- Redis integration for caching
-- RabbitMQ for background jobs and async workflows
-- File uploads using Multer
-- Excel processing using `@univerjs-pro/exchange-client`
-- Global validation pipes (`class-validator`, `class-transformer`)
-- Centralized exception handling
-- Custom logger for structured application logs
+RabbitMQ is implemented under `src/core/queue` but is **not** registered in `CoreModule` yet. AWS, email, and OTP values are required by the env schema even when some of those integrations are not fully wired.
 
 ---
 
-## 🛠 Tech Stack
+## Tech stack
 
-- Framework: NestJS
-- Language: TypeScript
-- Database: PostgreSQL
-- ORM: TypeORM
-- Cache: Redis
-- Message Queue: RabbitMQ
+| Area | Choice |
+| --- | --- |
+| Framework | NestJS 10 |
+| Language | TypeScript |
+| HTTP adapter | Fastify |
+| Database | PostgreSQL |
+| ORM | TypeORM + typeorm-extension |
+| Cache | Redis (`ioredis`) |
+| Queue (optional) | RabbitMQ (`amqplib`) |
+| Auth | JWT, Passport Google OAuth 2.0, bcrypt |
+| Validation | `class-validator`, `class-transformer`, Joi |
+| Docs | Swagger (`/docs`) |
+| Logging | Winston + custom logger |
+| Tooling | ESLint, Prettier, Husky, lint-staged, Jest |
 
 ---
-## 📂 Project Structure
 
-- `src/apis`: Contains feature modules (Auth, User, Excel, etc.).
-- `src/common`: Shared utilities, decorators, guards, and interceptors.
-- `src/config`: Configuration files using `dotenv`.
-- `src/core`: Shared modules like Database, Queue, and Cache setup.
+## Features
+
+- **API key gate**: global `ValidateApiKeyGuard` requires header `x-api-key` unless the handler is decorated with `@IsPublic()`
+- **Auth**: sign-up, sign-in (sets `access_token` / `refresh_token` cookies), OTP send/verify, refresh token, Google OAuth
+- **RBAC**: `@Role()` metadata + `PermissionGuard` (example role code `MST002` on user lookup)
+- **Session cache**: access tokens can be checked against Redis when `USE_REDIS=true`
+- **Users & books**: sample feature modules with TypeORM entities, ULIDs, and pagination DTOs
+- **Migrations and seeding**: generate/run migrations; seeders create the `dbo` schema
+- **HTTP hardening**: Helmet, CORS (credentials), cookies, cache-control, allowlisted request headers
+- **Tracing**: incoming `x-request-id` is reused or generated and echoed on the response
+- **Global validation pipe**: whitelist, transform, forbid unknown properties
+- **Git hooks**: Husky runs lint-staged (ESLint + Prettier) on commit
+
+---
+
+## Prerequisites
+
+- Node.js 18+ (recommended; Nest 10 / TypeScript 5)
+- npm
+- PostgreSQL
+- Redis (required when `USE_REDIS=true`, which is the default)
+- RabbitMQ only if you enable `QueueModule` in `CoreModule`
+
+---
+
+## Project structure
 
 ```text
 src
-├── apis                 # Feature specific modules
-│   ├── auth             # Authentication module
-│   ├── excel            # Excel processing module
-│   └── user             # User management module
-├── common               # Shared utilities
-│   ├── constants        # Global constants
-│   ├── decorators       # Custom decorators
-│   ├── dto              # Shared DTOs
-│   ├── guards           # Authentication guards
-│   ├── lib              # Libraries (Logger, etc.)
-│   ├── repository       # Base repositories
-│   └── utils            # Helper functions
-├── config               # Application configuration
-└── Core               # Core  modules
-    ├── cache            # Redis cache setup
-    ├── database         # Database and TypeORM setup
-    └── queue            # RabbitMQ queue setup
+├── apis                     # Feature modules
+│   ├── auth                 # Sign-up, sign-in, OTP, refresh, Google OAuth
+│   ├── book                 # Book listing and lookup
+│   └── user                 # User lookup
+├── bootstrap                # App prefix/versioning/pipes and Swagger
+├── common
+│   ├── constants            # Exception codes, cookies, enums
+│   ├── decorators           # @IsPublic, @Role, ULID, Swagger helpers
+│   ├── dto                  # Shared pagination / params
+│   ├── guards               # API key, JWT cookie auth, permissions
+│   ├── Interceptor          # Fastify adapter, CORS, Helmet, hooks
+│   ├── lib                  # Logger, tracing, hashing, crypto, HTTP client
+│   ├── repository           # Shared TypeORM repositories
+│   ├── token                # Access / refresh token service
+│   └── utils
+├── config                   # dotenv load, Joi schema, typed config
+├── core
+│   ├── cache                # Redis cache provider
+│   ├── database             # TypeORM DataSource, migrations, seeders
+│   └── queue                # RabbitMQ provider (not mounted in CoreModule)
+├── integrations             # External stubs (e.g. payments)
+├── app.module.ts
+└── main.ts
 ```
-## ⚙️ Prerequisites
-
-Ensure the following are installed and running locally:
-
-- Node.js (v16 or higher)
-- npm or yarn
-- PostgreSQL
-- Redis
-- RabbitMQ
 
 ---
 
-## 📦 Installation
-
-Clone the repository:
+## Installation
 
 ```bash
 git clone https://github.com/Prabhat070saini/CodeNestBoilerPlateCode.git
 cd CodeNestBoilerPlateCode
-```
-
-```bash
 npm install
-```
-
-```bash
 npm run prepare
 ```
-## ADD ENV (example env)
-```
-# ==========================
-# App Config
-# ==========================
+
+Create a `.env` file in the project root. Startup fails if Joi validation does not pass.
+
+---
+
+## Environment variables
+
+All keys below are consumed by `src/config/schema.config.ts` unless noted. Token expiry values are **numbers of minutes**, not duration strings like `15m`.
+
+```bash
+# App
+CORS_ORIGIN=http://localhost:3000
 X_API_KEY=your-api-key
 ENV_NAME=development
 LOG_LEVEL=debug
 SERVER_HOST=localhost
 SERVER_PORT=3000
+API_TOOL_ENABLED=true
 
-# ==========================
-# Database Config
-# ==========================
+# Database
 DB_DIALECT=postgres
 DB_HOST=localhost
 DB_PORT=5432
@@ -140,44 +144,34 @@ DB_CONNECTION_TIMEOUT=10000
 DB_LOGGING=false
 DB_CONNECTION_IDLE_TIMEOUT=60000
 
-# ==========================
-# Redis Config
-# ==========================
+# Redis
 REDIS_HOST=localhost
 REDIS_PORT=6379
 REDIS_CONNECTION_LIMIT=50
 USE_REDIS=true
+REDIS_RETRY_LIMIT=5
 # REDIS_PASSWORD=
 
-# ==========================
-# Queue / RabbitMQ Config
-# ==========================
+# RabbitMQ (schema-required; module not enabled in CoreModule)
 RABBITMQ_URL=amqp://localhost
 DEFAULT_RETRIES=3
 DEFAULT_RETRY_DELAY_MS=5000
 IS_DLQ=true
 
-# ==========================
-# JWT / Tokens
-# ==========================
+# JWT (expiry is minutes; the app converts to seconds)
 ACCESS_TOKEN_SECRET=your-access-token-secret
 REFRESH_TOKEN_SECRET=your-refresh-token-secret
-ACCESS_TOKEN_EXP_IN_MIN=15m
-REFRESH_TOKEN_EXP_IN_MIN=7d
+ACCESS_TOKEN_EXP_IN_MIN=15
+REFRESH_TOKEN_EXP_IN_MIN=10080
 
-# ==========================
-# AWS / S3 (Optional)
-# ==========================
+# AWS (schema-required; S3 client is not implemented in this tree)
 AWS_ACCESS_KEY_ID=your-aws-access-key
 AWS_SECRET_ACCESS_KEY=your-aws-secret-key
 AWS_REGION=us-east-1
 AWS_S3_BUCKET_NAME=your-bucket-name
 SIGNED_URL_EXPIRE=3600
-# STORAGE_CDN_URL=https://cdn.example.com
 
-# ==========================
-# Email Config
-# ==========================
+# Email (schema-required; SMTP sending is not implemented in this tree)
 EMAIL_HOST=smtp.example.com
 EMAIL_PORT=465
 EMAIL_USERNAME=example@example.com
@@ -185,51 +179,138 @@ EMAIL_PASSWORD=your-email-password
 EMAIL_FROM=example@example.com
 EMAIL_PROVIDER=smtp
 
-# ==========================
-# Google OAuth Config
-# ==========================
-GOOGLE_CLIENT_ID=your-google-client-id
-GOOGLE_CLIENT_SECRET=your-google-client-secret
-
-# ==========================
-# OTP Config
-# ==========================
+# OTP
 OTP_CRYPTO_SECRET=your-otp-secret
 OTP_TTL=300
 COOL_DOWN_TTL=60
 MAX_PER_HOUR=3
 MAX_ATTEMPTS=3
-```
-## ▶️ Running the Application
-```bash
-npm run start
-```
-_Or for hot-reload during development:_
 
-```bash
-npm  run start:dev
+# Google OAuth (read from process.env in GoogleStrategy; not in the Joi schema)
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
 ```
 
-Contributions are welcome! Please fork the repository and submit a Pull Request.
+Notes:
 
-1.  Fork the Project
-2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4.  Push to the Branch (`git push origin feature/AmazingFeature`)
-5.  Open a Pull Request
-
-## 📄 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
+- `API_TOOL_ENABLED=false` rejects requests whose headers are not in the allowlist (`x-api-key`, `authorization`, `x-request-id`, etc.).
+- Google callback is currently `http://localhost:3000/api/v1/auth/google/callback`.
+- `CORS_ORIGIN` is a comma-separated list.
 
 ---
 
-_Built with ❤️ by [Prabhat Saini](https://github.com/Prabhat070saini)_
-<div align="center">
+## Database
 
-**⭐ If you find this project helpful, please give it a star!**
+Entities live in the TypeORM schema `dbo`. The seeder creates that schema if it is missing. Tables: `dbo.users`, `dbo.books`. Public IDs are ULIDs (`user_id`, `book_id`).
 
-Made with ❤️ by [Prabhat Saini](https://github.com/Prabhat070saini)
+```bash
+# Generate a new migration from entity changes
+npm run migration:generate
 
-</div>
+# Apply migrations, then run seeders
+npm run migration:run
 
+# Revert the last migration
+npm run migration:revert
+
+# Seed only
+npm run seed
+```
+
+These scripts build the project first and run TypeORM against `dist/core/database/migration_seeder_setup/data.source.js`.
+
+---
+
+## Running the app
+
+```bash
+npm run start          # nest start
+npm run start:dev      # watch mode
+npm run start:debug    # debug + watch
+npm run start:prod     # node dist/main.js
+npm run build
+```
+
+The process listens on `0.0.0.0` and `SERVER_PORT` (default `3000`).
+
+- Health: `GET /api` (public; no API key)
+- Swagger: `http://localhost:3000/docs`
+
+---
+
+## HTTP API
+
+Unless a route is `@IsPublic()`, send:
+
+```http
+x-api-key: <X_API_KEY>
+```
+
+Authenticated book listing also expects the `access_token` cookie set by sign-in.
+
+| Method | Path | Auth | Description |
+| --- | --- | --- | --- |
+| `GET` | `/api` | Public | Health check |
+| `POST` | `/api/v1/auth/sign-up` | API key | Create user |
+| `POST` | `/api/v1/auth/sign-in` | API key | Sign in; sets httpOnly cookies |
+| `POST` | `/api/v1/auth/send-otp` | API key | Send OTP (`SIGN_UP`, `SIGN_IN`, `FORGOT_PASSWORD`) |
+| `POST` | `/api/v1/auth/verify-otp` | API key | Verify OTP |
+| `POST` | `/api/v1/auth/refresh-token` | API key + `refresh-token` header | Issue new tokens |
+| `GET` | `/api/v1/auth/google` | Public | Start Google OAuth |
+| `GET` | `/api/v1/auth/google/callback` | Public | Google OAuth callback |
+| `GET` | `/api/v1/user/:userId` | API key + JWT + role `MST002` | Get user by ULID |
+| `GET` | `/api/v1/book/list` | API key + JWT cookie | Paginated book list (`pageIndex`, `pageSize`, `search`) |
+| `GET` | `/api/v1/book/:id` | API key | Get book by id |
+
+---
+
+## Scripts
+
+| Script | Purpose |
+| --- | --- |
+| `npm run start` / `start:dev` / `start:debug` / `start:prod` | Run the API |
+| `npm run build` | Compile to `dist/` |
+| `npm run lint` | ESLint with `--fix` |
+| `npm run format` | Prettier |
+| `npm run test` | Unit tests (Jest, `src/**/*.spec.ts`) |
+| `npm run test:watch` | Jest watch |
+| `npm run test:cov` | Coverage |
+| `npm run test:e2e` | E2E tests (`test/`) |
+| `npm run prepare` | Install Husky hooks |
+| `npm run migration:generate` | Generate a TypeORM migration |
+| `npm run migration:run` | Run migrations and seed |
+| `npm run migration:revert` | Revert last migration |
+| `npm run seed` | Run typeorm-extension seeders |
+
+---
+
+## Architecture notes
+
+- **Fastify adapter** is created in `src/common/Interceptor/create-http-adapter.ts` (100 MB body limit, plugins, parsers).
+- **Core** currently mounts `DatabaseModule` and Redis `CacheModule`. Uncomment and configure `QueueModule.forRoot(...)` in `src/core/core.module.ts` to enable RabbitMQ.
+- **Guards**: API key is global; JWT cookie auth is `AuthnGuard`; roles are `PermissionGuard`.
+- **Config** is loaded from `.env` in `src/config/validation.config.ts` and exposed as a typed object from `src/config/config.ts`.
+- **Payments** (`src/integrations/payments`) is a stub for future integrations.
+
+---
+
+## Testing and quality
+
+```bash
+npm run test
+npm run test:e2e
+npm run lint
+npm run format
+```
+
+Pre-commit hook: `.husky/pre-commit` runs `npx lint-staged`.
+
+---
+
+## License
+
+MIT (`package.json`).
+
+---
+
+Built by [Prabhat Saini](https://github.com/Prabhat070saini)
