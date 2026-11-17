@@ -7,11 +7,12 @@ type SchemaDefinition = {
   importPath: string;
 };
 
-const projectRoot = resolve(__dirname, '..');
+const projectRoot = resolve(__dirname, '../..');
+const srcRoot = join(projectRoot, 'src');
+
 const schemasRoot = join(projectRoot, 'src', 'apis');
 const outputFile = join(
-  projectRoot,
-  'src',
+  srcRoot,
   'core',
   'database',
   'no_sql',

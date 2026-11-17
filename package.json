@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     
-    "mongo:schemas:generate": "ts-node scripts/generate-mongo-schemas.ts",
+    "mongo:schemas:generate": "ts-node src/scripts/generate-mongo-schemas.ts",
     "build": "nest build",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -21,16 +21,16 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "typeorm": "npm run build && npx typeorm -d dist/src/core/database/migration_seeder_setup/data.source.js",
+    "typeorm": "npm run build && npx typeorm -d dist/core/database/migration_seeder_setup/data.source.js",
     "migration:generate": "npm run typeorm -- migration:generate ./src/core/database/migration_seeder_setup/migrations/migrationFile",
     "migration:run": "npm run typeorm -- migration:run && npm run seed",
     "migration:revert": "npm run typeorm -- migration:revert",
-    "seed": "nest build && typeorm-extension seed:run -d dist/src/core/database/migration_seeder_setup/data.source.js",
-    "mongo:sync-indexes": "npm run build && node dist/src/core/database/no_sql/no_sql.sync.js",
-    "mongo:migration:create": "ts-node scripts/create-mongo-migration.ts",
-    "mongo:migration:run": "npm run build && node dist/src/core/database/no_sql/migrations/migration.runner.js up",
-    "mongo:migration:revert": "npm run build && node dist/src/core/database/no_sql/migrations/migration.runner.js down",
-    "mongo:migration:status": "npm run build && node dist/src/core/database/no_sql/migrations/migration.runner.js status"
+    "seed": "nest build && typeorm-extension seed:run -d dist/core/database/migration_seeder_setup/data.source.js",
+    "mongo:sync-indexes": "npm run build && node dist/core/database/no_sql/no_sql.sync.js",
+    "mongo:migration:create": "ts-node src/scripts/create-mongo-migration.ts",
+    "mongo:migration:run": "npm run build && node dist/core/database/no_sql/migrations/migration.runner.js up",
+    "mongo:migration:revert": "npm run build && node dist/core/database/no_sql/migrations/migration.runner.js down",
+    "mongo:migration:status": "npm run build && node dist/core/database/no_sql/migrations/migration.runner.js status"
   },
   "dependencies": {
     "@fastify/cookie": "^9.4.0",
