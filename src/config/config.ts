@@ -29,6 +29,17 @@ export const config = {
     logging: env.DB_LOGGING,
     db_connection_idle_timeout: env.DB_CONNECTION_IDLE_TIMEOUT,
   },
+  mongodb: {
+    uri: env.MONGODB_URI,
+    max_pool_size: env.MONGODB_MAX_POOL,
+    min_pool_size: env.MONGODB_MIN_POOL,
+    server_selection_timeout_ms: env.MONGODB_SERVER_SELECTION_TIMEOUT,
+    connect_timeout_ms: env.MONGODB_CONNECT_TIMEOUT,
+    socket_timeout_ms: env.MONGODB_SOCKET_TIMEOUT,
+    heartbeat_frequency_ms: env.MONGODB_HEARTBEAT_FREQUENCY,
+    retry_attempts: env.MONGODB_RETRY_ATTEMPTS,
+    retry_delay_ms: env.MONGODB_RETRY_DELAY,
+  },
   redis: {
     host: env.REDIS_HOST,
     port: env.REDIS_PORT,

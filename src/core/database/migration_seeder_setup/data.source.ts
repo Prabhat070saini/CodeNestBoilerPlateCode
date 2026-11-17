@@ -13,7 +13,7 @@ export const dataSourceOptions: DataSourceOptions & SeederOptions = {
   database: config.db.database,
   logging: true,
   entities: ['dist/**/*.entity.js'],
-  migrations: ['dist/core/database/migration_seeder_setup/migrations/*.js'],
+  migrations: ['dist/src/core/database/migration_seeder_setup/migrations/*.js'],
   seeds: [InitSeeder],
   extra: {
     connectionLimit: Number(config.db.db_pool_max),

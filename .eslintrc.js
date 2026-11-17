@@ -64,6 +64,16 @@ module.exports = {
         leadingUnderscore: 'allow',
       },
 
+      // MongoDB uses `_id` as its standard document identifier.
+      {
+        selector: ['classProperty', 'objectLiteralProperty', 'typeProperty'],
+        filter: {
+          regex: '^_id$',
+          match: true,
+        },
+        format: null,
+      },
+
       // Types and classes
       {
         selector: 'typeLike',

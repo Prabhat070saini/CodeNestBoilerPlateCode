@@ -4,6 +4,7 @@ import { EApplicationEnvironmentType } from './app.enum';
 export const xApiKeyHeader = 'x-api-key';
 
 export const TYPEORM_DATABASE_PROVIDER = 'TYPEORM_DATABASE_PROVIDER';
+export const MONGODB_DATABASE_CONNECTION = 'MONGODB_DATABASE_CONNECTION';
 
 // Allowed request headers
 export const ALLOWED_HEADERS = new Set([

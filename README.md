@@ -18,7 +18,7 @@ The project is a modular NestJS application with:
 
 - URI versioning under the global prefix `/api` (feature routes are `/api/v1/...`)
 - Joi-validated environment configuration
-- PostgreSQL via TypeORM (`dbo` schema)
+- PostgreSQL via TypeORM (`dbo` schema) and MongoDB via Mongoose
 - Redis as a pluggable cache provider
 - JWT auth with httpOnly cookies, OTP, and Google OAuth
 - API key guard on all routes except those marked public
@@ -31,20 +31,20 @@ RabbitMQ is implemented under `src/core/queue` but is **not** registered in `Cor
 
 ## Tech stack
 
-| Area | Choice |
-| --- | --- |
-| Framework | NestJS 10 |
-| Language | TypeScript |
-| HTTP adapter | Fastify |
-| Database | PostgreSQL |
-| ORM | TypeORM + typeorm-extension |
-| Cache | Redis (`ioredis`) |
-| Queue (optional) | RabbitMQ (`amqplib`) |
-| Auth | JWT, Passport Google OAuth 2.0, bcrypt |
-| Validation | `class-validator`, `class-transformer`, Joi |
-| Docs | Swagger (`/docs`) |
-| Logging | Winston + custom logger |
-| Tooling | ESLint, Prettier, Husky, lint-staged, Jest |
+| Area             | Choice                                      |
+| ---------------- | ------------------------------------------- |
+| Framework        | NestJS 10                                   |
+| Language         | TypeScript                                  |
+| HTTP adapter     | Fastify                                     |
+| Database         | PostgreSQL and MongoDB                      |
+| ORM / ODM        | TypeORM + typeorm-extension / Mongoose      |
+| Cache            | Redis (`ioredis`)                           |
+| Queue (optional) | RabbitMQ (`amqplib`)                        |
+| Auth             | JWT, Passport Google OAuth 2.0, bcrypt      |
+| Validation       | `class-validator`, `class-transformer`, Joi |
+| Docs             | Swagger (`/docs`)                           |
+| Logging          | Winston + custom logger                     |
+| Tooling          | ESLint, Prettier, Husky, lint-staged, Jest  |
 
 ---
 
@@ -126,6 +126,7 @@ All keys below are consumed by `src/config/schema.config.ts` unless noted. Token
 CORS_ORIGIN=http://localhost:3000
 X_API_KEY=your-api-key
 ENV_NAME=development
+NODE_ENV=development
 LOG_LEVEL=debug
 SERVER_HOST=localhost
 SERVER_PORT=3000
@@ -143,6 +144,19 @@ DB_POOL_MAX=20
 DB_CONNECTION_TIMEOUT=10000
 DB_LOGGING=false
 DB_CONNECTION_IDLE_TIMEOUT=60000
+
+# MongoDB
+# A production deployment should use mongodb+srv with credentials stored securely.
+# MONGODB_URI is required when NODE_ENV=production.
+MONGODB_URI=mongodb://localhost:27017/boiler_plate_code
+MONGODB_MAX_POOL=50
+MONGODB_MIN_POOL=5
+MONGODB_SERVER_SELECTION_TIMEOUT=5000
+MONGODB_CONNECT_TIMEOUT=10000
+MONGODB_SOCKET_TIMEOUT=45000
+MONGODB_HEARTBEAT_FREQUENCY=10000
+MONGODB_RETRY_ATTEMPTS=5
+MONGODB_RETRY_DELAY=3000
 
 # Redis
 REDIS_HOST=localhost
@@ -203,6 +217,22 @@ Notes:
 
 Entities live in the TypeORM schema `dbo`. The seeder creates that schema if it is missing. Tables: `dbo.users`, `dbo.books`. Public IDs are ULIDs (`user_id`, `book_id`).
 
+MongoDB is configured in `src/core/database/no_sql/no_sql.module.ts` as the named `MONGODB_DATABASE_CONNECTION`. It uses connection pooling, timeouts, retries, lifecycle logging, and never creates collections or indexes at application startup. Mongo schemas live beside each feature in a `schemas` folder, for example `src/apis/testing/schemas/testing.schema.ts`. Before every build, `mongo:schemas:generate` scans `src/apis/**/schemas/**/*.schema.ts` and generates the central model registry; feature modules can inject their models without calling `MongooseModule.forFeature()`.
+
+MongoDB itself is schemaless, so the manual synchronization command applies declared collection indexes rather than TypeORM-style column changes:
+
+```bash
+npm run mongo:sync-indexes
+```
+
+For data changes, create and apply a MongoDB migration:
+
+```bash
+npm run mongo:migration:create -- add-testing-age
+# Edit the generated up() and down() functions in src/core/database/no_sql/migrations.
+npm run mongo:migration:run
+```
+
 ```bash
 # Generate a new migration from entity changes
 npm run migration:generate
@@ -248,39 +278,39 @@ x-api-key: <X_API_KEY>
 
 Authenticated book listing also expects the `access_token` cookie set by sign-in.
 
-| Method | Path | Auth | Description |
-| --- | --- | --- | --- |
-| `GET` | `/api` | Public | Health check |
-| `POST` | `/api/v1/auth/sign-up` | API key | Create user |
-| `POST` | `/api/v1/auth/sign-in` | API key | Sign in; sets httpOnly cookies |
-| `POST` | `/api/v1/auth/send-otp` | API key | Send OTP (`SIGN_UP`, `SIGN_IN`, `FORGOT_PASSWORD`) |
-| `POST` | `/api/v1/auth/verify-otp` | API key | Verify OTP |
-| `POST` | `/api/v1/auth/refresh-token` | API key + `refresh-token` header | Issue new tokens |
-| `GET` | `/api/v1/auth/google` | Public | Start Google OAuth |
-| `GET` | `/api/v1/auth/google/callback` | Public | Google OAuth callback |
-| `GET` | `/api/v1/user/:userId` | API key + JWT + role `MST002` | Get user by ULID |
-| `GET` | `/api/v1/book/list` | API key + JWT cookie | Paginated book list (`pageIndex`, `pageSize`, `search`) |
-| `GET` | `/api/v1/book/:id` | API key | Get book by id |
+| Method | Path                           | Auth                             | Description                                             |
+| ------ | ------------------------------ | -------------------------------- | ------------------------------------------------------- |
+| `GET`  | `/api`                         | Public                           | Health check                                            |
+| `POST` | `/api/v1/auth/sign-up`         | API key                          | Create user                                             |
+| `POST` | `/api/v1/auth/sign-in`         | API key                          | Sign in; sets httpOnly cookies                          |
+| `POST` | `/api/v1/auth/send-otp`        | API key                          | Send OTP (`SIGN_UP`, `SIGN_IN`, `FORGOT_PASSWORD`)      |
+| `POST` | `/api/v1/auth/verify-otp`      | API key                          | Verify OTP                                              |
+| `POST` | `/api/v1/auth/refresh-token`   | API key + `refresh-token` header | Issue new tokens                                        |
+| `GET`  | `/api/v1/auth/google`          | Public                           | Start Google OAuth                                      |
+| `GET`  | `/api/v1/auth/google/callback` | Public                           | Google OAuth callback                                   |
+| `GET`  | `/api/v1/user/:userId`         | API key + JWT + role `MST002`    | Get user by ULID                                        |
+| `GET`  | `/api/v1/book/list`            | API key + JWT cookie             | Paginated book list (`pageIndex`, `pageSize`, `search`) |
+| `GET`  | `/api/v1/book/:id`             | API key                          | Get book by id                                          |
 
 ---
 
 ## Scripts
 
-| Script | Purpose |
-| --- | --- |
-| `npm run start` / `start:dev` / `start:debug` / `start:prod` | Run the API |
-| `npm run build` | Compile to `dist/` |
-| `npm run lint` | ESLint with `--fix` |
-| `npm run format` | Prettier |
-| `npm run test` | Unit tests (Jest, `src/**/*.spec.ts`) |
-| `npm run test:watch` | Jest watch |
-| `npm run test:cov` | Coverage |
-| `npm run test:e2e` | E2E tests (`test/`) |
-| `npm run prepare` | Install Husky hooks |
-| `npm run migration:generate` | Generate a TypeORM migration |
-| `npm run migration:run` | Run migrations and seed |
-| `npm run migration:revert` | Revert last migration |
-| `npm run seed` | Run typeorm-extension seeders |
+| Script                                                       | Purpose                               |
+| ------------------------------------------------------------ | ------------------------------------- |
+| `npm run start` / `start:dev` / `start:debug` / `start:prod` | Run the API                           |
+| `npm run build`                                              | Compile to `dist/`                    |
+| `npm run lint`                                               | ESLint with `--fix`                   |
+| `npm run format`                                             | Prettier                              |
+| `npm run test`                                               | Unit tests (Jest, `src/**/*.spec.ts`) |
+| `npm run test:watch`                                         | Jest watch                            |
+| `npm run test:cov`                                           | Coverage                              |
+| `npm run test:e2e`                                           | E2E tests (`test/`)                   |
+| `npm run prepare`                                            | Install Husky hooks                   |
+| `npm run migration:generate`                                 | Generate a TypeORM migration          |
+| `npm run migration:run`                                      | Run migrations and seed               |
+| `npm run migration:revert`                                   | Revert last migration                 |
+| `npm run seed`                                               | Run typeorm-extension seeders         |
 
 ---
 

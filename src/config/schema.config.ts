@@ -5,6 +5,9 @@ export const envSchema = Joi.object({
   CORS_ORIGIN: Joi.string().required().default(''),
   X_API_KEY: Joi.string().required(),
   ENV_NAME: Joi.string().default('development'),
+  NODE_ENV: Joi.string()
+    .valid('development', 'production', 'test')
+    .default('development'),
   LOG_LEVEL: Joi.string()
     .valid('error', 'warn', 'info', 'debug')
     .default('debug'),
@@ -24,6 +27,25 @@ export const envSchema = Joi.object({
   DB_CONNECTION_TIMEOUT: Joi.number().default(3000),
   DB_LOGGING: Joi.boolean().default(true),
   DB_CONNECTION_IDLE_TIMEOUT: Joi.number().default(50),
+
+  // MongoDB
+  MONGODB_URI: Joi.string()
+    .uri({ scheme: ['mongodb', 'mongodb+srv'] })
+    .when('NODE_ENV', {
+      is: 'production',
+      then: Joi.required(),
+      otherwise: Joi.string().default(
+        'mongodb://localhost:27017/boiler_plate_code',
+      ),
+    }),
+  MONGODB_MAX_POOL: Joi.number().integer().min(1).default(50),
+  MONGODB_MIN_POOL: Joi.number().integer().min(0).default(5),
+  MONGODB_SERVER_SELECTION_TIMEOUT: Joi.number().integer().min(1).default(5000),
+  MONGODB_CONNECT_TIMEOUT: Joi.number().integer().min(1).default(10000),
+  MONGODB_SOCKET_TIMEOUT: Joi.number().integer().min(1).default(45000),
+  MONGODB_HEARTBEAT_FREQUENCY: Joi.number().integer().min(500).default(10000),
+  MONGODB_RETRY_ATTEMPTS: Joi.number().integer().min(0).default(5),
+  MONGODB_RETRY_DELAY: Joi.number().integer().min(0).default(3000),
 
   // Redis
   REDIS_HOST: Joi.string().required(),
