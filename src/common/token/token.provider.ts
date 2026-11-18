@@ -24,8 +24,8 @@ export class TokenProvider {
     } catch (error) {
       this.logger.error(
         `Invalid or expired token: `,
-        error,
         'TokenProvider.validateToken',
+        error,
       );
       throw new Error('Invalid or expired token');
     }

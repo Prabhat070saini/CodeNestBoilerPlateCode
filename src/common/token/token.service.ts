@@ -38,7 +38,7 @@ export class TokenService {
       const cfg = this.tokenConfigs[type];
       return this.provider.validateToken(cfg, token);
     } catch (error) {
-      this.logger.error(`[validate] error`, error);
+      this.logger.error(`[validate] error`, TokenService.name, error);
       return null;
     }
   }

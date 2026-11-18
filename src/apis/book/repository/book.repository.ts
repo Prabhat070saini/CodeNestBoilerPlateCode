@@ -27,7 +27,9 @@ export class BookRepository {
       };
     } catch (error) {
       this.logger.error(
-        `Error in getBooklist: ${error instanceof Error ? `${error.message}|{error.stack}` : error}`,
+        `message error `,
+        error,
+        'bookingrepository|getBooklist',
       );
       return { exception: { code: 500, message: 'Something went wrong' } };
     }

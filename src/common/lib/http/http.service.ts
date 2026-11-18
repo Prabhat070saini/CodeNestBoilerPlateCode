@@ -42,11 +42,7 @@ export class HttpService {
         return config;
       },
       (error) => {
-        this.logger.error({
-          log: 'HTTP Request Error',
-          message: error.message,
-          stack: error.stack,
-        });
+        this.logger.error('HTTP Request Error', HttpService.name, error);
 
         return Promise.reject(error);
       },
@@ -56,11 +52,7 @@ export class HttpService {
     this.axiosInstance.interceptors.response.use(
       (response) => response,
       (error) => {
-        this.logger.error({
-          log: 'HTTP Response Error',
-          message: error.message,
-          stack: error.stack,
-        });
+        this.logger.error('HTTP Response Error', HttpService.name, error);
 
         return Promise.reject(error);
       },

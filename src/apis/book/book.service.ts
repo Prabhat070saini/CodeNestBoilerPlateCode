@@ -17,6 +17,10 @@ export class BookService {
   ): Promise<IServiceOutput<IBooksListingResponse>> {
     try {
       const { search, pageSize, pageIndex } = query;
+      this.logger.log(
+        `getBooklist called with search: ${search}, pageSize: ${pageSize}, pageIndex: ${pageIndex}`,
+      );
+
       const { data: books, exception } = await this.bookRepository.getBooklist(
         pageIndex,
         pageSize,
