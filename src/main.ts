@@ -38,12 +38,12 @@ async function bootstrap(): Promise<void> {
   // 7. Start HTTP server
   await app.listen(config.app.port, '0.0.0.0');
   /*eslint-disable */
-  // console.log({
-  //   message: 'Application started successfully',
-  //   port: config.app.port,
-  //   environment: config.env,
-  //   swagger: `http://localhost:${config.app.port}/docs`,
-  // });
+  console.log({
+    message: 'Application started successfully',
+    port: config.app.port,
+    environment: config.env,
+    swagger: `http://localhost:${config.app.port}/docs`,
+  });
 }
 bootstrap().catch((error: unknown) => {
   console.error('Application startup failed:', error);

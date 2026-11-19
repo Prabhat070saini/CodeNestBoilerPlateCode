@@ -65,7 +65,7 @@ RabbitMQ is implemented under `src/core/queue` but is **not** registered in `Cor
 
 ## Prerequisites
 
-- Node.js 18+ (recommended; Nest 10 / TypeScript 5)
+- Node.js `>=24 <27` (`.nvmrc` prefers 26 Lithium; enforced via `package.json` `engines`)
 - npm
 - PostgreSQL
 - Redis (required when `USE_REDIS=true`, which is the default)
