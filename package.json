@@ -27,8 +27,7 @@
     "migration:generate": "npm run typeorm -- migration:generate ./src/core/database/migration_seeder_setup/migrations/migrationFile",
     "migration:run": "npm run typeorm -- migration:run && npm run seed",
     "migration:revert": "npm run typeorm -- migration:revert",
-    "seed": "nest build && typeorm-extension seed:run -d dist/core/database/migration_seeder_setup/data.source.js",
-    "start:dev:otel": "nest start --entryFile instrumentation --watch"
+    "seed": "nest build && typeorm-extension seed:run -d dist/core/database/migration_seeder_setup/data.source.js"
   },
   "dependencies": {
     "@fastify/cookie": "^9.4.0",
