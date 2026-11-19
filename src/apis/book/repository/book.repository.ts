@@ -3,6 +3,7 @@ import { TYPEORM_DATABASE_PROVIDER } from '../../../common/constants/app.constan
 import { DataSource } from 'typeorm';
 import { IFunctionOutput } from '../../../common/constants/app.interface';
 import { IBookDetails, IBookListing, IBookRecommendation } from './interface';
+import { exception } from '../../../common/constants';
 
 @Injectable()
 export class BookRepository {
@@ -31,7 +32,7 @@ export class BookRepository {
         error,
         'bookingrepository|getBooklist',
       );
-      return { exception: { code: 500, message: 'Something went wrong' } };
+      return { exception: exception.SOMETHING_WENT_WRONG };
     }
   }
   async getBookbyId(contentId: string): Promise<
@@ -73,7 +74,7 @@ export class BookRepository {
       this.logger.error(
         `Error in getBookbyId: ${error instanceof Error ? `${error.message}|{error.stack}` : error}`,
       );
-      return { exception: { code: 500, message: 'Something went wrong' } };
+      return { exception: exception.SOMETHING_WENT_WRONG };
     } finally {
       await queryRunner.release();
     }

@@ -65,8 +65,15 @@ RabbitMQ is implemented under `src/core/queue` but is **not** registered in `Cor
 
 ## Prerequisites
 
-- Node.js `>=24 <27` (`.nvmrc` prefers 26 Lithium; enforced via `package.json` `engines`)
-- npm
+## Requirements
+
+- Node.js >= 24 and < 27
+- npm >= 10
+
+### Supported Node.js versions
+
+- Node.js 24.x (Maintenance LTS)
+- Node.js 26.x (Active LTS)- npm
 - PostgreSQL
 - Redis (required when `USE_REDIS=true`, which is the default)
 - RabbitMQ only if you enable `QueueModule` in `CoreModule`
@@ -246,23 +253,6 @@ Unless a route is `@IsPublic()`, send:
 x-api-key: <X_API_KEY>
 ```
 
-Authenticated book listing also expects the `access_token` cookie set by sign-in.
-
-| Method | Path | Auth | Description |
-| --- | --- | --- | --- |
-| `GET` | `/api` | Public | Health check |
-| `POST` | `/api/v1/auth/sign-up` | API key | Create user |
-| `POST` | `/api/v1/auth/sign-in` | API key | Sign in; sets httpOnly cookies |
-| `POST` | `/api/v1/auth/send-otp` | API key | Send OTP (`SIGN_UP`, `SIGN_IN`, `FORGOT_PASSWORD`) |
-| `POST` | `/api/v1/auth/verify-otp` | API key | Verify OTP |
-| `POST` | `/api/v1/auth/refresh-token` | API key + `refresh-token` header | Issue new tokens |
-| `GET` | `/api/v1/auth/google` | Public | Start Google OAuth |
-| `GET` | `/api/v1/auth/google/callback` | Public | Google OAuth callback |
-| `GET` | `/api/v1/user/:userId` | API key + JWT + role `MST002` | Get user by ULID |
-| `GET` | `/api/v1/book/list` | API key + JWT cookie | Paginated book list (`pageIndex`, `pageSize`, `search`) |
-| `GET` | `/api/v1/book/:id` | API key | Get book by id |
-
----
 
 ## Scripts
 
